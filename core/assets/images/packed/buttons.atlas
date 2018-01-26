@@ -1,0 +1,34 @@
+
+buttons.png
+size: 802,135
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+blankButton
+  rotate: false
+  xy: 680, 58
+  size: 120, 75
+  orig: 120, 75
+  offset: 0, 0
+  index: -1
+loadGameBtn
+  rotate: false
+  xy: 276, 33
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+newGameBtn
+  rotate: false
+  xy: 478, 33
+  size: 200, 100
+  orig: 200, 100
+  offset: 0, 0
+  index: -1
+nextBtn
+  rotate: false
+  xy: 2, 2
+  size: 272, 131
+  orig: 272, 131
+  offset: 0, 0
+  index: -1
