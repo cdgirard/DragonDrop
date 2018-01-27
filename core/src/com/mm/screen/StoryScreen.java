@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 import com.mm.screen.input.StoryScreenInputHandler;
 
 
@@ -45,12 +45,12 @@ public class StoryScreen extends SizableScreen
         m_cam = new OrthographicCamera();
         
         // TODO: Turn into Hashtable so don't get screwed if index changes.
-        m_background = AssetLoader.backgroundTextures.get(5);
+        m_background = Assets.backgroundTextures.get(5);
         preferredWidth = m_background.getWidth();
         preferredHeight = m_background.getHeight();
        // Gdx.graphics.setDisplayMode(preferredWidth, preferredHeight, false);
         
-        buttonSkin.addRegions(AssetLoader.buttonsAtlas);
+        buttonSkin.addRegions(Assets.buttonsAtlas);
         
         StoryScreenInputHandler.initializeInstance(this);
         

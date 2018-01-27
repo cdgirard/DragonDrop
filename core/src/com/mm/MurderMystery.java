@@ -2,7 +2,7 @@ package com.mm;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 import com.mm.screen.GameScreen;
 import com.mm.screen.MainScreen;
 import com.mm.screen.SizableScreen;
@@ -31,7 +31,7 @@ public class MurderMystery extends ApplicationAdapter
     public void create()
     {
 	m_dreamScape = this;
-	AssetLoader.load();
+	Assets.load();
 	MAIN_SCREEN = new MainScreen();
 	GAME_SCREEN = new GameScreen();
 	STORY_SCREEN = new StoryScreen();

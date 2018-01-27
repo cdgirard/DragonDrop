@@ -23,10 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 import com.mm.objects.Hero;
 import com.mm.objects.InventoryItem;
 import com.mm.objects.Plane;
+import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
 
@@ -52,10 +53,12 @@ public class GameScreen extends SizableScreen
     
     private Plane m_plane;
     
-    private ImageButton m_cancelButton, m_largePurpleTreeButton;
-    private ImageButton m_leftGreenBallButton;
+    private ImageButton m_quitButton, m_doorButton;
+    private ImageButton m_paintingButton;
     private ImageButton m_leftPurpleTreeButton;
     private ImageButton m_planeButton;
+    
+    private GameScreenInputAdapter inputProcessor;
     
     private float m_runTime = 0f;
     
@@ -63,8 +66,10 @@ public class GameScreen extends SizableScreen
     {
         m_cam = new OrthographicCamera();
         
-        m_background = AssetLoader.assetManager.get(AssetLoader.LOUNGE,Texture.class);
-        m_hero = Hero.getInstance();
+        m_background = Assets.assetManager.get(Assets.LOUNGE,Texture.class);
+        m_hero = Hero.getInstance(); 
+        m_hero.setNextRelativeSize(0.5f);
+        m_hero.setPosition(30,70);
         m_plane = new Plane();
         
         preferredWidth = m_background.getWidth();
@@ -72,7 +77,7 @@ public class GameScreen extends SizableScreen
 
         Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
         
-        buttonSkin.addRegions(AssetLoader.buttonsAtlas);
+        buttonSkin.addRegions(Assets.buttonsAtlas);
         
         buildPlaneAnimation();
         
@@ -80,17 +85,19 @@ public class GameScreen extends SizableScreen
         
         m_stage = new Stage();
         
-        m_cancelButton = constructButton(GameScreenInputHandler.CANCEL_BUTTON);
-        m_cancelButton.setPosition(600, 5);
-        m_stage.addActor(m_cancelButton);
+        m_quitButton = constructButton(GameScreenInputHandler.QUIT_BUTTON);
+        Texture slotImage = m_hero.getInventory()[0].getSlotImage();
+        int x = m_hero.getInventory().length*slotImage.getWidth();
+        m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
+        m_stage.addActor(m_quitButton);
         
-        m_largePurpleTreeButton = constructBlankButton(GameScreenInputHandler.TREE_BUTTON,110,200);
-        m_largePurpleTreeButton.setPosition(450, 175);
-        m_stage.addActor(m_largePurpleTreeButton);
+        m_doorButton = constructBlankButton(GameScreenInputHandler.DOOR_BUTTON,105,205);
+        m_doorButton.setPosition(495, 0);
+        m_stage.addActor(m_doorButton);
          
-        m_leftGreenBallButton = constructBlankButton(GameScreenInputHandler.GREEN_BALL_BUTTON,190,190);
-        m_leftGreenBallButton.setPosition(15, 370);
-        m_stage.addActor(m_leftGreenBallButton);
+        m_paintingButton = constructBlankButton(GameScreenInputHandler.PAINTING_BUTTON,120,125);
+        m_paintingButton.setPosition(255, 140);
+        m_stage.addActor(m_paintingButton);
         
         m_leftPurpleTreeButton = constructBlankButton(GameScreenInputHandler.LEFT_TREE_BUTTON,50,100);
         m_leftPurpleTreeButton.setPosition(50, 180);
@@ -103,7 +110,7 @@ public class GameScreen extends SizableScreen
         label = new Label("Messages appear here.", uiSkin);
         
         label.setAlignment(Align.center);
-        label.setPosition(100, 100);
+        label.setPosition(m_hero.getX(), m_hero.getY()+60);
         m_stage.addActor(label);
         
         m_cam = new OrthographicCamera();
@@ -122,7 +129,7 @@ public class GameScreen extends SizableScreen
         
         light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f,90f,20f);
         
-
+        
     }
     
     private void buildPlaneAnimation()
@@ -131,7 +138,7 @@ public class GameScreen extends SizableScreen
         
         for (int x=1;x<5;x++)
         {
-            planeFrames[x-1] = AssetLoader.planesAtlas.findRegion("plane"+x);
+            planeFrames[x-1] = Assets.planesAtlas.findRegion("plane"+x);
             planeFrames[x-1].flip(false, true);
             
         }
@@ -146,8 +153,8 @@ public class GameScreen extends SizableScreen
     
     private ImageButton constructBlankButton(String name, int width, int height)
     {
-        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
-        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);
+        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
+        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
         buttonSkin.add(name,blankTexture);
         return constructButton(name);
     }
@@ -203,7 +210,7 @@ public class GameScreen extends SizableScreen
         for (InventoryItem item : m_hero.getInventory())
         {
             Texture slotImage = item.getSlotImage();
-            int y = m_background.getHeight() - slotImage.getHeight();
+            int y = 0;//m_background.getHeight() - slotImage.getHeight();
             Texture itemImage = item.getItemImage();
             if (itemImage != null)
             {
@@ -219,6 +226,8 @@ public class GameScreen extends SizableScreen
         rayHandler.setCombinedMatrix(m_cam);
         rayHandler.update();
         rayHandler.render();
+        
+        label.setPosition(m_hero.getX(), m_hero.getY()+60);
         
         m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         m_stage.draw();
@@ -245,6 +254,8 @@ public class GameScreen extends SizableScreen
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
       //  inputMultiplexer.addProcessor(inputProcessorOne);
         inputMultiplexer.addProcessor(inputProcessorTwo);
+        inputProcessor = new GameScreenInputAdapter(this);
+        inputMultiplexer.addProcessor(inputProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
         Gdx.app.log("GameScreen", "show called");
     }
@@ -286,6 +297,6 @@ public class GameScreen extends SizableScreen
 
     public void updateUI()
     {
-        m_hero.addItem(InventoryItem.RING,AssetLoader.ringItemTexture);
+        m_hero.addItem(InventoryItem.RING,Assets.ringItemTexture);
     }
 }

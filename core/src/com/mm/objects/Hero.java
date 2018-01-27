@@ -2,7 +2,7 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 
 public class Hero
 {
@@ -18,7 +18,7 @@ public class Hero
     
     private Hero()
     {
-        m_image = AssetLoader.heroTexture;
+        m_image = Assets.heroTexture;
         xLoc = 200;
         yLoc = 200;
         m_presentSize = 1.0f;
@@ -40,8 +40,8 @@ public class Hero
 
     public void render(SpriteBatch batcher, float delta)
     {
-        float maxXChange = delta * 5;
-        float maxYChange = delta * 5;
+        float maxXChange = delta * 15;
+        float maxYChange = delta * 15;
         
         if (m_presentSize > m_nextSize)
         {
@@ -85,6 +85,18 @@ public class Hero
         float modYLoc = yLoc +m_image.getHeight()-m_image.getHeight()*m_presentSize;
         batcher.draw(m_image, xLoc, modYLoc, m_image.getWidth()*m_presentSize, m_image.getHeight()*m_presentSize, 0, 0, m_image.getWidth(), m_image.getHeight(), false, true);
 
+    }
+    
+    /**
+     * Sets the immediate position of the Hero and kills the nextXLoc, nextYLoc as well.
+     * Doesn't cancel out any resizing though.
+     * @param x
+     * @param y
+     */
+    public void setPosition(int x, int y)
+    {
+	xLoc = nextXLoc = x;
+	yLoc = nextYLoc = y;
     }
 
     /**

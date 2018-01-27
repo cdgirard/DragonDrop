@@ -1,7 +1,7 @@
 package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 
 public class InventoryItem
 {
@@ -12,7 +12,7 @@ public class InventoryItem
     
     public InventoryItem()
     {
-        m_slotImage = AssetLoader.slotTexture;
+        m_slotImage = Assets.slotTexture;
         m_itemImage = null;
     }
     

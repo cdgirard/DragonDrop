@@ -2,7 +2,7 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 
 public class Plane
 {
@@ -12,7 +12,7 @@ public class Plane
     
     public Plane()
     {
-        m_image = AssetLoader.planesAtlas.findRegion("plane1");
+        m_image = Assets.planesAtlas.findRegion("plane1");
         xLoc = 200;
         yLoc = 200;
         m_runTime = 0;

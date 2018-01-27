@@ -2,7 +2,7 @@ package com.mm.screen.input;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 import com.mm.screen.StoryScreen;
 
 public class StoryScreenInputHandler extends ChangeListener //implements InputProcessor
@@ -60,7 +60,7 @@ public class StoryScreenInputHandler extends ChangeListener //implements InputPr
             if (imageNum > 5)
                 imageNum = 2;
             
-            m_screen.setBackgroundImage(AssetLoader.backgroundTextures.get(imageNum));
+            m_screen.setBackgroundImage(Assets.backgroundTextures.get(imageNum));
 
             //DreamScape.m_dreamScape.setScreen(DreamScape.MAIN_SCREEN);
         }

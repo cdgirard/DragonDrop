@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class AssetLoader
+public class Assets
 {
-    public static final String LOUNGE = "images/backgrounds/grassland_w_planes.png";
+    public static final String LOUNGE = "images/backgrounds/lounge.png";
     public static ArrayList<Texture> backgroundTextures = new ArrayList<Texture>();
     public static Texture heroTexture;
     
@@ -93,6 +93,7 @@ public class AssetLoader
             if (texture != null)
                 texture.dispose();
         }
+        assetManager.dispose();
     }
 
 }

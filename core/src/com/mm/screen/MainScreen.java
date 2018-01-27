@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.mm.helpers.AssetLoader;
+import com.mm.helpers.Assets;
 import com.mm.screen.input.MainScreenInputHandler;
 
 public class MainScreen extends SizableScreen
@@ -42,13 +42,13 @@ public class MainScreen extends SizableScreen
     {
         
         // TODO: Turn into Hashtable so don't get screwed if index changes.
-        m_background = new TextureRegion(AssetLoader.backgroundTextures.get(0));
+        m_background = new TextureRegion(Assets.backgroundTextures.get(0));
         m_background.flip(false, true);
         preferredWidth = m_background.getTexture().getWidth();
         preferredHeight = m_background.getTexture().getHeight();
               
         Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
-        buttonSkin.addRegions(AssetLoader.buttonsAtlas);
+        buttonSkin.addRegions(Assets.buttonsAtlas);
         
         MainScreenInputHandler.initializeInstance();
         m_stage = new Stage();
