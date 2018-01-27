@@ -6,6 +6,7 @@ import com.mm.helpers.Assets;
 public class InventoryItem
 {
     public final static int RING = 1;
+    public final static int PAINTING = 2;
     private int m_type;
     private Texture m_slotImage;
     private Texture m_itemImage;

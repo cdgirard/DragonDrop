@@ -3,7 +3,9 @@ package com.mm.screen.input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mm.MurderMystery;
+import com.mm.helpers.Assets;
 import com.mm.objects.Hero;
+import com.mm.objects.InventoryItem;
 import com.mm.screen.GameScreen;
 
 /**
@@ -57,20 +59,21 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	if (actor.getName().equals(PAINTING_BUTTON))
 	{
-	    m_screen.updateMessageLabel("Cannot reach there - Maybe if I could fly.");
-	}
-	if (actor.getName().equals(LEFT_TREE_BUTTON))
-	{
 	    Hero hero = Hero.getInstance();
-	    if ((hero.getX() == 100) && (hero.getY() == 100))
+	    if ((hero.getX() == 275) && (hero.getY() == 70))
 	    {
-		m_screen.updateUI();
+		m_screen.takePainting();
 	    }
 	    else
 	    {
-		hero.setNextPosition(100, 100);
-		hero.setNextRelativeSize(0.30f);
+		m_screen.updateMessageLabel("Heading over to the painting.");
+		hero.setNextPosition(275, 70);
 	    }
+	}
+	if (actor.getName().equals(LEFT_TREE_BUTTON))
+	{
+	    m_screen.updateMessageLabel("Cannot reach there - Maybe if I could fly.");
+
 	}
 	if (actor.getName().equals(PLANE_BUTTON))
 	{

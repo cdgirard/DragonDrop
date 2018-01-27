@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 public class Assets
 {
     public static final String LOUNGE = "images/backgrounds/lounge.png";
+    public static final String PAINTING = "images/items/painting.png";
     public static ArrayList<Texture> backgroundTextures = new ArrayList<Texture>();
     public static Texture heroTexture;
     
@@ -46,6 +47,9 @@ public class Assets
         
         ringItemTexture = new Texture(Gdx.files.internal("images/items/ring.png"));
         ringItemTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+        
+        assetManager.load(PAINTING, Texture.class);     
+        assetManager.finishLoading();
     }
     
     private static void loadPlanes()

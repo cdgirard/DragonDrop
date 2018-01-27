@@ -30,7 +30,13 @@ import com.mm.objects.Plane;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
-
+/**
+ * TODO: Work more with the Inventory System to do things in the game.
+ * TODO: Build additional rooms to work on moving between the rooms.
+ * TODO: Work on plot for how the game will play out.
+ * @author cdgira
+ *
+ */
 public class GameScreen extends SizableScreen
 {
     RayHandler rayHandler;
@@ -44,6 +50,8 @@ public class GameScreen extends SizableScreen
     private OrthographicCamera m_cam;
 
     private Texture m_background;
+    private Texture m_painting;
+    private boolean m_paintingPresent = true;
     
     private Hero m_hero;
     
@@ -67,6 +75,7 @@ public class GameScreen extends SizableScreen
         m_cam = new OrthographicCamera();
         
         m_background = Assets.assetManager.get(Assets.LOUNGE,Texture.class);
+        m_painting = Assets.assetManager.get(Assets.PAINTING, Texture.class);
         m_hero = Hero.getInstance(); 
         m_hero.setNextRelativeSize(0.5f);
         m_hero.setPosition(30,70);
@@ -153,8 +162,8 @@ public class GameScreen extends SizableScreen
     
     private ImageButton constructBlankButton(String name, int width, int height)
     {
-        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
-        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
+        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
+        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
         buttonSkin.add(name,blankTexture);
         return constructButton(name);
     }
@@ -199,6 +208,8 @@ public class GameScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.begin();
         batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
+        if (m_paintingPresent)
+            batcher.draw(m_painting, 255, 120, m_painting.getWidth(), m_painting.getHeight(),0, 0, m_painting.getWidth(), m_painting.getHeight(),false,true);
         m_hero.render(batcher,delta);
         m_plane.render(batcher,delta);
         // TextureRegion plane = m_activeAnimation.getKeyFrame(m_runTime);
@@ -214,7 +225,7 @@ public class GameScreen extends SizableScreen
             Texture itemImage = item.getItemImage();
             if (itemImage != null)
             {
-                batcher.draw(itemImage, x, y, itemImage.getWidth(), itemImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
+                batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
             }
             
             batcher.draw(slotImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, slotImage.getWidth(), slotImage.getHeight(),false,true);
@@ -294,9 +305,15 @@ public class GameScreen extends SizableScreen
         label.setText(text);
         
     }
-
-    public void updateUI()
+    
+    /**
+     * If the painting is still there the Hero will take it.
+     */
+    public void takePainting()
     {
-        m_hero.addItem(InventoryItem.RING,Assets.ringItemTexture);
+	updateMessageLabel("Let me just take this.");
+	//m_hero.addItem(InventoryItem.RING,Assets.ringItemTexture);
+	m_hero.addItem(InventoryItem.PAINTING,Assets.assetManager.get(Assets.PAINTING,Texture.class));
+	m_paintingPresent = false;
     }
 }
