@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -52,6 +53,9 @@ public class GameScreen extends SizableScreen
     private Texture m_background;
     private Texture m_painting;
     private boolean m_paintingPresent = true;
+    
+    private Texture m_testObj;
+    private Image m_actor;
     
     private Hero m_hero;
     
@@ -137,6 +141,10 @@ public class GameScreen extends SizableScreen
         rayHandler.setBlurNum(3);
         
         light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f,90f,20f);
+        
+        //m_testObj = Assets.assetManager.get(Assets.PAINTING, Texture.class);
+        //m_actor = new Image(m_testObj);
+       // m_stage.addActor(m_actor);
         
         
     }
