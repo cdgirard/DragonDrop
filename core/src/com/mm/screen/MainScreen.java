@@ -11,6 +11,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -36,16 +37,16 @@ public class MainScreen extends SizableScreen
     
     private ImageButton m_startNewGameButton, m_loadGameButton;
     
-    private TextureRegion m_background;
+    private Texture m_background;
       
     public MainScreen()
     {
         
         // TODO: Turn into Hashtable so don't get screwed if index changes.
-        m_background = new TextureRegion(Assets.backgroundTextures.get(0));
-        m_background.flip(false, true);
-        preferredWidth = m_background.getTexture().getWidth();
-        preferredHeight = m_background.getTexture().getHeight();
+        m_background = Assets.assetManager.get(Assets.MAIN_SCREEN,Texture.class);
+        //m_background.flip(false, true);
+        preferredWidth = m_background.getWidth();
+        preferredHeight = m_background.getHeight();
               
         Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
         buttonSkin.addRegions(Assets.buttonsAtlas);
@@ -121,7 +122,7 @@ public class MainScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.disableBlending();
         batcher.begin();
-        batcher.draw(m_background, 0, 0, m_background.getTexture().getWidth(), m_background.getTexture().getHeight());
+        batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
         batcher.enableBlending();
         batcher.end();
         

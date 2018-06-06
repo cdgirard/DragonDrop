@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Assets
 {
-    public static final String LOUNGE = "images/backgrounds/lounge.png";
+    // Backgrounds
+    public static final String MAIN_SCREEN = "images/backgrounds/dragon_drop_main.png";
+    public static final String GAME_SCREEN = "images/backgrounds/dragon_drop_game.png";
     public static final String PAINTING = "images/items/painting.png";
     public static ArrayList<Texture> backgroundTextures = new ArrayList<Texture>();
     public static Texture heroTexture;
@@ -83,7 +85,10 @@ public class Assets
         texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         backgroundTextures.add(texture);
         
-        assetManager.load(LOUNGE, Texture.class);     
+        assetManager.load(GAME_SCREEN, Texture.class);     
+        assetManager.finishLoading();
+        
+        assetManager.load(MAIN_SCREEN, Texture.class);     
         assetManager.finishLoading();
         
     }

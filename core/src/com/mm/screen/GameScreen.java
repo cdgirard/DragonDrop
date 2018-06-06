@@ -78,7 +78,7 @@ public class GameScreen extends SizableScreen
     {
         m_cam = new OrthographicCamera();
         
-        m_background = Assets.assetManager.get(Assets.LOUNGE,Texture.class);
+        m_background = Assets.assetManager.get(Assets.GAME_SCREEN,Texture.class);
         m_painting = Assets.assetManager.get(Assets.PAINTING, Texture.class);
         m_hero = Hero.getInstance(); 
         m_hero.setNextRelativeSize(0.5f);
