@@ -14,80 +14,67 @@ public class Assets
     // Backgrounds
     public static final String MAIN_SCREEN = "images/backgrounds/dragon_drop_main.png";
     public static final String GAME_SCREEN = "images/backgrounds/dragon_drop_game.png";
-    public static final String PAINTING = "images/items/painting.png";
-    public static ArrayList<Texture> backgroundTextures = new ArrayList<Texture>();
-    public static Texture heroTexture;
     
+    // Attackers
+    public static final String SOILDER = "images/attackers/soilder.png";
+    public static final String CROSSBOW = "images/attackers/crossbow.png";
+    public static final String SPEARMAN = "images/attackers/spearman.png";
+    public static final String KNIGHT = "images/attackers/knight.png";
+    public static final String FARMER = "images/attackers/farmer.png";
+    
+    // Dragons
+    public static final String GOTH_DRAGON = "images/dragons/goth_dragon.png";
+    public static final String HAZY_DRAGON = "images/dragons/hazy_dragon.png";
+    public static final String BOOK_DRAGON = "images/dragons/book_dragon.png";
+    
+    // UI
+    public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
     public static TextureAtlas buttonsAtlas;
-    public static TextureAtlas planesAtlas;
-    public static Texture slotTexture;
-    public static Texture ringItemTexture;
     
     public static AssetManager assetManager = new AssetManager();
+    
 
     public static void load()
     {
         loadBackgrounds();
         loadGUIImages();
-        loadHero();
-        loadPlanes();
+        loadDragons();
+        loadAttackers();
         
-    }
-    
-    private static void loadHero()
-    {
-        heroTexture = new Texture(Gdx.files.internal("images/people/Hero.png"));
-        heroTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
     }
     
     private static void loadGUIImages()
     {
         buttonsAtlas = new TextureAtlas(Gdx.files.internal("images/packed/buttons.atlas")); //** button atlas image **//
         
-        slotTexture = new Texture(Gdx.files.internal("images/ui/item_slot.png"));
-        slotTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+        //slotTexture = new Texture(Gdx.files.internal(DRAGON_SLOT));
+        //slotTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         
-        ringItemTexture = new Texture(Gdx.files.internal("images/items/ring.png"));
-        ringItemTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        
-        assetManager.load(PAINTING, Texture.class);     
+        assetManager.load(DRAGON_SLOT, Texture.class);     
         assetManager.finishLoading();
     }
     
-    private static void loadPlanes()
+    private static void loadAttackers()
     {
-        planesAtlas = new TextureAtlas(Gdx.files.internal("images/packed/airplanes.atlas"));
+	assetManager.load(SOILDER, Texture.class); 
+	assetManager.load(CROSSBOW, Texture.class); 
+	assetManager.load(SPEARMAN, Texture.class); 
+	assetManager.load(KNIGHT, Texture.class);
+	assetManager.load(FARMER, Texture.class);
+        assetManager.finishLoading();
+    }
+    
+    private static void loadDragons()
+    {
+	assetManager.load(GOTH_DRAGON, Texture.class); 
+	assetManager.load(HAZY_DRAGON, Texture.class);
+	assetManager.load(BOOK_DRAGON, Texture.class);
+        assetManager.finishLoading();
     }
     
     private static void loadBackgrounds()
-    {
-        Texture texture = new Texture(Gdx.files.internal("images/backgrounds/DreamCrystal.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        texture = new Texture(Gdx.files.internal("images/backgrounds/TheHero.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        texture = new Texture(Gdx.files.internal("images/backgrounds/desertPlanet.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        texture = new Texture(Gdx.files.internal("images/backgrounds/forest.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        texture = new Texture(Gdx.files.internal("images/backgrounds/grassland.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        texture = new Texture(Gdx.files.internal("images/backgrounds/roiidynne.png"));
-        texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        backgroundTextures.add(texture);
-        
-        assetManager.load(GAME_SCREEN, Texture.class);     
-        assetManager.finishLoading();
-        
+    {   
+        assetManager.load(GAME_SCREEN, Texture.class);             
         assetManager.load(MAIN_SCREEN, Texture.class);     
         assetManager.finishLoading();
         
@@ -96,12 +83,7 @@ public class Assets
     
     public static void dispose()
     {
-        // We must dispose of the texture when we are finished.
-        for (Texture texture : backgroundTextures)
-        {
-            if (texture != null)
-                texture.dispose();
-        }
+        buttonsAtlas.dispose();
         assetManager.dispose();
     }
 

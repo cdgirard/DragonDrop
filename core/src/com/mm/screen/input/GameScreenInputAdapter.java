@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.utils.Disposable;
-import com.mm.objects.Hero;
+import com.mm.objects.Dragon;
 import com.mm.screen.GameScreen;
 
 public class GameScreenInputAdapter extends InputAdapter implements Disposable
@@ -27,7 +27,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
 
-	Hero hero = Hero.getInstance();
+	Dragon hero = Dragon.getInstance();
         System.out.println("Screen: "+screenX+" : "+screenY);
         System.out.println("Hero: "+hero.getX()+" : "+hero.getY());
 	if ((screenX >= hero.getX()-50) && (screenX <= hero.getX()+50))
@@ -47,7 +47,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     public boolean touchDown (int screenX, int screenY, int pointer, int button)
     {
 	//m_screen.updateMessageLabel("Why would I move there?");
-	Hero hero = Hero.getInstance();
+	Dragon hero = Dragon.getInstance();
 	//hero.setPosition(hero.getX(), hero.getY());  // Stop the hero moving.
 	if ((screenX >= hero.getX()-50) && (screenX <= hero.getX()+50))
 	{

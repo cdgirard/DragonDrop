@@ -2,10 +2,9 @@ package com.mm.screen.input;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mm.MurderMystery;
+import com.mm.DragonDrop;
 import com.mm.helpers.Assets;
-import com.mm.objects.Hero;
-import com.mm.objects.InventoryItem;
+import com.mm.objects.Dragon;
 import com.mm.screen.GameScreen;
 
 /**
@@ -49,26 +48,13 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
     {
 	if (actor.getName().equals(QUIT_BUTTON))
 	{
-	    MurderMystery.m_dreamScape.setScreen(MurderMystery.MAIN_SCREEN);
+	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
 	}
 	if (actor.getName().equals(DOOR_BUTTON))
 	{
-	    Hero hero = Hero.getInstance();
+	    Dragon hero = Dragon.getInstance();
 	    hero.setNextPosition(500, 70);
 	    m_screen.updateMessageLabel("Ooooo let's go look at the door.");
-	}
-	if (actor.getName().equals(PAINTING_BUTTON))
-	{
-	    Hero hero = Hero.getInstance();
-	    if ((hero.getX() == 275) && (hero.getY() == 70))
-	    {
-		m_screen.takePainting();
-	    }
-	    else
-	    {
-		m_screen.updateMessageLabel("Heading over to the painting.");
-		hero.setNextPosition(275, 70);
-	    }
 	}
 	if (actor.getName().equals(LEFT_TREE_BUTTON))
 	{

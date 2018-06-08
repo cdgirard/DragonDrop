@@ -2,7 +2,7 @@ package com.mm.screen.input;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.mm.MurderMystery;
+import com.mm.DragonDrop;
 
 /**
  * All user input should get routed into this class.  Setup as a Singleton.
@@ -36,11 +36,7 @@ public class MainScreenInputHandler extends ChangeListener //implements InputPro
     {
         if (actor.getName().equals(START_NEW_GAME_BUTTON))
         {
-            MurderMystery.m_dreamScape.setScreen(MurderMystery.GAME_SCREEN);
-        }
-        else if (actor.getName().equals(LOAD_GAME_BUTTON))
-        {
-            MurderMystery.m_dreamScape.setScreen(MurderMystery.STORY_SCREEN);
+            DragonDrop.m_dreamScape.setScreen(DragonDrop.GAME_SCREEN);
         }
         
         System.out.println("Clicked! Is checked: " + actor.getName());

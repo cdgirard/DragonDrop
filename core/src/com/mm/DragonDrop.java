@@ -6,9 +6,8 @@ import com.mm.helpers.Assets;
 import com.mm.screen.GameScreen;
 import com.mm.screen.MainScreen;
 import com.mm.screen.SizableScreen;
-import com.mm.screen.StoryScreen;
 
-public class MurderMystery extends ApplicationAdapter
+public class DragonDrop extends ApplicationAdapter
 {
     /**
      * Should only ever get initialized once, but not sure if a way to 
@@ -16,9 +15,8 @@ public class MurderMystery extends ApplicationAdapter
      */
     public static MainScreen MAIN_SCREEN;
     public static GameScreen GAME_SCREEN;
-    public static StoryScreen STORY_SCREEN;
 
-    public static MurderMystery m_dreamScape;
+    public static DragonDrop m_dreamScape;
 
     private SizableScreen screen;
 
@@ -34,8 +32,7 @@ public class MurderMystery extends ApplicationAdapter
 	Assets.load();
 	MAIN_SCREEN = new MainScreen();
 	GAME_SCREEN = new GameScreen();
-	STORY_SCREEN = new StoryScreen();
-	Gdx.app.log("DreamScape", "created");
+	Gdx.app.log("DragonDrop", "created");
 
 	setScreen(MAIN_SCREEN);
     }

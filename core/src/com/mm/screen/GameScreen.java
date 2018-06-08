@@ -12,29 +12,21 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
 import com.mm.helpers.Assets;
-import com.mm.objects.Hero;
-import com.mm.objects.InventoryItem;
-import com.mm.objects.Plane;
+import com.mm.objects.Dragon;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
 /**
- * TODO: Work more with the Inventory System to do things in the game.
- * TODO: Build additional rooms to work on moving between the rooms.
- * TODO: Work on plot for how the game will play out.
  * @author cdgira
  *
  */
@@ -51,19 +43,10 @@ public class GameScreen extends SizableScreen
     private OrthographicCamera m_cam;
 
     private Texture m_background;
-    private Texture m_painting;
-    private boolean m_paintingPresent = true;
     
-    private Texture m_testObj;
-    private Image m_actor;
-    
-    private Hero m_hero;
-    
-    private Animation m_activeAnimation;
+    private Dragon m_dragon;
     
     private Label label;
-    
-    private Plane m_plane;
     
     private ImageButton m_quitButton, m_doorButton;
     private ImageButton m_paintingButton;
@@ -79,11 +62,8 @@ public class GameScreen extends SizableScreen
         m_cam = new OrthographicCamera();
         
         m_background = Assets.assetManager.get(Assets.GAME_SCREEN,Texture.class);
-        m_painting = Assets.assetManager.get(Assets.PAINTING, Texture.class);
-        m_hero = Hero.getInstance(); 
-        m_hero.setNextRelativeSize(0.5f);
-        m_hero.setPosition(30,70);
-        m_plane = new Plane();
+        m_dragon = Dragon.getInstance(); 
+        m_dragon.setPosition(30,70);
         
         preferredWidth = m_background.getWidth();
         preferredHeight = m_background.getHeight();
@@ -92,15 +72,12 @@ public class GameScreen extends SizableScreen
         
         buttonSkin.addRegions(Assets.buttonsAtlas);
         
-        buildPlaneAnimation();
-        
         GameScreenInputHandler.initializeInstance(this);
         
         m_stage = new Stage();
         
         m_quitButton = constructButton(GameScreenInputHandler.QUIT_BUTTON);
-        Texture slotImage = m_hero.getInventory()[0].getSlotImage();
-        int x = m_hero.getInventory().length*slotImage.getWidth();
+        int x = 100;
         m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
         m_stage.addActor(m_quitButton);
         
@@ -123,7 +100,7 @@ public class GameScreen extends SizableScreen
         label = new Label("Messages appear here.", uiSkin);
         
         label.setAlignment(Align.center);
-        label.setPosition(m_hero.getX(), m_hero.getY()+60);
+        label.setPosition(m_dragon.getX(), m_dragon.getY()+60);
         m_stage.addActor(label);
         
         m_cam = new OrthographicCamera();
@@ -147,25 +124,6 @@ public class GameScreen extends SizableScreen
        // m_stage.addActor(m_actor);
         
         
-    }
-    
-    private void buildPlaneAnimation()
-    {
-        TextureRegion[] planeFrames = new TextureRegion[4];
-        
-        for (int x=1;x<5;x++)
-        {
-            planeFrames[x-1] = Assets.planesAtlas.findRegion("plane"+x);
-            planeFrames[x-1].flip(false, true);
-            
-        }
-      //  planeFrames[0] = AssetLoader.planesAtlas.findRegion("plane"+1);
-      //  planeFrames[0].flip(false, true);
-      //  planeFrames[1] = AssetLoader.planesAtlas.findRegion("plane"+2);
-      //  planeFrames[1].flip(false, true);
-        m_activeAnimation = new Animation(2.0f, planeFrames);
-        m_activeAnimation.setPlayMode(Animation.PlayMode.LOOP);
-        System.out.println("Animation: "+m_activeAnimation.getKeyFrames().length);
     }
     
     private ImageButton constructBlankButton(String name, int width, int height)
@@ -216,25 +174,19 @@ public class GameScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.begin();
         batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
-        if (m_paintingPresent)
-            batcher.draw(m_painting, 255, 120, m_painting.getWidth(), m_painting.getHeight(),0, 0, m_painting.getWidth(), m_painting.getHeight(),false,true);
-        m_hero.render(batcher,delta);
-        m_plane.render(batcher,delta);
-        // TextureRegion plane = m_activeAnimation.getKeyFrame(m_runTime);
-        // batcher.draw(plane.getTexture(), 0, 0, plane.getRegionWidth(), plane.getRegionHeight(),plane.getRegionX(), plane.getRegionY()-plane.getRegionHeight(), plane.getRegionWidth(), plane.getRegionHeight(),false,true);
-        //System.out.println("Plane: "+plane.getRegionX()+" : "+plane.getRegionY()+" , "+plane.getRegionHeight()+" : "+plane.getRegionWidth());
- 
-        int x = 0;
+        m_dragon.render(batcher,delta);
         
-        for (InventoryItem item : m_hero.getInventory())
+        // Create 3 slots for dragons to be dragged and dropped
+        Texture slotImage = Assets.assetManager.get(Assets.DRAGON_SLOT,Texture.class);
+        for (int x=0;x<3;x++)
         {
-            Texture slotImage = item.getSlotImage();
             int y = 0;//m_background.getHeight() - slotImage.getHeight();
-            Texture itemImage = item.getItemImage();
-            if (itemImage != null)
-            {
-                batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
-            }
+            // TODO: This will be the dragon to be displayed that can be dragged and dropped.
+           // Texture itemImage = item.getItemImage();
+           // if (itemImage != null)
+           // {
+           //     batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
+          //  }
             
             batcher.draw(slotImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, slotImage.getWidth(), slotImage.getHeight(),false,true);
             x = x + slotImage.getWidth();
@@ -246,7 +198,7 @@ public class GameScreen extends SizableScreen
         rayHandler.update();
         rayHandler.render();
         
-        label.setPosition(m_hero.getX(), m_hero.getY()+60);
+        label.setPosition(m_dragon.getX(), m_dragon.getY()+60);
         
         m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         m_stage.draw();
@@ -312,16 +264,5 @@ public class GameScreen extends SizableScreen
     {
         label.setText(text);
         
-    }
-    
-    /**
-     * If the painting is still there the Hero will take it.
-     */
-    public void takePainting()
-    {
-	updateMessageLabel("Let me just take this.");
-	//m_hero.addItem(InventoryItem.RING,Assets.ringItemTexture);
-	m_hero.addItem(InventoryItem.PAINTING,Assets.assetManager.get(Assets.PAINTING,Texture.class));
-	m_paintingPresent = false;
     }
 }
