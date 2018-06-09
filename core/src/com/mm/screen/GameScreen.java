@@ -156,7 +156,7 @@ public class GameScreen extends SizableScreen
         int x = 0;
         for (DragonSlot slot : slots)
         {
-            int y = 0;//m_background.getHeight() - slotImage.getHeight();
+            int y = (int)m_quitButton.getHeight();
             Texture slotImage = slot.getSlotImage();
             Texture itemImage = slot.getDragonImage();
             if (itemImage != null)
