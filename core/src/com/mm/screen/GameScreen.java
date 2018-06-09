@@ -10,7 +10,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
 import com.mm.helpers.Assets;
+import com.mm.helpers.UIHelper;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonSlot;
 import com.mm.screen.input.GameScreenInputAdapter;
@@ -37,7 +37,6 @@ public class GameScreen extends SizableScreen
     Light light;
     World world;
     
-    private Skin buttonSkin = new Skin();
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
     
@@ -66,13 +65,13 @@ public class GameScreen extends SizableScreen
 
         Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
         
-        buttonSkin.addRegions(Assets.buttonsAtlas);
+        UIHelper.addRegions(Assets.buttonsAtlas);
         
         GameScreenInputHandler.initializeInstance(this);
         
         m_stage = new Stage();
         
-        m_quitButton = constructButton(GameScreenInputHandler.QUIT_BUTTON);
+        m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON);
         int x = 100;
         m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
         m_stage.addActor(m_quitButton);
@@ -104,28 +103,7 @@ public class GameScreen extends SizableScreen
             slots[index] = new DragonSlot();
         }
         slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class));
-    }
-    
-    /**
-     * TODO: Refactor as near duplicate with MainScreen.
-     * @param name
-     * @return
-     */
-    private ImageButton constructButton(String name)
-    {
-        ImageButtonStyle imgButtonStyle = new ImageButtonStyle();
-        imgButtonStyle.up = buttonSkin.newDrawable(name);
-        imgButtonStyle.down = buttonSkin.newDrawable(name);
-        imgButtonStyle.checked = buttonSkin.newDrawable(name);
-        imgButtonStyle.over = buttonSkin.newDrawable(name);
-        ImageButton button = new ImageButton(imgButtonStyle);
-        // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
-        // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
-        // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
-        // revert the checked state.
-        button.addListener(GameScreenInputHandler.getInstance());
-        button.setName(name);
-        return button;
+        m_stage.addActor(slots[0].getSlotButton());
     }
 
     /**
