@@ -45,8 +45,6 @@ public class GameScreen extends SizableScreen
 
     private Texture m_background;
     
-    private Dragon m_dragon;
-    
     private Label label;
     
     private ImageButton m_quitButton;
@@ -62,8 +60,6 @@ public class GameScreen extends SizableScreen
         m_cam = new OrthographicCamera();
         
         m_background = Assets.assetManager.get(Assets.GAME_SCREEN,Texture.class);
-        m_dragon = Dragon.getInstance(); 
-        m_dragon.setPosition(30,70);
         
         preferredWidth = m_background.getWidth();
         preferredHeight = m_background.getHeight();
@@ -84,7 +80,7 @@ public class GameScreen extends SizableScreen
         label = new Label("Messages appear here.", uiSkin);
         
         label.setAlignment(Align.center);
-        label.setPosition(m_dragon.getX(), m_dragon.getY()+60);
+        label.setPosition(200, 300);
         m_stage.addActor(label);
         
         m_cam = new OrthographicCamera();
@@ -149,7 +145,6 @@ public class GameScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.begin();
         batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
-        m_dragon.render(batcher,delta);
         
         // Create 3 slots for dragons to be dragged and dropped
         
@@ -173,8 +168,6 @@ public class GameScreen extends SizableScreen
         rayHandler.setCombinedMatrix(m_cam);
         rayHandler.update();
         rayHandler.render();
-        
-        label.setPosition(m_dragon.getX(), m_dragon.getY()+60);
         
         m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         m_stage.draw();
