@@ -49,10 +49,7 @@ public class GameScreen extends SizableScreen
     
     private Label label;
     
-    private ImageButton m_quitButton, m_doorButton;
-    private ImageButton m_paintingButton;
-    private ImageButton m_leftPurpleTreeButton;
-    private ImageButton m_planeButton;
+    private ImageButton m_quitButton;
     
     private DragonSlot[] slots = new DragonSlot[5];
     
@@ -84,22 +81,6 @@ public class GameScreen extends SizableScreen
         m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
         m_stage.addActor(m_quitButton);
         
-        m_doorButton = constructBlankButton(GameScreenInputHandler.DOOR_BUTTON,105,205);
-        m_doorButton.setPosition(495, 0);
-        m_stage.addActor(m_doorButton);
-         
-        m_paintingButton = constructBlankButton(GameScreenInputHandler.PAINTING_BUTTON,120,125);
-        m_paintingButton.setPosition(255, 140);
-        m_stage.addActor(m_paintingButton);
-        
-        m_leftPurpleTreeButton = constructBlankButton(GameScreenInputHandler.LEFT_TREE_BUTTON,50,100);
-        m_leftPurpleTreeButton.setPosition(50, 180);
-        m_stage.addActor(m_leftPurpleTreeButton);
-        
-        m_planeButton = constructBlankButton(GameScreenInputHandler.PLANE_BUTTON,120,120);
-        m_planeButton.setPosition(330, 330);
-        m_stage.addActor(m_planeButton);
-        
         label = new Label("Messages appear here.", uiSkin);
         
         label.setAlignment(Align.center);
@@ -125,17 +106,7 @@ public class GameScreen extends SizableScreen
         for (int index=0;index<slots.length;index++)
         {
             slots[index] = new DragonSlot();
-        }
-        
-        
-    }
-    
-    private ImageButton constructBlankButton(String name, int width, int height)
-    {
-        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
-        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
-        buttonSkin.add(name,blankTexture);
-        return constructButton(name);
+        }    
     }
     
     /**
