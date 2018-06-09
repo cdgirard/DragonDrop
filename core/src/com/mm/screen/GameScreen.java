@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
 import com.mm.helpers.Assets;
 import com.mm.objects.Dragon;
+import com.mm.objects.DragonSlot;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
@@ -52,6 +53,8 @@ public class GameScreen extends SizableScreen
     private ImageButton m_paintingButton;
     private ImageButton m_leftPurpleTreeButton;
     private ImageButton m_planeButton;
+    
+    private DragonSlot[] slots = new DragonSlot[5];
     
     private GameScreenInputAdapter inputProcessor;
     
@@ -119,9 +122,10 @@ public class GameScreen extends SizableScreen
         
         light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f,90f,20f);
         
-        //m_testObj = Assets.assetManager.get(Assets.PAINTING, Texture.class);
-        //m_actor = new Image(m_testObj);
-       // m_stage.addActor(m_actor);
+        for (int index=0;index<slots.length;index++)
+        {
+            slots[index] = new DragonSlot();
+        }
         
         
     }
@@ -177,16 +181,17 @@ public class GameScreen extends SizableScreen
         m_dragon.render(batcher,delta);
         
         // Create 3 slots for dragons to be dragged and dropped
-        Texture slotImage = Assets.assetManager.get(Assets.DRAGON_SLOT,Texture.class);
-        for (int x=0;x<3;x++)
+        
+        int x = 0;
+        for (DragonSlot slot : slots)
         {
             int y = 0;//m_background.getHeight() - slotImage.getHeight();
-            // TODO: This will be the dragon to be displayed that can be dragged and dropped.
-           // Texture itemImage = item.getItemImage();
-           // if (itemImage != null)
-           // {
-           //     batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
-          //  }
+            Texture slotImage = slot.getSlotImage();
+            Texture itemImage = slot.getDragonImage();
+            if (itemImage != null)
+            {
+                batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
+            }
             
             batcher.draw(slotImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, slotImage.getWidth(), slotImage.getHeight(),false,true);
             x = x + slotImage.getWidth();
