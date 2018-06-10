@@ -1,10 +1,9 @@
 package com.mm.screen.input;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.utils.Disposable;
 import com.mm.objects.Dragon;
+import com.mm.objects.DragonSlot;
 import com.mm.screen.GameScreen;
 
 public class GameScreenInputAdapter extends InputAdapter implements Disposable
@@ -14,10 +13,6 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     public GameScreenInputAdapter(GameScreen gs)
     {
 	m_screen = gs;
-	//InputMultiplexer im = (InputMultiplexer)Gdx.input.getInputProcessor();
-	//im.addProcessor(this);
-	//Gdx.input.setInputProcessor(this);
-
     }
     
     /**
@@ -26,16 +21,10 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer)
     {
-
-	Dragon hero = Dragon.getInstance();
-        System.out.println("Screen: "+screenX+" : "+screenY);
-        System.out.println("Hero: "+hero.getX()+" : "+hero.getY());
-	if ((screenX >= hero.getX()-50) && (screenX <= hero.getX()+50))
+	if (Dragon.getInstance().getActive())
 	{
-	    if ((screenY >= hero.getY()-50) && (screenY <= hero.getY()+50))
-	    {
-		hero.setPosition(screenX, screenY);
-	    }
+	    m_screen.updateMessageLabel("Dragging");
+	    Dragon.getInstance().setPosition(screenX-50, screenY-50);
 	}
 	return true;
     }
@@ -46,15 +35,12 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     @Override
     public boolean touchDown (int screenX, int screenY, int pointer, int button)
     {
-	//m_screen.updateMessageLabel("Why would I move there?");
-	Dragon hero = Dragon.getInstance();
-	//hero.setPosition(hero.getX(), hero.getY());  // Stop the hero moving.
-	if ((screenX >= hero.getX()-50) && (screenX <= hero.getX()+50))
+	DragonSlot slot = m_screen.getSlot(screenX, screenY);
+	if (slot != null)
 	{
-	    if ((screenY >= hero.getY()-50) && (screenY <= hero.getY()+50))
-	    {
-		hero.setPosition(screenX, screenY);
-	    }
+	    m_screen.updateMessageLabel("Grabbed Dragon");
+	    Dragon.getInstance().setActive(true);
+	    Dragon.getInstance().setPosition(screenX-50, screenY-50);
 	}
 	return false;
     }
@@ -65,7 +51,11 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     @Override
     public boolean touchUp (int screenX, int screenY, int pointer, int button)
     {
-	m_screen.updateMessageLabel("Why would I move there?");
+	if (Dragon.getInstance().getActive())
+	{
+	    m_screen.updateMessageLabel("Dragon Dropped");
+	    Dragon.getInstance().setActive(false);
+	}
 	return false;
     }
 

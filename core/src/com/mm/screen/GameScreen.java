@@ -10,7 +10,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
 import com.mm.helpers.Assets;
+import com.mm.helpers.UIHelper;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonSlot;
 import com.mm.screen.input.GameScreenInputAdapter;
@@ -37,7 +37,6 @@ public class GameScreen extends SizableScreen
     Light light;
     World world;
     
-    private Skin buttonSkin = new Skin();
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
     
@@ -66,13 +65,13 @@ public class GameScreen extends SizableScreen
 
         Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
         
-        buttonSkin.addRegions(Assets.buttonsAtlas);
+        UIHelper.addRegions(Assets.buttonsAtlas);
         
         GameScreenInputHandler.initializeInstance(this);
         
         m_stage = new Stage();
         
-        m_quitButton = constructButton(GameScreenInputHandler.QUIT_BUTTON);
+        m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON);
         int x = 100;
         m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
         m_stage.addActor(m_quitButton);
@@ -101,30 +100,25 @@ public class GameScreen extends SizableScreen
         
         for (int index=0;index<slots.length;index++)
         {
-            slots[index] = new DragonSlot();
-        }    
+            slots[index] = new DragonSlot(new Vector2(0,m_quitButton.getHeight()));
+        }
+        slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class));
     }
     
-    /**
-     * TODO: Refactor as near duplicate with MainScreen.
-     * @param name
-     * @return
-     */
-    private ImageButton constructButton(String name)
+    public DragonSlot getSlot(int x, int y)
     {
-        ImageButtonStyle imgButtonStyle = new ImageButtonStyle();
-        imgButtonStyle.up = buttonSkin.newDrawable(name);
-        imgButtonStyle.down = buttonSkin.newDrawable(name);
-        imgButtonStyle.checked = buttonSkin.newDrawable(name);
-        imgButtonStyle.over = buttonSkin.newDrawable(name);
-        ImageButton button = new ImageButton(imgButtonStyle);
-        // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
-        // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
-        // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
-        // revert the checked state.
-        button.addListener(GameScreenInputHandler.getInstance());
-        button.setName(name);
-        return button;
+	for (DragonSlot s : slots)
+	{
+	    if (s.getSlotButton() != null)
+	    {
+		updateMessageLabel("X: "+x+" Y: "+y);
+		s.getSlotButton().contains(x, y);
+	    }
+	    
+	    if (s.getSlotButton() != null && s.getSlotButton().contains(x, y))
+		return s;
+	}
+	return null;
     }
 
     /**
@@ -145,7 +139,8 @@ public class GameScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.begin();
         batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
-        
+        if (Dragon.getInstance().getActive())
+            Dragon.getInstance().render(batcher,delta);
         // Create 3 slots for dragons to be dragged and dropped
         
         int x = 0;
