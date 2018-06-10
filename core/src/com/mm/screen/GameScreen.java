@@ -100,11 +100,25 @@ public class GameScreen extends SizableScreen
         
         for (int index=0;index<slots.length;index++)
         {
-            slots[index] = new DragonSlot();
+            slots[index] = new DragonSlot(new Vector2(0,m_quitButton.getHeight()));
         }
         slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class));
-        slots[0].getSlotButton().setPosition(0, m_background.getHeight() - slots[0].getSlotImage().getHeight());
-        m_stage.addActor(slots[0].getSlotButton());
+    }
+    
+    public DragonSlot getSlot(int x, int y)
+    {
+	for (DragonSlot s : slots)
+	{
+	    if (s.getSlotButton() != null)
+	    {
+		updateMessageLabel("X: "+x+" Y: "+y);
+		s.getSlotButton().contains(x, y);
+	    }
+	    
+	    if (s.getSlotButton() != null && s.getSlotButton().contains(x, y))
+		return s;
+	}
+	return null;
     }
 
     /**
@@ -125,7 +139,8 @@ public class GameScreen extends SizableScreen
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.begin();
         batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
-        
+        if (Dragon.getInstance().getActive())
+            Dragon.getInstance().render(batcher,delta);
         // Create 3 slots for dragons to be dragged and dropped
         
         int x = 0;

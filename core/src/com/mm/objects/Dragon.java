@@ -7,6 +7,7 @@ import com.mm.helpers.Assets;
 public class Dragon
 {
     private static Dragon m_dragon;
+    private boolean m_active = false;
     
     private float xLoc, yLoc;
     private Texture m_image;
@@ -63,6 +64,16 @@ public class Dragon
         float modYLoc = yLoc +m_image.getHeight()-m_image.getHeight();
         batcher.draw(m_image, xLoc, modYLoc, m_image.getWidth(), m_image.getHeight(), 0, 0, m_image.getWidth(), m_image.getHeight(), false, true);
 
+    }
+    
+    public boolean getActive()
+    {
+	return m_active;
+    }
+    
+    public void setActive(boolean value)
+    {
+	m_active = value;
     }
     
     /**

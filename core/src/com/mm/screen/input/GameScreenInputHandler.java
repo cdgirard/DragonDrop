@@ -22,11 +22,6 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 
     public static String CANCEL_BUTTON = "newGameBtn";
     public static String QUIT_BUTTON = "quitBtn";
-    public static String BLANK_BUTTON = "blankButton";
-    public static String DOOR_BUTTON = "Door";
-    public static String PAINTING_BUTTON = "greenBall";
-    public static String LEFT_TREE_BUTTON = "leftTree";
-    public static String PLANE_BUTTON = "planeButton";
 
     private GameScreenInputHandler(GameScreen screen)
     {
@@ -50,20 +45,9 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	{
 	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
 	}
-	if (actor.getName().equals(DOOR_BUTTON))
+	if (actor.getName().contains("SLOT-"))
 	{
-	    Dragon hero = Dragon.getInstance();
-	    hero.setNextPosition(500, 70);
-	    m_screen.updateMessageLabel("Ooooo let's go look at the door.");
-	}
-	if (actor.getName().equals(LEFT_TREE_BUTTON))
-	{
-	    m_screen.updateMessageLabel("Cannot reach there - Maybe if I could fly.");
-
-	}
-	if (actor.getName().equals(PLANE_BUTTON))
-	{
-	    m_screen.updateMessageLabel("Pushed Plane Button.");
+	    m_screen.updateMessageLabel("Grabbed a Dragon.");
 	}
 
 	//System.out.println("Clicked! Is checked: " + actor.getName());
