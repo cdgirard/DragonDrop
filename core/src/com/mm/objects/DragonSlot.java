@@ -39,7 +39,7 @@ public class DragonSlot
         if (m_dragonImage != null)
         {
             m_planeButton = UIHelper.constructBlankButton(GameScreenInputHandler.PLANE_BUTTON,120,120);
-            m_planeButton.setPosition(330, 330);
+            
             // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
             // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
             // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't

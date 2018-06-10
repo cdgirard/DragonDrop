@@ -103,6 +103,7 @@ public class GameScreen extends SizableScreen
             slots[index] = new DragonSlot();
         }
         slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class));
+        slots[0].getSlotButton().setPosition(0, m_background.getHeight() - slots[0].getSlotImage().getHeight());
         m_stage.addActor(slots[0].getSlotButton());
     }
 

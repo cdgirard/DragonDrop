@@ -13,8 +13,8 @@ public class UIHelper
     
     public static ImageButton constructBlankButton(String name, int width, int height)
     {
-        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
-        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
+        //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
+        Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
         buttonSkin.add(name,blankTexture);
         return constructButton(name);
     }

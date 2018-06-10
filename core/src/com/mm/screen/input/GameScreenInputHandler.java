@@ -63,7 +63,7 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	if (actor.getName().equals(PLANE_BUTTON))
 	{
-
+	    m_screen.updateMessageLabel("Pushed Plane Button.");
 	}
 
 	//System.out.println("Clicked! Is checked: " + actor.getName());
