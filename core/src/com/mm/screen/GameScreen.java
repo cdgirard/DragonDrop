@@ -49,6 +49,9 @@ public class GameScreen extends SizableScreen
 
     private float VIEWPORT_WIDTH = 5.0f;
     private float VIEWPORT_HEIGHT = 9.0f;
+    
+    public float xScale = 0;
+    public float yScale = 0;
 
     public Array<AbstractGameObject> m_droppedDragons;
 
@@ -83,12 +86,16 @@ public class GameScreen extends SizableScreen
 
 	preferredWidth = m_background.getWidth();
 	preferredHeight = m_background.getHeight();
+	
+	xScale = preferredWidth/VIEWPORT_WIDTH;
+	yScale = preferredHeight/VIEWPORT_HEIGHT;
 
 	Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
 
 	// Setup the Cameras
-	m_gameCam = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-	m_gameCam.translate(VIEWPORT_WIDTH/2, VIEWPORT_HEIGHT/2, 0);
+	m_gameCam = new OrthographicCamera();
+	m_gameCam.setToOrtho(true,VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
 	m_uiCam = new OrthographicCamera(preferredWidth, preferredHeight);
 	m_uiCam.setToOrtho(true);
 	m_uiCam.update();
@@ -198,6 +205,7 @@ public class GameScreen extends SizableScreen
 	{
 	    obj.update(delta);
 	}
+	Dragon.getInstance().update(delta);
 
 	m_runTime += delta;
 	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
@@ -210,8 +218,7 @@ public class GameScreen extends SizableScreen
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	batcher.draw(m_background, 0, 0, 5.0f, 9.0f, 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
-	if (Dragon.getInstance().getActive())
-	    Dragon.getInstance().render(batcher, delta);
+	Dragon.getInstance().render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
 	for (AbstractGameObject obj : m_droppedDragons)
@@ -224,10 +231,6 @@ public class GameScreen extends SizableScreen
 
 	renderGui();
 	
-
-
-	
-
 	rayHandler.setCombinedMatrix(m_gameCam);
 	rayHandler.update();
 	rayHandler.render();
@@ -252,16 +255,6 @@ public class GameScreen extends SizableScreen
 	for (DragonSlot slot : slots)
 	{
 	    slot.render(batcher);
-	    //float scaling = preferredHeight/VIEWPORT_HEIGHT;
-	    //float quitButtonHeight = m_quitButton.getHeight()/scaling;
-	    //float y = VIEWPORT_HEIGHT - quitButtonHeight - 1.0f;
-//	    float y = m_quitButton.getHeight();
-//	    Texture slotImage = slot.getSlotImage();
-//	    Texture itemImage = slot.getDragonImage();
-//
-//
-//	    batcher.draw(slotImage, slot.m_position.x, slot.m_position.y, slotImage.getWidth(), slotImage.getHeight(), 0, 0, slotImage.getWidth(), slotImage.getHeight(), false, true);
-//	    x = x + slotImage.getWidth();
 	}
 	
 	batcher.end();
@@ -272,6 +265,9 @@ public class GameScreen extends SizableScreen
     {
 	Gdx.graphics.setWindowedMode(width, height);
 
+	xScale = preferredWidth/VIEWPORT_WIDTH;
+	yScale = preferredHeight/VIEWPORT_HEIGHT;
+	
 	m_uiCam.setToOrtho(true, width, height);
 	m_stage.getViewport().update(width, height, true);
 	Gdx.app.log("GameScreen", "resizing");

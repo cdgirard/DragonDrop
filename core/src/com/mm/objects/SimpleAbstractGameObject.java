@@ -20,6 +20,11 @@ public abstract class SimpleAbstractGameObject
 	rotation = 0;
     }
     
+    public void update(float delta)
+    {
+	
+    }
+    
     public abstract void render(SpriteBatch batcher);
 
 }
