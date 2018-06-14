@@ -60,7 +60,9 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    m_screen.updateMessageLabel("Dragon Dropped");
 	    Dragon.getInstance().setActive(false);
-	    m_screen.dropDragon(new Vector2(screenX,screenY));
+	    float xLoc = screenX/m_screen.xScale;
+	    float yLoc = screenY/m_screen.yScale;
+	    m_screen.dropDragon(new Vector2(xLoc,yLoc));
 	}
 	return false;
     }

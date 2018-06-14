@@ -15,11 +15,7 @@ public class DroppingDragon extends AbstractGameObject
 
     private void init()
     {
-	
-
 	image = Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class);
-	
-	dimension.set(image.getWidth(), image.getHeight());
 
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
@@ -29,7 +25,7 @@ public class DroppingDragon extends AbstractGameObject
     @Override
     public void render(SpriteBatch batch)
     {
-	batch.draw(image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, image.getWidth(), image.getHeight(), scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, false);
+	batch.draw(image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, true);
     }
 
 }
