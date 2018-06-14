@@ -1,6 +1,7 @@
 package com.mm.screen.input;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonSlot;
@@ -55,6 +56,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    m_screen.updateMessageLabel("Dragon Dropped");
 	    Dragon.getInstance().setActive(false);
+	    m_screen.dropDragon(new Vector2(screenX,screenY));
 	}
 	return false;
     }
