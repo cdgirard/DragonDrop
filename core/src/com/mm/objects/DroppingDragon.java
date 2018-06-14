@@ -29,7 +29,7 @@ public class DroppingDragon extends AbstractGameObject
     @Override
     public void render(SpriteBatch batch)
     {
-	batch.draw(image, position.x - origin.x, position.y - origin.y, origin.x, origin.y, image.getWidth(), image.getHeight(), scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, false);
+	batch.draw(image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, image.getWidth(), image.getHeight(), scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, false);
     }
 
 }

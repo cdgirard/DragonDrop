@@ -2,20 +2,13 @@ package com.mm.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public abstract class AbstractGameObject
+public abstract class AbstractGameObject extends SimpleAbstractGameObject
 {
-    public Vector2 position;
-    public Vector2 dimension;
-    public Vector2 origin;
-    public Vector2 scale;
-    public float rotation;
-
     // Non-Box2D Physics
     public Vector2 velocity;
     public Vector2 terminalVelocity;
@@ -33,12 +26,6 @@ public abstract class AbstractGameObject
 
     public AbstractGameObject()
     {
-	position = new Vector2();
-	dimension = new Vector2(1, 1);
-	origin = new Vector2();
-	scale = new Vector2(1, 1);
-	rotation = 0;
-
 	velocity = new Vector2();
 	terminalVelocity = new Vector2(1, 1);
 	friction = new Vector2();
@@ -91,12 +78,12 @@ public abstract class AbstractGameObject
 	    updateMotionX(deltaTime);
 	    updateMotionY(deltaTime);
 
-	    position.x += velocity.x * deltaTime;
-	    position.y += velocity.y * deltaTime;
+	    m_position.x += velocity.x * deltaTime;
+	    m_position.y += velocity.y * deltaTime;
 	}
 	else
 	{
-	    position.set(body.getPosition());
+	    m_position.set(body.getPosition());
 	    rotation = body.getAngle() * MathUtils.radiansToDegrees;
 	}
     }
@@ -106,7 +93,4 @@ public abstract class AbstractGameObject
 	animation = anim;
 	stateTime = 0;
     }
-
-    public abstract void render(SpriteBatch batch);
-
 }

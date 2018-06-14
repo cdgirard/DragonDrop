@@ -46,113 +46,123 @@ public class GameScreen extends SizableScreen
     RayHandler rayHandler;
     Light light;
     World world;
-    
+
+    private float VIEWPORT_WIDTH = 5.0f;
+    private float VIEWPORT_HEIGHT = 9.0f;
+
     public Array<AbstractGameObject> m_droppedDragons;
-    
+
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
-    
-    private OrthographicCamera m_cam;
+
+    private OrthographicCamera m_gameCam;
+    private OrthographicCamera m_uiCam;
 
     private Texture m_background;
-    
-    private Label label;
-    
-    private ImageButton m_quitButton;
-    
-    private DragonSlot[] slots = new DragonSlot[5];
-    
-    private GameScreenInputAdapter inputProcessor;
-    
-    private float m_runTime = 0f;
-    
- // For Box2D Debugging
- 	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
- 	private Box2DDebugRenderer b2DebugRenderer;
 
-    
+    private Label label;
+
+    private ImageButton m_quitButton;
+
+    private DragonSlot[] slots = new DragonSlot[5];
+
+    SpriteBatch batcher;
+
+    private GameScreenInputAdapter inputProcessor;
+
+    private float m_runTime = 0f;
+
+    // For Box2D Debugging
+    private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+    private Box2DDebugRenderer b2DebugRenderer;
+
     public GameScreen()
     {
-        m_cam = new OrthographicCamera();
-        
-        m_background = Assets.assetManager.get(Assets.GAME_SCREEN,Texture.class);
-        
-        m_droppedDragons = new Array<AbstractGameObject>();
-        
-        preferredWidth = m_background.getWidth();
-        preferredHeight = m_background.getHeight();
+	// Get Initial Window Setup  
+	m_background = Assets.assetManager.get(Assets.GAME_SCREEN, Texture.class);
 
-        Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
-        
-        UIHelper.addRegions(Assets.buttonsAtlas);
-        
-        GameScreenInputHandler.initializeInstance(this);
-        
-        m_stage = new Stage();
-        
-        m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON);
-        int x = 100;
-        m_quitButton.setPosition(x, preferredHeight-m_quitButton.getHeight());
-        m_stage.addActor(m_quitButton);
-        
-        label = new Label("Messages appear here.", uiSkin);
-        
-        label.setAlignment(Align.center);
-        label.setPosition(200, 300);
-        m_stage.addActor(label);
-        
-        m_cam = new OrthographicCamera();
-        m_cam.setToOrtho(true, preferredWidth, preferredHeight);
-        // Move Camera to 0,0
-        //cam.translate(-cam.position.x, -cam.position.y, 0);
-        
- 
+	preferredWidth = m_background.getWidth();
+	preferredHeight = m_background.getHeight();
+
+	Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
+
+	// Setup the Cameras
+	m_gameCam = new OrthographicCamera(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+	m_gameCam.translate(VIEWPORT_WIDTH/2, VIEWPORT_HEIGHT/2, 0);
+	m_uiCam = new OrthographicCamera(preferredWidth, preferredHeight);
+	m_uiCam.setToOrtho(true);
+	m_uiCam.update();
+	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
+	// Move Camera to 0,0
+	//cam.translate(-cam.position.x, -cam.position.y, 0);
+
+	m_droppedDragons = new Array<AbstractGameObject>();
+
+	UIHelper.addRegions(Assets.buttonsAtlas);
+
+	GameScreenInputHandler.initializeInstance(this);
+
+	initUI();
+
 	if (world != null)
 	    world.dispose();
-	world = new World(new Vector2(0, 9.81f), true);
+	world = new World(new Vector2(0, -9.81f), true);
 	world.setContactListener(new CollisionHandler(this));
 
-        
-        //world = new World(new Vector2(0,0),true);
-        
-        RayHandler.setGammaCorrection(true);
-        RayHandler.useDiffuseLight(true);
-        
-        rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
-        rayHandler.setBlurNum(3);
-        
-        light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f,90f,20f);
-        
-        for (int index=0;index<slots.length;index++)
-        {
-            slots[index] = new DragonSlot(new Vector2(0,m_quitButton.getHeight()));
-        }
-        slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class));
-        
-        b2DebugRenderer = new Box2DDebugRenderer();
+	RayHandler.setGammaCorrection(true);
+	RayHandler.useDiffuseLight(true);
+
+	rayHandler = new RayHandler(world);
+	rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
+	rayHandler.setBlurNum(3);
+
+	light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f, 90f, 20f);
+
+	for (int index = 0; index < slots.length; index++)
+	{
+	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
+	}
+	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+
+	b2DebugRenderer = new Box2DDebugRenderer();
     }
-    
+
+    private void initUI()
+    {
+	m_stage = new Stage();
+
+	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON);
+	int x = 100;
+	m_quitButton.setPosition(x, preferredHeight - m_quitButton.getHeight());
+	m_stage.addActor(m_quitButton);
+
+	label = new Label("Messages appear here.", uiSkin);
+
+	label.setAlignment(Align.center);
+	label.setPosition(200, 300);
+	m_stage.addActor(label);
+    }
+
     public DragonSlot getSlot(int x, int y)
     {
 	for (DragonSlot s : slots)
 	{
 	    if (s.getSlotButton() != null)
 	    {
-		updateMessageLabel("X: "+x+" Y: "+y);
+		updateMessageLabel("X: " + x + " Y: " + y);
 		s.getSlotButton().contains(x, y);
 	    }
-	    
+
 	    if (s.getSlotButton() != null && s.getSlotButton().contains(x, y))
 		return s;
 	}
 	return null;
     }
-    
+
     public void dropDragon(Vector2 pos)
     {
 	DroppingDragon droppedDragon = new DroppingDragon();
-	
+
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(pos);
 	bodyDef.angle = 0; // rotation;
@@ -160,12 +170,12 @@ public class GameScreen extends SizableScreen
 	body.setType(BodyType.DynamicBody);
 	body.setUserData(droppedDragon);
 	droppedDragon.body = body;
-	
+
 	PolygonShape polygonShape = new PolygonShape();
 	float halfWidth = droppedDragon.bounds.width / 2.0f;
 	float halfHeight = droppedDragon.bounds.height / 2.0f;
 	polygonShape.setAsBox(halfWidth, halfHeight);
-	
+
 	FixtureDef fixtureDef = new FixtureDef();
 	fixtureDef.shape = polygonShape;
 	fixtureDef.density = 50;
@@ -184,114 +194,126 @@ public class GameScreen extends SizableScreen
     public void render(float delta)
     {
 	world.step(delta, 8, 3);
-        for (AbstractGameObject obj: m_droppedDragons)
-        {
-            obj.update(delta);
-        }
-	
-        m_runTime += delta;
-        Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        m_cam.update();
-        
-        SpriteBatch batcher;
-        batcher = new SpriteBatch();
-        // Attach batcher to camera
-        batcher.setProjectionMatrix(m_cam.combined);
-        batcher.begin();
-        batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(),0, 0, m_background.getWidth(), m_background.getHeight(),false,true);
-        if (Dragon.getInstance().getActive())
-            Dragon.getInstance().render(batcher,delta);
-        // Create 3 slots for dragons to be dragged and dropped
-        
-        for (AbstractGameObject obj: m_droppedDragons)
-        {
-            obj.render(batcher);
-            updateMessageLabel("Dragon Dropping:" + obj.position.x+" : "+obj.position.y);
-        }
-        
-        int x = 0;
-        for (DragonSlot slot : slots)
-        {
-            int y = (int)m_quitButton.getHeight();
-            Texture slotImage = slot.getSlotImage();
-            Texture itemImage = slot.getDragonImage();
-            if (itemImage != null)
-            {
-                batcher.draw(itemImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, itemImage.getWidth(), itemImage.getHeight(),false,true);
-            }
-            
-            batcher.draw(slotImage, x, y, slotImage.getWidth(), slotImage.getHeight(),0, 0, slotImage.getWidth(), slotImage.getHeight(),false,true);
-            x = x + slotImage.getWidth();
-        }
-        
-        batcher.end();
-        
-        rayHandler.setCombinedMatrix(m_cam);
-        rayHandler.update();
-        rayHandler.render();
-        
-        m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        m_stage.draw();
-     //   Gdx.app.log("MainScreen", "Stage: "+m_stage.getViewport().getScreenHeight()+" , "+m_stage.getViewport().getScreenWidth());
-
-        
-	if (DEBUG_DRAW_BOX2D_WORLD)
+	for (AbstractGameObject obj : m_droppedDragons)
 	{
-		b2DebugRenderer.render(world, m_cam.combined);
+	    obj.update(delta);
 	}
 
+	m_runTime += delta;
+	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
+	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	m_gameCam.update();
+
+	batcher = new SpriteBatch();
+	// Attach batcher to camera
+	batcher.setProjectionMatrix(m_gameCam.combined);
+	batcher.begin();
+	batcher.draw(m_background, 0, 0, 5.0f, 9.0f, 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
+	if (Dragon.getInstance().getActive())
+	    Dragon.getInstance().render(batcher, delta);
+	// Create 3 slots for dragons to be dragged and dropped
+
+	for (AbstractGameObject obj : m_droppedDragons)
+	{
+	    obj.render(batcher);
+	    updateMessageLabel("Dragon Dropping:" + obj.m_position.x + " : " + obj.m_position.y);
+	}
+	
+	batcher.end();
+
+	renderGui();
+	
+
+
+	
+
+	rayHandler.setCombinedMatrix(m_gameCam);
+	rayHandler.update();
+	rayHandler.render();
+
+	m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+	m_stage.draw();
+	//   Gdx.app.log("MainScreen", "Stage: "+m_stage.getViewport().getScreenHeight()+" , "+m_stage.getViewport().getScreenWidth());
+
+	if (DEBUG_DRAW_BOX2D_WORLD)
+	{
+	    b2DebugRenderer.render(world, m_gameCam.combined);
+	}
+
+    }
+
+    private void renderGui()
+    {
+	batcher.setProjectionMatrix(m_uiCam.combined);
+	batcher.begin();
+
+	int x = 0;
+	for (DragonSlot slot : slots)
+	{
+	    slot.render(batcher);
+	    //float scaling = preferredHeight/VIEWPORT_HEIGHT;
+	    //float quitButtonHeight = m_quitButton.getHeight()/scaling;
+	    //float y = VIEWPORT_HEIGHT - quitButtonHeight - 1.0f;
+//	    float y = m_quitButton.getHeight();
+//	    Texture slotImage = slot.getSlotImage();
+//	    Texture itemImage = slot.getDragonImage();
+//
+//
+//	    batcher.draw(slotImage, slot.m_position.x, slot.m_position.y, slotImage.getWidth(), slotImage.getHeight(), 0, 0, slotImage.getWidth(), slotImage.getHeight(), false, true);
+//	    x = x + slotImage.getWidth();
+	}
+	
+	batcher.end();
     }
 
     @Override
     public void resize(int width, int height)
     {
-        Gdx.graphics.setWindowedMode(width, height);
-        
-        
-        m_cam.setToOrtho(true, width, height);
-        m_stage.getViewport().update(width, height,true);
-        Gdx.app.log("GameScreen", "resizing");
+	Gdx.graphics.setWindowedMode(width, height);
+
+	m_uiCam.setToOrtho(true, width, height);
+	m_stage.getViewport().update(width, height, true);
+	Gdx.app.log("GameScreen", "resizing");
     }
 
     @Override
     public void show()
     {
-     // InputProcessor inputProcessorOne = MainScreenInputHandler.getInstance();
-        InputProcessor inputProcessorTwo = m_stage;
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-      //  inputMultiplexer.addProcessor(inputProcessorOne);
-        inputMultiplexer.addProcessor(inputProcessorTwo);
-        inputProcessor = new GameScreenInputAdapter(this);
-        inputMultiplexer.addProcessor(inputProcessor);
-        Gdx.input.setInputProcessor(inputMultiplexer);
-        Gdx.app.log("GameScreen", "show called");
+	// InputProcessor inputProcessorOne = MainScreenInputHandler.getInstance();
+	InputProcessor inputProcessorTwo = m_stage;
+	InputMultiplexer inputMultiplexer = new InputMultiplexer();
+	//  inputMultiplexer.addProcessor(inputProcessorOne);
+	inputMultiplexer.addProcessor(inputProcessorTwo);
+	inputProcessor = new GameScreenInputAdapter(this);
+	inputMultiplexer.addProcessor(inputProcessor);
+	Gdx.input.setInputProcessor(inputMultiplexer);
+	Gdx.app.log("GameScreen", "show called");
     }
 
     @Override
     public void hide()
     {
-        Gdx.input.setInputProcessor(null);
-        Gdx.app.log("GameScreen", "hide called");
+	Gdx.input.setInputProcessor(null);
+	Gdx.app.log("GameScreen", "hide called");
     }
 
     @Override
     public void pause()
     {
-        Gdx.app.log("GameScreen", "pause called");
+	Gdx.app.log("GameScreen", "pause called");
     }
 
     @Override
     public void resume()
     {
-        Gdx.app.log("GameScreen", "resume called");
+	Gdx.app.log("GameScreen", "resume called");
     }
 
     @Override
     public void dispose()
     {
-        // Leave blank
+	// Leave blank
     }
 
     /**
@@ -300,7 +322,7 @@ public class GameScreen extends SizableScreen
      */
     public void updateMessageLabel(String text)
     {
-        label.setText(text);
-        
+	label.setText(text);
+
     }
 }
