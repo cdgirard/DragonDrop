@@ -25,7 +25,9 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	if (Dragon.getInstance().getActive())
 	{
 	    m_screen.updateMessageLabel("Dragging");
-	    Dragon.getInstance().setPosition(screenX-50, screenY-50);
+	    float xLoc = screenX/m_screen.xScale;
+	    float yLoc = screenY/m_screen.yScale;
+	    Dragon.getInstance().m_position.set(xLoc, yLoc);
 	}
 	return true;
     }
@@ -41,7 +43,9 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    m_screen.updateMessageLabel("Grabbed Dragon");
 	    Dragon.getInstance().setActive(true);
-	    Dragon.getInstance().setPosition(screenX-50, screenY-50);
+	    float xLoc = screenX/m_screen.xScale;
+	    float yLoc = screenY/m_screen.yScale;
+	    Dragon.getInstance().m_position.set(xLoc, yLoc);
 	}
 	return false;
     }
@@ -56,7 +60,9 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    m_screen.updateMessageLabel("Dragon Dropped");
 	    Dragon.getInstance().setActive(false);
-	    m_screen.dropDragon(new Vector2(screenX,screenY));
+	    float xLoc = screenX/m_screen.xScale;
+	    float yLoc = screenY/m_screen.yScale;
+	    m_screen.dropDragon(new Vector2(xLoc,yLoc));
 	}
 	return false;
     }

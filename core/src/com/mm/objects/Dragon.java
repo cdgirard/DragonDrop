@@ -4,108 +4,45 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mm.helpers.Assets;
 
-public class Dragon
+public class Dragon extends SimpleAbstractGameObject
 {
     private static Dragon m_dragon;
     private boolean m_active = false;
-    
-    private float xLoc, yLoc;
+
     private Texture m_image;
-    private float nextXLoc, nextYLoc;
-    
+
     private Dragon()
     {
-        m_image = Assets.assetManager.get(Assets.GOTH_DRAGON,Texture.class);
-        xLoc = 200;
-        yLoc = 200;
-        nextXLoc = xLoc;
-        nextYLoc = yLoc;
+	m_image = Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class);
     }
-    
+
     public static Dragon getInstance()
     {
-        if (m_dragon == null)
-            m_dragon = new Dragon();
-        return m_dragon;
+	if (m_dragon == null)
+	    m_dragon = new Dragon();
+	return m_dragon;
     }
 
-    public void render(SpriteBatch batcher, float delta)
+    /**
+     * If the Dragon is active then draw it.
+     * @param batcher
+     * @param delta
+     */
+    @Override
+    public void render(SpriteBatch batcher)
     {
-        float maxXChange = delta * 15;
-        float maxYChange = delta * 15;
-        
-       // System.out.println("Present Size: " + m_presentSize);
-        if (xLoc < nextXLoc)
-        {
-            xLoc = xLoc + maxXChange;
-            if (xLoc > nextXLoc)
-                xLoc = nextXLoc;
-        }
-        else if (xLoc > nextXLoc)
-        {
-            xLoc = xLoc - maxXChange;
-            if (xLoc < nextXLoc)
-                xLoc = nextXLoc;
-        }
-
-        if (yLoc < nextYLoc)
-        {
-            yLoc = yLoc + maxYChange;
-            if (yLoc > nextYLoc)
-                yLoc = nextYLoc;
-        }
-        else if (yLoc > nextYLoc)
-        {
-            yLoc = yLoc - maxYChange;
-            if (yLoc < nextYLoc)
-                yLoc = nextYLoc;
-        }
-
-        float modYLoc = yLoc +m_image.getHeight()-m_image.getHeight();
-        batcher.draw(m_image, xLoc, modYLoc, m_image.getWidth(), m_image.getHeight(), 0, 0, m_image.getWidth(), m_image.getHeight(), false, true);
-
+	if (m_active)
+	    batcher.draw(m_image, m_position.x-dimension.x/2, m_position.y-dimension.y/2, dimension.x, dimension.y, 0, 0, m_image.getWidth(), m_image.getHeight(), false, true);
     }
-    
+
     public boolean getActive()
     {
 	return m_active;
     }
-    
+
     public void setActive(boolean value)
     {
 	m_active = value;
-    }
-    
-    /**
-     * Sets the immediate position of the Hero and kills the nextXLoc, nextYLoc as well.
-     * Doesn't cancel out any resizing though.
-     * @param x
-     * @param y
-     */
-    public void setPosition(int x, int y)
-    {
-	xLoc = nextXLoc = x;
-	yLoc = nextYLoc = y;
-    }
-
-    /**
-     * Sets where the Hero should be moved to.
-     * @param xLoc
-     * @param yLoc
-     */
-    public void setNextPosition(int xLoc, int yLoc)
-    {
-        nextXLoc = xLoc;
-        nextYLoc = yLoc;
-    }
-
-    public int getY()
-    {
-        return Math.round(yLoc);
-    }
-    public int getX()
-    {
-        return Math.round(xLoc);
     }
 
 }
