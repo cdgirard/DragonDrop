@@ -48,14 +48,17 @@ public class GameScreen extends SizableScreen
     Light light;
     World world;
 
+    public int score = 0;
+
     private float VIEWPORT_WIDTH = 5.0f;
     private float VIEWPORT_HEIGHT = 9.0f;
-    
+
     public float xScale = 0;
     public float yScale = 0;
 
-    public Array<AbstractGameObject> m_droppedDragons;
+    public Array<AbstractGameObject> m_droppingDragons;
     public Array<AbstractGameObject> m_attackers;
+    public Array<AbstractGameObject> m_objectsToRemove;
 
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
@@ -88,15 +91,15 @@ public class GameScreen extends SizableScreen
 
 	preferredWidth = m_background.getWidth();
 	preferredHeight = m_background.getHeight();
-	
-	xScale = preferredWidth/VIEWPORT_WIDTH;
-	yScale = preferredHeight/VIEWPORT_HEIGHT;
+
+	xScale = preferredWidth / VIEWPORT_WIDTH;
+	yScale = preferredHeight / VIEWPORT_HEIGHT;
 
 	Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
 
 	// Setup the Cameras
 	m_gameCam = new OrthographicCamera();
-	m_gameCam.setToOrtho(true,VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
 	m_uiCam = new OrthographicCamera(preferredWidth, preferredHeight);
 	m_uiCam.setToOrtho(true);
@@ -105,8 +108,9 @@ public class GameScreen extends SizableScreen
 	// Move Camera to 0,0
 	//cam.translate(-cam.position.x, -cam.position.y, 0);
 
-	m_droppedDragons = new Array<AbstractGameObject>();
+	m_droppingDragons = new Array<AbstractGameObject>();
 	m_attackers = new Array<AbstractGameObject>();
+	m_objectsToRemove = new Array<AbstractGameObject>();
 
 	UIHelper.addRegions(Assets.buttonsAtlas);
 
@@ -169,6 +173,11 @@ public class GameScreen extends SizableScreen
 	return null;
     }
 
+    public void flagForRemoval(AbstractGameObject obj)
+    {
+	m_objectsToRemove.add(obj);
+    }
+
     /**
      * Causes a new dragon to start falling from the specified location.
      * @param pos
@@ -197,16 +206,16 @@ public class GameScreen extends SizableScreen
 	fixtureDef.friction = 0.5f;
 	body.createFixture(fixtureDef);
 	polygonShape.dispose();
-	m_droppedDragons.add(droppedDragon);
+	m_droppingDragons.add(droppedDragon);
     }
-    
+
     private void spawnAttacker()
     {
 	Attacker attacker = new Attacker();
-	
-	Vector2 pos = new Vector2(2.5f,9.0f);
+
+	Vector2 pos = new Vector2(2.5f, 9.0f);
 	attacker.m_position.set(pos);
-	
+
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(pos);
 	bodyDef.angle = 0; // rotation;
@@ -237,8 +246,8 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
-        update(delta);
-        
+	update(delta);
+
 	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -252,7 +261,7 @@ public class GameScreen extends SizableScreen
 	Dragon.getInstance().render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
-	for (AbstractGameObject obj : m_droppedDragons)
+	for (AbstractGameObject obj : m_droppingDragons)
 	{
 	    obj.render(batcher);
 	    updateMessageLabel("Dragon Dropping:" + obj.m_position.x + " : " + obj.m_position.y);
@@ -261,11 +270,11 @@ public class GameScreen extends SizableScreen
 	{
 	    obj.render(batcher);
 	}
-	
+
 	batcher.end();
 
 	renderGui();
-	
+
 	rayHandler.setCombinedMatrix(m_gameCam);
 	rayHandler.update();
 	rayHandler.render();
@@ -278,9 +287,8 @@ public class GameScreen extends SizableScreen
 	{
 	    b2DebugRenderer.render(world, m_gameCam.combined);
 	}
-
     }
-    
+
     /**
      * Update the present state of all objects in the game before 
      * rendering everything.
@@ -288,18 +296,44 @@ public class GameScreen extends SizableScreen
      */
     private void update(float delta)
     {
+	if (m_objectsToRemove.size > 0)
+	{
+	    for (AbstractGameObject obj : m_objectsToRemove)
+	    {
+		if (obj instanceof DroppingDragon)
+		{
+		    int index = m_droppingDragons.indexOf(obj, true);
+		    if (index != -1)
+		    {
+			m_droppingDragons.removeIndex(index);
+			world.destroyBody(obj.body);
+		    }
+		}
+		if (obj instanceof Attacker)
+		{
+		    int index = m_attackers.indexOf(obj, true);
+		    if (index != -1)
+		    {
+			m_attackers.removeIndex(index);
+			world.destroyBody(obj.body);
+		    }
+		}
+	    }
+	    m_objectsToRemove.removeRange(0, m_objectsToRemove.size - 1);
+	}
+
 	world.step(delta, 8, 3);
-	for (AbstractGameObject obj : m_droppedDragons)
+	for (AbstractGameObject obj : m_droppingDragons)
 	{
 	    obj.update(delta);
 	}
 	for (AbstractGameObject obj : m_attackers)
 	{
-	    obj.body.applyLinearImpulse( new Vector2(0,-6), obj.m_position, true );
+	    obj.body.applyLinearImpulse(new Vector2(0, -6), obj.m_position, true);
 	    obj.update(delta);
 	}
 	Dragon.getInstance().update(delta);
-	
+
 	if (Math.random() > 0.98)
 	    spawnAttacker();
 
@@ -319,7 +353,7 @@ public class GameScreen extends SizableScreen
 	{
 	    slot.render(batcher);
 	}
-	
+
 	batcher.end();
     }
 
@@ -328,9 +362,9 @@ public class GameScreen extends SizableScreen
     {
 	Gdx.graphics.setWindowedMode(width, height);
 
-	xScale = preferredWidth/VIEWPORT_WIDTH;
-	yScale = preferredHeight/VIEWPORT_HEIGHT;
-	
+	xScale = preferredWidth / VIEWPORT_WIDTH;
+	yScale = preferredHeight / VIEWPORT_HEIGHT;
+
 	m_uiCam.setToOrtho(true, width, height);
 	m_stage.getViewport().update(width, height, true);
 	Gdx.app.log("GameScreen", "resizing");
