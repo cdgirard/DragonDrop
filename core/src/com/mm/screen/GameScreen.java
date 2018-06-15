@@ -341,8 +341,8 @@ public class GameScreen extends SizableScreen
 	}
 	Dragon.getInstance().update(delta);
 
-	//if (Math.random() > 0.98)
-	//    spawnAttacker();
+	if (Math.random() > 0.98)
+	    spawnAttacker();
 
 	m_runTime += delta;
     }
