@@ -11,9 +11,9 @@ public class GamePreferences
 	public static final GamePreferences instance = new GamePreferences();
 	
 	public boolean sound = true;
-	public boolean music;
+	public boolean music = true;
 	public float volSound = 1.0f;
-	public float volMusic;
+	public float volMusic = 1.0f;
 	public int charSkin;
 	public boolean showFpsCounter;
 	
