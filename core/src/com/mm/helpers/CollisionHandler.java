@@ -133,9 +133,11 @@ public class CollisionHandler implements ContactListener
     {
    		// Remove the block update the player's score by 1.
     		world.score++;
+    		
     		AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
 //    		
     		Attacker attacker = (Attacker)attackerFixture.getBody().getUserData();
+    		world.gold = world.gold + attacker.gold;
     		world.flagForRemoval(attacker);
     		DroppingDragon dragon = (DroppingDragon)dragonFixture.getBody().getUserData();
     		world.flagForRemoval(dragon);
