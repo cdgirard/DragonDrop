@@ -52,6 +52,7 @@ public class GameScreen extends SizableScreen
     World world;
 
     public int score = 0;
+    public int gold = 100;
 
     private float VIEWPORT_WIDTH = 5.0f;
     private float VIEWPORT_HEIGHT = 9.0f;
@@ -72,6 +73,8 @@ public class GameScreen extends SizableScreen
     private Texture m_background;
 
     private Label label;
+    private Label scoreLabel;
+    private Label goldLabel;
 
     private ImageButton m_quitButton;
 
@@ -160,10 +163,19 @@ public class GameScreen extends SizableScreen
 	m_stage.addActor(m_quitButton);
 
 	label = new Label("Messages appear here.", uiSkin);
-
 	label.setAlignment(Align.center);
 	label.setPosition(200, 300);
 	m_stage.addActor(label);
+	
+	scoreLabel = new Label("Score: "+score, uiSkin);
+	scoreLabel.setAlignment(Align.left);
+	scoreLabel.setPosition(25, preferredHeight-25);
+	m_stage.addActor(scoreLabel);
+	
+	goldLabel = new Label("Gold: "+gold, uiSkin);
+	goldLabel.setAlignment(Align.left);
+	goldLabel.setPosition(25, preferredHeight-50);
+	m_stage.addActor(goldLabel);
     }
 
     public DragonSlot getSlot(int x, int y)
@@ -310,6 +322,8 @@ public class GameScreen extends SizableScreen
      */
     private void update(float delta)
     {
+	scoreLabel.setText("Score: "+score);
+	goldLabel.setText("Gold: "+gold);
 	if (m_objectsToRemove.size > 0)
 	{
 	    for (AbstractGameObject obj : m_objectsToRemove)

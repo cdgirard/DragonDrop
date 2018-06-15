@@ -13,6 +13,7 @@ import com.mm.helpers.Assets;
 public class Attacker extends AbstractGameObject
 {
     private Texture image;
+    public int gold = 10;
 
     public Attacker(int type)
     {
