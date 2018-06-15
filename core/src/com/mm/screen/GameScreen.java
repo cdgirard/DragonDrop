@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -215,9 +216,11 @@ public class GameScreen extends SizableScreen
 
     private void spawnAttacker()
     {
-	Attacker attacker = new Attacker();
+	int y = (int)MathUtils.random(0, 4);
+	Attacker attacker = new Attacker(y);
 
-	Vector2 pos = new Vector2(2.5f, 9.0f);
+	int x = (y + 1)/2;
+	Vector2 pos = new Vector2(x, 9.0f);
 	attacker.m_position.set(pos);
 
 	BodyDef bodyDef = new BodyDef();
@@ -336,7 +339,7 @@ public class GameScreen extends SizableScreen
 	}
 	for (AbstractGameObject obj : m_attackers)
 	{
-	    obj.body.applyLinearImpulse(new Vector2(0, -6), obj.m_position, true);
+	    obj.body.applyLinearImpulse(new Vector2(0, -12), obj.m_position, true);
 	    obj.update(delta);
 	}
 	Dragon.getInstance().update(delta);

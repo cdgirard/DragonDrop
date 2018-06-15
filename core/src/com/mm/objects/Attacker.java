@@ -14,19 +14,26 @@ public class Attacker extends AbstractGameObject
 {
     private Texture image;
 
-    public Attacker()
+    public Attacker(int type)
     {
-	init();
-    }
-
-    private void init()
-    {
-	image = Assets.assetManager.get(Assets.FARMER, Texture.class);
-        dimension.set(0.75f,0.75f);
+	if (type == 0)
+	    image = Assets.assetManager.get(Assets.FARMER, Texture.class);
+	else if (type == 1)
+	    image = Assets.assetManager.get(Assets.SOILDER, Texture.class);
+	else if (type == 2)
+	    image = Assets.assetManager.get(Assets.CROSSBOW, Texture.class);
+	else if (type == 3)
+	    image = Assets.assetManager.get(Assets.SPEARMAN, Texture.class);
+	else if (type == 4)
+	    image = Assets.assetManager.get(Assets.KNIGHT, Texture.class);
+	if (type != 4)
+            dimension.set(0.75f,0.75f);
+	else
+	    dimension.set(0.75f,1.25f);
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
-
     }
+
     @Override
     public void render(SpriteBatch batcher)
     {
