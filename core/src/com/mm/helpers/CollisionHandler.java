@@ -1,6 +1,8 @@
 package com.mm.helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -131,7 +133,7 @@ public class CollisionHandler implements ContactListener
     {
    		// Remove the block update the player's score by 1.
     		world.score++;
-//    		AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+    		AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
 //    		
     		Attacker attacker = (Attacker)attackerFixture.getBody().getUserData();
     		world.flagForRemoval(attacker);

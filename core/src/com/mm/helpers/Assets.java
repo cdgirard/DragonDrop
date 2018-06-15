@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -31,6 +32,9 @@ public class Assets
     public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
     public static TextureAtlas buttonsAtlas;
     
+    // Sounds                                         
+    public static final String DRAGON_COLLISION = "sounds/artillery_explosion.wav";
+    
     public static AssetManager assetManager = new AssetManager();
     
 
@@ -40,7 +44,7 @@ public class Assets
         loadGUIImages();
         loadDragons();
         loadAttackers();
-        
+        loadSounds();
     }
     
     private static void loadGUIImages()
@@ -78,6 +82,13 @@ public class Assets
         assetManager.load(MAIN_SCREEN, Texture.class);     
         assetManager.finishLoading();
         
+    }
+    
+    private static void loadSounds()
+    {
+	// Load Sounds
+	assetManager.load(DRAGON_COLLISION, Sound.class);
+	assetManager.finishLoading();
     }
     
     
