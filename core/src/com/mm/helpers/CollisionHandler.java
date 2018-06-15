@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mm.objects.AbstractGameObject;
+import com.mm.objects.Attacker;
+import com.mm.objects.DroppingDragon;
 import com.mm.screen.GameScreen;
 
 public class CollisionHandler implements ContactListener
@@ -115,34 +117,26 @@ public class CollisionHandler implements ContactListener
         AbstractGameObject objA = (AbstractGameObject)fixtureA.getBody().getUserData();
         AbstractGameObject objB = (AbstractGameObject)fixtureB.getBody().getUserData();
         
-//        if (objA instanceof Player)
-//        {
-//        	processPlayerContact(fixtureA, fixtureB);
-//        }
-//        else if (objB instanceof Player)
-//        {
-//        	processPlayerContact(fixtureB, fixtureA);
-//        }
+        if ((objA instanceof DroppingDragon) && (objB instanceof Attacker))
+        {
+        	processDragonContact(fixtureA, fixtureB);
+        }
+        else if ((objB instanceof DroppingDragon) && (objA instanceof Attacker))
+        {
+        	processDragonContact(fixtureB, fixtureA);
+        }
     }
     
-    private void processPlayerContact(Fixture playerFixture, Fixture objFixture)
+    private void processDragonContact(Fixture dragonFixture, Fixture attackerFixture)
     {
-//    	if (objFixture.getBody().getUserData() instanceof Land)
-//    	{
-//    		Player player = (Player)playerFixture.getBody().getUserData();
-//    	    player.acceleration.y = 0;
-//    	    player.velocity.y = 0;
-//    	    player.jumpState = JUMP_STATE.GROUNDED;
-//    	    playerFixture.getBody().setLinearVelocity(player.velocity);
-//    	}
-//    	else if (objFixture.getBody().getUserData() instanceof Block)
-//    	{
-//    		// Remove the block update the player's score by 1.
-//    		world.score++;
+   		// Remove the block update the player's score by 1.
+    		world.score++;
 //    		AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
 //    		
-//    		Block block = (Block)objFixture.getBody().getUserData();
-//    		world.flagForRemoval(block);
+    		Attacker attacker = (Attacker)attackerFixture.getBody().getUserData();
+    		world.flagForRemoval(attacker);
+    		DroppingDragon dragon = (DroppingDragon)dragonFixture.getBody().getUserData();
+    		world.flagForRemoval(dragon);
 //    	}
     }
 	
