@@ -4,24 +4,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mm.helpers.Assets;
 
-public class DroppingDragon extends AbstractGameObject
+/**
+ * Used to manage the location and state of the different attackers in the game.
+ * TODO: May make a specific class for each if they vary enough.
+ * @author cdgira
+ *
+ */
+public class Attacker extends AbstractGameObject
 {
     private Texture image;
 
-    public DroppingDragon()
+    public Attacker()
     {
 	init();
     }
 
     private void init()
     {
-	image = Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class);
-
+	image = Assets.assetManager.get(Assets.FARMER, Texture.class);
+        dimension.set(0.75f,0.75f);
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
 
     }
-
     @Override
     public void render(SpriteBatch batcher)
     {

@@ -31,6 +31,7 @@ import com.mm.helpers.Assets;
 import com.mm.helpers.CollisionHandler;
 import com.mm.helpers.UIHelper;
 import com.mm.objects.AbstractGameObject;
+import com.mm.objects.Attacker;
 import com.mm.objects.DroppingDragon;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonSlot;
@@ -54,6 +55,7 @@ public class GameScreen extends SizableScreen
     public float yScale = 0;
 
     public Array<AbstractGameObject> m_droppedDragons;
+    public Array<AbstractGameObject> m_attackers;
 
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
@@ -104,6 +106,7 @@ public class GameScreen extends SizableScreen
 	//cam.translate(-cam.position.x, -cam.position.y, 0);
 
 	m_droppedDragons = new Array<AbstractGameObject>();
+	m_attackers = new Array<AbstractGameObject>();
 
 	UIHelper.addRegions(Assets.buttonsAtlas);
 
@@ -166,6 +169,10 @@ public class GameScreen extends SizableScreen
 	return null;
     }
 
+    /**
+     * Causes a new dragon to start falling from the specified location.
+     * @param pos
+     */
     public void dropDragon(Vector2 pos)
     {
 	DroppingDragon droppedDragon = new DroppingDragon();
@@ -191,7 +198,37 @@ public class GameScreen extends SizableScreen
 	body.createFixture(fixtureDef);
 	polygonShape.dispose();
 	m_droppedDragons.add(droppedDragon);
+    }
+    
+    private void spawnAttacker()
+    {
+	Attacker attacker = new Attacker();
+	
+	Vector2 pos = new Vector2(2.5f,9.0f);
+	attacker.m_position.set(pos);
+	
+	BodyDef bodyDef = new BodyDef();
+	bodyDef.position.set(pos);
+	bodyDef.angle = 0; // rotation;
+	Body body = world.createBody(bodyDef);
+	body.setType(BodyType.DynamicBody);
+	body.setFixedRotation(true);
+	body.setUserData(attacker);
+	attacker.body = body;
 
+	PolygonShape polygonShape = new PolygonShape();
+	float halfWidth = attacker.bounds.width / 2.0f;
+	float halfHeight = attacker.bounds.height / 2.0f;
+	polygonShape.setAsBox(halfWidth, halfHeight);
+
+	FixtureDef fixtureDef = new FixtureDef();
+	fixtureDef.shape = polygonShape;
+	fixtureDef.density = 50;
+	fixtureDef.restitution = 0.5f;
+	fixtureDef.friction = 0.5f;
+	body.createFixture(fixtureDef);
+	polygonShape.dispose();
+	m_attackers.add(attacker);
     }
 
     /**
@@ -200,14 +237,8 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
-	world.step(delta, 8, 3);
-	for (AbstractGameObject obj : m_droppedDragons)
-	{
-	    obj.update(delta);
-	}
-	Dragon.getInstance().update(delta);
-
-	m_runTime += delta;
+        update(delta);
+        
 	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -225,6 +256,10 @@ public class GameScreen extends SizableScreen
 	{
 	    obj.render(batcher);
 	    updateMessageLabel("Dragon Dropping:" + obj.m_position.x + " : " + obj.m_position.y);
+	}
+	for (AbstractGameObject obj : m_attackers)
+	{
+	    obj.render(batcher);
 	}
 	
 	batcher.end();
@@ -245,7 +280,35 @@ public class GameScreen extends SizableScreen
 	}
 
     }
+    
+    /**
+     * Update the present state of all objects in the game before 
+     * rendering everything.
+     * @param delta
+     */
+    private void update(float delta)
+    {
+	world.step(delta, 8, 3);
+	for (AbstractGameObject obj : m_droppedDragons)
+	{
+	    obj.update(delta);
+	}
+	for (AbstractGameObject obj : m_attackers)
+	{
+	    obj.body.applyLinearImpulse( new Vector2(0,-6), obj.m_position, true );
+	    obj.update(delta);
+	}
+	Dragon.getInstance().update(delta);
+	
+	if (Math.random() > 0.98)
+	    spawnAttacker();
 
+	m_runTime += delta;
+    }
+
+    /**
+     * Draw the GUI layer.
+     */
     private void renderGui()
     {
 	batcher.setProjectionMatrix(m_uiCam.combined);
