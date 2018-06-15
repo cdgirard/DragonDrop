@@ -7,6 +7,7 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.mm.helpers.Assets;
+import com.mm.helpers.AudioManager;
 import com.mm.helpers.CollisionHandler;
 import com.mm.helpers.UIHelper;
 import com.mm.objects.AbstractGameObject;
@@ -144,6 +146,8 @@ public class GameScreen extends SizableScreen
 	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
 
 	b2DebugRenderer = new Box2DDebugRenderer();
+	
+	
     }
 
     private void initUI()

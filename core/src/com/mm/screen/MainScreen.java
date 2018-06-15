@@ -8,6 +8,7 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.mm.helpers.Assets;
+import com.mm.helpers.AudioManager;
 import com.mm.screen.input.MainScreenInputHandler;
 
 public class MainScreen extends SizableScreen
@@ -88,6 +90,7 @@ public class MainScreen extends SizableScreen
         // Move Camera to 0,0
         //cam.translate(-cam.position.x, -cam.position.y, 0);
         
+         AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
 
     }
     
