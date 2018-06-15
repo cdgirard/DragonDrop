@@ -60,6 +60,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     {
 	if (Dragon.getInstance().getActive())
 	{
+	    m_screen.gold -= 5;
 	    m_screen.updateMessageLabel("Dragon Dropped");
 	    Texture image = Dragon.getInstance().m_image;
 	    Dragon.getInstance().setActive(false);
