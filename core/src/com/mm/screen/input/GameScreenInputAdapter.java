@@ -1,6 +1,7 @@
 package com.mm.screen.input;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.mm.objects.Dragon;
@@ -42,6 +43,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	if (slot != null)
 	{
 	    m_screen.updateMessageLabel("Grabbed Dragon");
+	    Dragon.getInstance().setImage(slot.getDragonImage());
 	    Dragon.getInstance().setActive(true);
 	    float xLoc = screenX/m_screen.xScale;
 	    float yLoc = screenY/m_screen.yScale;
@@ -59,10 +61,11 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	if (Dragon.getInstance().getActive())
 	{
 	    m_screen.updateMessageLabel("Dragon Dropped");
+	    Texture image = Dragon.getInstance().m_image;
 	    Dragon.getInstance().setActive(false);
 	    float xLoc = screenX/m_screen.xScale;
 	    float yLoc = screenY/m_screen.yScale;
-	    m_screen.dropDragon(new Vector2(xLoc,yLoc));
+	    m_screen.dropDragon(image, new Vector2(xLoc,yLoc));
 	}
 	return false;
     }

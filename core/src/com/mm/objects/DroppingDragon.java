@@ -6,17 +6,16 @@ import com.mm.helpers.Assets;
 
 public class DroppingDragon extends AbstractGameObject
 {
-    private Texture image;
+    private Texture m_image;
 
-    public DroppingDragon()
+    public DroppingDragon(Texture image)
     {
+	m_image = image;
 	init();
     }
 
     private void init()
     {
-	image = Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class);
-
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
 
@@ -25,7 +24,7 @@ public class DroppingDragon extends AbstractGameObject
     @Override
     public void render(SpriteBatch batcher)
     {
-	batcher.draw(image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, true);
+	batcher.draw(m_image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y, rotation, 0, 0, m_image.getWidth(), m_image.getHeight(), false, true);
     }
 
 }

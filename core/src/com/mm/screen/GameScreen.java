@@ -107,6 +107,8 @@ public class GameScreen extends SizableScreen
 	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
 	// Move Camera to 0,0
 	//cam.translate(-cam.position.x, -cam.position.y, 0);
+	
+	batcher = new SpriteBatch();
 
 	m_droppingDragons = new Array<AbstractGameObject>();
 	m_attackers = new Array<AbstractGameObject>();
@@ -137,6 +139,8 @@ public class GameScreen extends SizableScreen
 	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
 	}
 	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
+	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
 
 	b2DebugRenderer = new Box2DDebugRenderer();
     }
@@ -182,9 +186,9 @@ public class GameScreen extends SizableScreen
      * Causes a new dragon to start falling from the specified location.
      * @param pos
      */
-    public void dropDragon(Vector2 pos)
+    public void dropDragon(Texture image, Vector2 pos)
     {
-	DroppingDragon droppedDragon = new DroppingDragon();
+	DroppingDragon droppedDragon = new DroppingDragon(image);
 
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(pos);
@@ -252,12 +256,17 @@ public class GameScreen extends SizableScreen
 	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	m_gameCam.update();
-
-	batcher = new SpriteBatch();
+	
 	// Attach batcher to camera
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	batcher.draw(m_background, 0, 0, 5.0f, 9.0f, 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
+	batcher.end();
+	
+	renderGui();
+	
+	batcher.setProjectionMatrix(m_gameCam.combined);
+	batcher.begin();
 	Dragon.getInstance().render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
@@ -272,8 +281,6 @@ public class GameScreen extends SizableScreen
 	}
 
 	batcher.end();
-
-	renderGui();
 
 	rayHandler.setCombinedMatrix(m_gameCam);
 	rayHandler.update();
@@ -334,8 +341,8 @@ public class GameScreen extends SizableScreen
 	}
 	Dragon.getInstance().update(delta);
 
-	if (Math.random() > 0.98)
-	    spawnAttacker();
+	//if (Math.random() > 0.98)
+	//    spawnAttacker();
 
 	m_runTime += delta;
     }

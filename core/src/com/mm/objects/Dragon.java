@@ -9,7 +9,7 @@ public class Dragon extends SimpleAbstractGameObject
     private static Dragon m_dragon;
     private boolean m_active = false;
 
-    private Texture m_image;
+    public Texture m_image;
 
     private Dragon()
     {
@@ -21,6 +21,15 @@ public class Dragon extends SimpleAbstractGameObject
 	if (m_dragon == null)
 	    m_dragon = new Dragon();
 	return m_dragon;
+    }
+    
+    /**
+     * Set the image of the Dragon to be dragged for dropping.
+     * @param image
+     */
+    public void setImage(Texture dragon)
+    {
+	m_image = dragon;
     }
 
     /**
