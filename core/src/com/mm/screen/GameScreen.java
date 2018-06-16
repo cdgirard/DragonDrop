@@ -361,6 +361,11 @@ public class GameScreen extends SizableScreen
 	    //obj.body.linVelLoc
 	    obj.body.applyLinearImpulse(new Vector2(0, scaledImpulse), obj.m_position, true);
 	    obj.update(delta);
+	    if (obj.m_position.y < 2.5f)
+	    {
+		gold -= 10;
+		flagForRemoval(obj);
+	    }
 	}
 	Dragon.getInstance().update(delta);
 
