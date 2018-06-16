@@ -16,7 +16,7 @@ public class UIHelper
         //Texture blankTexture = new Texture(width,height,Pixmap.Format.RGBA8888);
         Texture blankTexture = new Texture(width,height,Pixmap.Format.RGB888);  // Uncomment to see the buttons
         buttonSkin.add(name,blankTexture);
-        return constructButton(name);
+        return constructButton(name,name);
     }
     
     /**
@@ -26,21 +26,26 @@ public class UIHelper
      * @param name
      * @return
      */
-    public static ImageButton constructButton(String name)
+    public static ImageButton constructButton(String imgName, String btnName)
     {
         ImageButtonStyle imgButtonStyle = new ImageButtonStyle();
-        imgButtonStyle.up = buttonSkin.newDrawable(name);
-        imgButtonStyle.down = buttonSkin.newDrawable(name);
-        imgButtonStyle.checked = buttonSkin.newDrawable(name);
-        imgButtonStyle.over = buttonSkin.newDrawable(name);
+        imgButtonStyle.up = buttonSkin.newDrawable(imgName);
+        imgButtonStyle.down = buttonSkin.newDrawable(imgName);
+        imgButtonStyle.checked = buttonSkin.newDrawable(imgName);
+        imgButtonStyle.over = buttonSkin.newDrawable(imgName);
         ImageButton button = new ImageButton(imgButtonStyle);
-        button.setName(name);
+        button.setName(btnName);
         return button;
     }
     
     public static void addRegions(TextureAtlas atlas)
     {
 	buttonSkin.addRegions(atlas);
+    }
+    
+    public static void addTexture(String name, Texture image)
+    {
+	buttonSkin.add(name, image);
     }
     
     /**

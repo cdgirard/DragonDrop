@@ -16,6 +16,7 @@ public class DragonSlot extends SimpleAbstractGameObject
     private Texture m_dragonImage;
     private Rectangle m_slotButton;
     private String m_slotName;
+    public ImageButton m_buyButton;
 
     public DragonSlot(Vector2 pos)
     {

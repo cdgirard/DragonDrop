@@ -45,9 +45,10 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	{
 	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
 	}
-	if (actor.getName().contains("SLOT-"))
+	if (actor.getName().contains(Assets.BUY_BTN))
 	{
-	    m_screen.updateMessageLabel("Grabbed a Dragon.");
+	    m_screen.updateMessageLabel("Bought a Dragon.");
+	    m_screen.onOptionsClicked();
 	}
 
 	//System.out.println("Clicked! Is checked: " + actor.getName());

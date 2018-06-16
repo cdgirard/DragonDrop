@@ -31,6 +31,7 @@ public class Assets
     
     // UI
     public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
+    public static final String BUY_BTN = "images/ui/buy_btn.png";
     public static TextureAtlas buttonsAtlas;
     
     // Sounds                                         
@@ -59,7 +60,8 @@ public class Assets
         //slotTexture = new Texture(Gdx.files.internal(DRAGON_SLOT));
         //slotTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         
-        assetManager.load(DRAGON_SLOT, Texture.class);     
+        assetManager.load(DRAGON_SLOT, Texture.class);   
+        assetManager.load(BUY_BTN, Texture.class);
         assetManager.finishLoading();
     }
     
