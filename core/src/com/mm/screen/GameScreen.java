@@ -61,7 +61,7 @@ public class GameScreen extends SizableScreen
     public float yScale = 0;
 
     public Array<AbstractGameObject> m_droppingDragons;
-    public Array<AbstractGameObject> m_attackers;
+    public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
 
     private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
@@ -117,7 +117,7 @@ public class GameScreen extends SizableScreen
 	batcher = new SpriteBatch();
 
 	m_droppingDragons = new Array<AbstractGameObject>();
-	m_attackers = new Array<AbstractGameObject>();
+	m_attackers = new Array<Attacker>();
 	m_objectsToRemove = new Array<AbstractGameObject>();
 
 	UIHelper.addRegions(Assets.buttonsAtlas);
@@ -235,7 +235,7 @@ public class GameScreen extends SizableScreen
 	int y = (int)MathUtils.random(0, 4);
 	Attacker attacker = new Attacker(y);
 
-	int x = (y + 1)/2;
+	float x = y + 0.5f;
 	Vector2 pos = new Vector2(x, 9.0f);
 	attacker.m_position.set(pos);
 
@@ -339,7 +339,7 @@ public class GameScreen extends SizableScreen
 		}
 		if (obj instanceof Attacker)
 		{
-		    int index = m_attackers.indexOf(obj, true);
+		    int index = m_attackers.indexOf((Attacker)obj, true);
 		    if (index != -1)
 		    {
 			m_attackers.removeIndex(index);
@@ -355,9 +355,11 @@ public class GameScreen extends SizableScreen
 	{
 	    obj.update(delta);
 	}
-	for (AbstractGameObject obj : m_attackers)
+	for (Attacker obj : m_attackers)
 	{
-	    obj.body.applyLinearImpulse(new Vector2(0, -12), obj.m_position, true);
+	    float scaledImpulse = obj.myData.m_impulse/delta;
+	    //obj.body.linVelLoc
+	    obj.body.applyLinearImpulse(new Vector2(0, scaledImpulse), obj.m_position, true);
 	    obj.update(delta);
 	}
 	Dragon.getInstance().update(delta);
