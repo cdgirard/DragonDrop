@@ -11,9 +11,15 @@ import com.mm.screen.input.GameScreenInputHandler;
 
 public class DragonSlot extends SimpleAbstractGameObject
 {
+    private static DragonData[] dragonTypes = {
+	new DragonData(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class),10, 30),
+	new DragonData(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class),10, 50),
+	new DragonData(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class),10, 100)
+    };
+    
     private static int m_slotNum = 0;
+    private DragonData m_data;
     private Texture m_slotImage;
-    private Texture m_dragonImage;
     private Rectangle m_slotButton;
     private String m_slotName;
     public ImageButton m_buyButton;
@@ -25,7 +31,7 @@ public class DragonSlot extends SimpleAbstractGameObject
 	m_slotName = "SLOT-" + m_slotNum;
 	slotPos.set(slotPos.x, slotPos.y);
 	m_position = slotPos;
-	m_dragonImage = null;
+	m_data = null;
 
 	// Construct Buy Button
 	m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + "-" + m_slotNum);
@@ -44,9 +50,9 @@ public class DragonSlot extends SimpleAbstractGameObject
 	m_slotNum++;
     }
 
-    public Texture getDragonImage()
+    public DragonData getDragonData()
     {
-	return m_dragonImage;
+	return m_data;
     }
 
     public Texture getSlotImage()
@@ -59,31 +65,31 @@ public class DragonSlot extends SimpleAbstractGameObject
 	return m_slotButton;
     }
 
-    public void setDragon(Texture itemTexture)
+    public void setDragon(int type)
     {
-	m_dragonImage = itemTexture;
-	if (m_dragonImage != null)
+	if (type == -1)
 	{
+	    m_data = null;
+	    m_sellButton.setVisible(false);
+	    m_buyButton.setVisible(true);
+	}
+	else
+	{
+	    m_data = dragonTypes[type];
 	    m_slotButton = new Rectangle();
 	    m_slotButton.set(m_position.x, m_position.y, (float) m_slotImage.getWidth(), (float) m_slotImage.getHeight());
 	    m_sellButton.setVisible(true);
 	    m_buyButton.setVisible(false);
 	}
-	else
-	{
-	    m_dragonImage = null;
-	    m_sellButton.setVisible(false);
-	    m_buyButton.setVisible(true);
-	}
-
     }
 
     @Override
     public void render(SpriteBatch batcher)
     {
-	if (m_dragonImage != null)
+	if (m_data != null)
 	{
-	    batcher.draw(m_dragonImage, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, m_dragonImage.getWidth(), m_dragonImage.getHeight(), false, true);
+	    Texture img = m_data.m_image;
+	    batcher.draw(img, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, img.getWidth(), img.getHeight(), false, true);
 	}
 	batcher.draw(m_slotImage, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, m_slotImage.getWidth(), m_slotImage.getHeight(), false, true);
     }

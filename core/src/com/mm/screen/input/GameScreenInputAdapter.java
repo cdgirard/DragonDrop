@@ -43,7 +43,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	if (slot != null)
 	{
 	    m_screen.updateMessageLabel("Grabbed Dragon");
-	    Dragon.getInstance().setImage(slot.getDragonImage());
+	    Dragon.getInstance().setImage(slot.getDragonData().m_image);
 	    Dragon.getInstance().setActive(true);
 	    float xLoc = screenX/m_screen.xScale;
 	    float yLoc = screenY/m_screen.yScale;

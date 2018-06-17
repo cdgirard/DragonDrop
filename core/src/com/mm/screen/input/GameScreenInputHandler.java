@@ -49,10 +49,30 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	else if (actor == m_screen.btnBuyGothDragon)
 	{
-	    m_screen.slots[m_screen.activeSlot].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
-	    m_screen.activeSlot = -1;
+	    m_screen.slots[m_screen.activeSlot].setDragon(0);
+	    
+	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
 	    m_screen.m_paused = false;
 	    m_screen.winBuyDragon.setVisible(false);
+	    m_screen.activeSlot = -1;
+	}
+	else if (actor == m_screen.btnBuyHazyDragon)
+	{
+	    m_screen.slots[m_screen.activeSlot].setDragon(1);
+	    
+	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
+	    m_screen.m_paused = false;
+	    m_screen.winBuyDragon.setVisible(false);
+	    m_screen.activeSlot = -1;
+	}
+	else if (actor == m_screen.btnBuyBookDragon)
+	{
+	    m_screen.slots[m_screen.activeSlot].setDragon(2);
+	    
+	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
+	    m_screen.m_paused = false;
+	    m_screen.winBuyDragon.setVisible(false);
+	    m_screen.activeSlot = -1;
 	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{

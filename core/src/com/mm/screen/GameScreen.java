@@ -99,8 +99,8 @@ public class GameScreen extends SizableScreen
     // Buy Dragon
     public Window winBuyDragon;
     public ImageButton btnBuyGothDragon;
-    private ImageButton btnBuyHazyDragon;
-    private ImageButton btnBuyBookDragon;
+    public ImageButton btnBuyHazyDragon;
+    public ImageButton btnBuyBookDragon;
     public TextButton btnWinOptCancel;
 
     // For Box2D Debugging
@@ -208,11 +208,11 @@ public class GameScreen extends SizableScreen
 	    sellBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(sellBtn);
 	}
-	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+	slots[0].setDragon(0);
 	
-	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
+	slots[1].setDragon(1);
 	
-	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
+	slots[2].setDragon(2);
     }
 
     private Table buildBuyDragonsWindowLayer()
@@ -260,6 +260,7 @@ public class GameScreen extends SizableScreen
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
+	// TODO: Change this to gather data from Dragon Data.
 	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
