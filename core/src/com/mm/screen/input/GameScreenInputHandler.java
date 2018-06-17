@@ -41,14 +41,19 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
     @Override
     public void changed(ChangeEvent event, Actor actor)
     {
-	if (actor.getName().equals(QUIT_BUTTON))
+	if (actor == m_screen.btnWinOptCancel)
+	{
+	    m_screen.m_paused = false;
+	    m_screen.winBuyDragon.setVisible(false);
+	}
+	else if (actor.getName().equals(QUIT_BUTTON))
 	{
 	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
 	}
-	if (actor.getName().contains(Assets.BUY_BTN))
+	else if (actor.getName().contains(Assets.BUY_BTN))
 	{
 	    m_screen.updateMessageLabel("Bought a Dragon.");
-	    m_screen.onOptionsClicked();
+	    m_screen.onBuyDragonClicked();
 	}
 
 	//System.out.println("Clicked! Is checked: " + actor.getName());
