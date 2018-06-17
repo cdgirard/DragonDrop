@@ -23,10 +23,17 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.mm.helpers.Assets;
@@ -51,6 +58,8 @@ public class GameScreen extends SizableScreen
     Light light;
     World world;
 
+    public boolean m_paused = false;
+    
     public int score = 0;
     public int gold = 100;
 
@@ -78,13 +87,21 @@ public class GameScreen extends SizableScreen
 
     private ImageButton m_quitButton;
 
-    private DragonSlot[] slots = new DragonSlot[5];
+    public DragonSlot[] slots = new DragonSlot[5];
+    public int activeSlot = -1; // slot buying or selling a dragon for
 
     SpriteBatch batcher;
 
     private GameScreenInputAdapter inputProcessor;
 
     private float m_runTime = 0f;
+
+    // Buy Dragon
+    public Window winBuyDragon;
+    public ImageButton btnBuyGothDragon;
+    public ImageButton btnBuyHazyDragon;
+    public ImageButton btnBuyBookDragon;
+    public TextButton btnWinOptCancel;
 
     // For Box2D Debugging
     private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
@@ -108,20 +125,19 @@ public class GameScreen extends SizableScreen
 	m_gameCam = new OrthographicCamera();
 	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
-	m_uiCam = new OrthographicCamera(preferredWidth, preferredHeight);
-	m_uiCam.setToOrtho(true);
+	m_uiCam = new OrthographicCamera();
+	m_uiCam.setToOrtho(true,preferredWidth, preferredHeight);
+	//m_uiCam.setToOrtho(false);
 	m_uiCam.update();
 	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
 	// Move Camera to 0,0
 	//cam.translate(-cam.position.x, -cam.position.y, 0);
-	
+
 	batcher = new SpriteBatch();
 
 	m_droppingDragons = new Array<AbstractGameObject>();
 	m_attackers = new Array<Attacker>();
 	m_objectsToRemove = new Array<AbstractGameObject>();
-
-	UIHelper.addRegions(Assets.buttonsAtlas);
 
 	GameScreenInputHandler.initializeInstance(this);
 
@@ -141,66 +157,131 @@ public class GameScreen extends SizableScreen
 
 	light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f, 90f, 20f);
 
-	for (int index = 0; index < slots.length; index++)
-	{
-	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
-	    slots[index].m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + index);
-	    ImageButton buyBtn = slots[index].m_buyButton;
-	    buyBtn.setSize(buyBtn.getWidth() * 0.35f, buyBtn.getHeight() * 0.35f);
-	    float y = preferredHeight - m_quitButton.getHeight() - buyBtn.getHeight();
-	    buyBtn.setPosition(slots[index].m_position.x + 5, y - 5);
-	    buyBtn.addListener(GameScreenInputHandler.getInstance());
-	    m_stage.addActor(buyBtn);
-	    
-	    slots[index].m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + index);
-	    ImageButton sellBtn = slots[index].m_sellButton;
-	    sellBtn.setSize(sellBtn.getWidth() * 0.35f,sellBtn.getHeight() * 0.35f);
-	    y = preferredHeight - m_quitButton.getHeight() - sellBtn.getHeight();
-	    sellBtn.setPosition(slots[index].m_position.x + 5, y - 5);
-	    sellBtn.addListener(GameScreenInputHandler.getInstance());
-	    m_stage.addActor(sellBtn);
-	    sellBtn.setVisible(false);
-	}
-	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
-	slots[0].m_buyButton.setVisible(false);
-	slots[0].m_sellButton.setVisible(true);
-	
-	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
-	slots[1].m_buyButton.setVisible(false);
-	slots[1].m_sellButton.setVisible(true);
-	
-	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
-	slots[2].m_buyButton.setVisible(false);
-	slots[2].m_sellButton.setVisible(true);
-
 	b2DebugRenderer = new Box2DDebugRenderer();
-	
-	
+
     }
 
+    /**
+     * Setup the UI components for the GameScreen.
+     */
     private void initUI()
     {
+	UIHelper.addRegions(Assets.buttonsAtlas);
+	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
 	m_stage = new Stage();
+	
 
 	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON, GameScreenInputHandler.QUIT_BUTTON);
-	int x = 100;
-	m_quitButton.setPosition(x, preferredHeight - m_quitButton.getHeight());
+	m_quitButton.setPosition(100, preferredHeight - m_quitButton.getHeight());
+	m_quitButton.addListener(GameScreenInputHandler.getInstance());
 	m_stage.addActor(m_quitButton);
 
 	label = new Label("Messages appear here.", uiSkin);
 	label.setAlignment(Align.center);
 	label.setPosition(200, 300);
 	m_stage.addActor(label);
-	
-	scoreLabel = new Label("Score: "+score, uiSkin);
+
+	scoreLabel = new Label("Score: " + score, uiSkin);
 	scoreLabel.setAlignment(Align.left);
-	scoreLabel.setPosition(25, preferredHeight-25);
+	scoreLabel.setPosition(25, preferredHeight - 25);
 	m_stage.addActor(scoreLabel);
-	
-	goldLabel = new Label("Gold: "+gold, uiSkin);
+
+	goldLabel = new Label("Gold: " + gold, uiSkin);
 	goldLabel.setAlignment(Align.left);
-	goldLabel.setPosition(25, preferredHeight-50);
+	goldLabel.setPosition(25, preferredHeight - 50);
 	m_stage.addActor(goldLabel);
+
+	// Buy window for dragons.
+	Table layerOptionsWindow = buildBuyDragonsWindowLayer();
+	m_stage.addActor(layerOptionsWindow);
+
+	for (int index = 0; index < slots.length; index++)
+	{
+	    float xLoc = index*Assets.assetManager.get(Assets.DRAGON_SLOT, Texture.class).getWidth();
+	    float yLoc = m_quitButton.getHeight();
+	    slots[index] = new DragonSlot(new Vector2(xLoc, yLoc),new Vector2(xLoc,preferredHeight-yLoc));
+	    ImageButton buyBtn = slots[index].m_buyButton;
+	    buyBtn.addListener(GameScreenInputHandler.getInstance());
+	    m_stage.addActor(buyBtn);
+	    
+	    ImageButton sellBtn = slots[index].m_sellButton;
+	    sellBtn.addListener(GameScreenInputHandler.getInstance());
+	    m_stage.addActor(sellBtn);
+	}
+	slots[0].setDragon(0);
+	
+	slots[1].setDragon(1);
+	
+	slots[2].setDragon(2);
+    }
+
+    private Table buildBuyDragonsWindowLayer()
+    {
+	winBuyDragon = new Window("Buy Dragon", uiSkin);
+	winBuyDragon.add(buildBuyDragonsRow()).row();
+	winBuyDragon.add(buildBuyDragonsWinButtons()).pad(10, 0, 10, 0);
+	// Making the whole window transparent.
+	winBuyDragon.setColor(1, 1, 1, 0.8f);
+	winBuyDragon.setVisible(false);
+	// winBuyDragon.debug();
+	winBuyDragon.pack();
+	// Not doing anything
+	winBuyDragon.setPosition(preferredWidth - winBuyDragon.getWidth() - 100, 475);
+	winBuyDragon.setMovable(false);
+	return winBuyDragon;
+    }
+
+    private Table buildBuyDragonsRow()
+    {
+	Table tbl = new Table();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	tbl.add(new Label("Goth Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Hazy Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Book Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.row();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	UIHelper.addTexture(Assets.GOTH_DRAGON, Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+	btnBuyGothDragon = UIHelper.constructButton(Assets.GOTH_DRAGON, Assets.GOTH_DRAGON);
+	btnBuyGothDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyGothDragon);
+	
+	UIHelper.addTexture(Assets.HAZY_DRAGON, Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
+	btnBuyHazyDragon = UIHelper.constructButton(Assets.HAZY_DRAGON, Assets.HAZY_DRAGON);
+	btnBuyHazyDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyHazyDragon);
+	
+	UIHelper.addTexture(Assets.BOOK_DRAGON, Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
+	btnBuyBookDragon = UIHelper.constructButton(Assets.BOOK_DRAGON, Assets.BOOK_DRAGON);
+	btnBuyBookDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyBookDragon);
+	
+	tbl.row();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	// TODO: Change this to gather data from Dragon Data.
+	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
+	return tbl;
+    }
+
+    private Table buildBuyDragonsWinButtons()
+    {
+	Table tbl = new Table();
+	tbl.pad(10, 10, 0, 10);
+	btnWinOptCancel = new TextButton("Cancel", uiSkin);
+	tbl.add(btnWinOptCancel);
+	btnWinOptCancel.addListener(GameScreenInputHandler.getInstance());
+	return tbl;
+    }
+
+    public void onBuyDragonClicked(String button)
+    {
+	activeSlot =  Integer.parseInt(button.split("-")[1]);
+	m_paused = true;
+	winBuyDragon.setVisible(true);
     }
 
     public DragonSlot getSlot(int x, int y)
@@ -257,7 +338,7 @@ public class GameScreen extends SizableScreen
 
     private void spawnAttacker()
     {
-	int y = (int)MathUtils.random(0, 4);
+	int y = (int) MathUtils.random(0, 4);
 	Attacker attacker = new Attacker(y);
 
 	float x = y + 0.5f;
@@ -294,21 +375,22 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
-	update(delta);
+	if (!m_paused)
+	    update(delta);
 
 	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	m_gameCam.update();
-	
+
 	// Attach batcher to camera
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	batcher.draw(m_background, 0, 0, 5.0f, 9.0f, 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
 	batcher.end();
-	
+
 	renderGui();
-	
+
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	Dragon.getInstance().render(batcher);
@@ -347,8 +429,8 @@ public class GameScreen extends SizableScreen
      */
     private void update(float delta)
     {
-	scoreLabel.setText("Score: "+score);
-	goldLabel.setText("Gold: "+gold);
+	scoreLabel.setText("Score: " + score);
+	goldLabel.setText("Gold: " + gold);
 	if (m_objectsToRemove.size > 0)
 	{
 	    for (AbstractGameObject obj : m_objectsToRemove)
@@ -364,7 +446,7 @@ public class GameScreen extends SizableScreen
 		}
 		if (obj instanceof Attacker)
 		{
-		    int index = m_attackers.indexOf((Attacker)obj, true);
+		    int index = m_attackers.indexOf((Attacker) obj, true);
 		    if (index != -1)
 		    {
 			m_attackers.removeIndex(index);
@@ -382,7 +464,7 @@ public class GameScreen extends SizableScreen
 	}
 	for (Attacker obj : m_attackers)
 	{
-	    float scaledImpulse = obj.myData.m_impulse/delta;
+	    float scaledImpulse = obj.myData.m_impulse / delta;
 	    //obj.body.linVelLoc
 	    obj.body.applyLinearImpulse(new Vector2(0, scaledImpulse), obj.m_position, true);
 	    obj.update(delta);
@@ -408,7 +490,6 @@ public class GameScreen extends SizableScreen
 	batcher.setProjectionMatrix(m_uiCam.combined);
 	batcher.begin();
 
-	int x = 0;
 	for (DragonSlot slot : slots)
 	{
 	    slot.render(batcher);
@@ -477,5 +558,16 @@ public class GameScreen extends SizableScreen
     {
 	label.setText(text);
 
+    }
+
+    public void boughtDragonForSlot(int type)
+    {
+	    slots[activeSlot].setDragon(type);
+	    
+	    gold -= slots[activeSlot].getDragonData().m_goldBuyCost;
+	    m_paused = false;
+	    winBuyDragon.setVisible(false);
+	    activeSlot = -1;
+	
     }
 }

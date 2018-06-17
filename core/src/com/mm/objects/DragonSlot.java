@@ -6,31 +6,47 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mm.helpers.Assets;
+import com.mm.helpers.Globals;
 import com.mm.helpers.UIHelper;
-import com.mm.screen.input.GameScreenInputHandler;
 
 public class DragonSlot extends SimpleAbstractGameObject
 {
-    private static int m_slotNum = 1;
+    private static int m_slotNum = 0;
+    private DragonData m_data;
     private Texture m_slotImage;
-    private Texture m_dragonImage;
     private Rectangle m_slotButton;
     private String m_slotName;
     public ImageButton m_buyButton;
     public ImageButton m_sellButton;
 
-    public DragonSlot(Vector2 pos)
+    public DragonSlot(Vector2 slotPos, Vector2 btnPos)
     {
 	m_slotImage = Assets.assetManager.get(Assets.DRAGON_SLOT, Texture.class);
-	m_slotName = "SLOT-" + m_slotNum++;
-	pos.set(pos.x * m_slotImage.getWidth(), pos.y);
-	m_position = pos;
-	m_dragonImage = null;
+	m_slotName = "SLOT-" + m_slotNum;
+	slotPos.set(slotPos.x, slotPos.y);
+	m_position = slotPos;
+	m_data = null;
+
+	// Construct Buy Button
+	m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + "-" + m_slotNum);
+	m_buyButton.setSize(m_buyButton.getWidth() * 0.35f, m_buyButton.getHeight() * 0.35f);
+	float y = btnPos.y - m_buyButton.getHeight();
+	m_buyButton.setPosition(btnPos.x + 5, y - 5);
+	m_buyButton.setVisible(true);
+	
+	// Construct Sell Button
+	m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + "-"+m_slotNum);
+	m_sellButton.setSize(m_sellButton.getWidth() * 0.35f,m_sellButton.getHeight() * 0.35f);
+	y = btnPos.y - m_sellButton.getHeight();
+	m_sellButton.setPosition(slotPos.x + 5, y - 5);
+	m_sellButton.setVisible(false);
+	    
+	m_slotNum++;
     }
 
-    public Texture getDragonImage()
+    public DragonData getDragonData()
     {
-	return m_dragonImage;
+	return m_data;
     }
 
     public Texture getSlotImage()
@@ -43,29 +59,31 @@ public class DragonSlot extends SimpleAbstractGameObject
 	return m_slotButton;
     }
 
-    public void setDragon(Texture itemTexture)
+    public void setDragon(int type)
     {
-	m_dragonImage = itemTexture;
-	if (m_dragonImage != null)
+	if (type == -1)
 	{
+	    m_data = null;
+	    m_sellButton.setVisible(false);
+	    m_buyButton.setVisible(true);
+	}
+	else
+	{
+	    m_data = Globals.dragonTypes[type];
 	    m_slotButton = new Rectangle();
 	    m_slotButton.set(m_position.x, m_position.y, (float) m_slotImage.getWidth(), (float) m_slotImage.getHeight());
-
-	    // Add a listener to the button. ChangeListener is fired when the button's checked state changes, eg when clicked,
-	    // Button#setChecked() is called, via a key press, etc. If the event.cancel() is called, the checked state will be reverted.
-	    // ClickListener could have been used, but would only fire when clicked. Also, canceling a ClickListener event won't
-	    // revert the checked state.
-	    //m_slotButton.addListener(GameScreenInputHandler.getInstance());
-
+	    m_sellButton.setVisible(true);
+	    m_buyButton.setVisible(false);
 	}
     }
 
     @Override
     public void render(SpriteBatch batcher)
     {
-	if (m_dragonImage != null)
+	if (m_data != null)
 	{
-	    batcher.draw(m_dragonImage, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, m_dragonImage.getWidth(), m_dragonImage.getHeight(), false, true);
+	    Texture img = m_data.m_image;
+	    batcher.draw(img, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, img.getWidth(), img.getHeight(), false, true);
 	}
 	batcher.draw(m_slotImage, m_position.x, m_position.y, m_slotImage.getWidth(), m_slotImage.getHeight(), 0, 0, m_slotImage.getWidth(), m_slotImage.getHeight(), false, true);
     }
