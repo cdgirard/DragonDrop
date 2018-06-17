@@ -1,5 +1,6 @@
 package com.mm.screen.input;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mm.DragonDrop;
@@ -46,6 +47,15 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	    m_screen.m_paused = false;
 	    m_screen.winBuyDragon.setVisible(false);
 	}
+	else if (actor == m_screen.btnBuyGothDragon)
+	{
+	    m_screen.slots[m_screen.activeSlot].m_buyButton.setVisible(false);
+	    m_screen.slots[m_screen.activeSlot].m_sellButton.setVisible(true);
+	    m_screen.slots[m_screen.activeSlot].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+	    m_screen.activeSlot = -1;
+	    m_screen.m_paused = false;
+	    m_screen.winBuyDragon.setVisible(false);
+	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{
 	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
@@ -53,7 +63,7 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	else if (actor.getName().contains(Assets.BUY_BTN))
 	{
 	    m_screen.updateMessageLabel("Bought a Dragon.");
-	    m_screen.onBuyDragonClicked();
+	    m_screen.onBuyDragonClicked(actor.getName());
 	}
 
 	//System.out.println("Clicked! Is checked: " + actor.getName());

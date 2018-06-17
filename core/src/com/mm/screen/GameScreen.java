@@ -87,7 +87,8 @@ public class GameScreen extends SizableScreen
 
     private ImageButton m_quitButton;
 
-    private DragonSlot[] slots = new DragonSlot[5];
+    public DragonSlot[] slots = new DragonSlot[5];
+    public int activeSlot = -1; // slot buying or selling a dragon for
 
     SpriteBatch batcher;
 
@@ -97,7 +98,7 @@ public class GameScreen extends SizableScreen
 
     // Buy Dragon
     public Window winBuyDragon;
-    private ImageButton btnBuyGothDragon;
+    public ImageButton btnBuyGothDragon;
     private ImageButton btnBuyHazyDragon;
     private ImageButton btnBuyBookDragon;
     public TextButton btnWinOptCancel;
@@ -196,7 +197,7 @@ public class GameScreen extends SizableScreen
 	for (int index = 0; index < slots.length; index++)
 	{
 	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
-	    slots[index].m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + index);
+	    slots[index].m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + "-"+index);
 	    ImageButton buyBtn = slots[index].m_buyButton;
 	    buyBtn.setSize(buyBtn.getWidth() * 0.35f, buyBtn.getHeight() * 0.35f);
 	    float y = preferredHeight - m_quitButton.getHeight() - buyBtn.getHeight();
@@ -204,7 +205,7 @@ public class GameScreen extends SizableScreen
 	    buyBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(buyBtn);
 	    
-	    slots[index].m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + index);
+	    slots[index].m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + "-"+index);
 	    ImageButton sellBtn = slots[index].m_sellButton;
 	    sellBtn.setSize(sellBtn.getWidth() * 0.35f,sellBtn.getHeight() * 0.35f);
 	    y = preferredHeight - m_quitButton.getHeight() - sellBtn.getHeight();
@@ -287,8 +288,9 @@ public class GameScreen extends SizableScreen
 	return tbl;
     }
 
-    public void onBuyDragonClicked()
+    public void onBuyDragonClicked(String button)
     {
+	activeSlot =  Integer.parseInt(button.split("-")[1]);
 	m_paused = true;
 	winBuyDragon.setVisible(true);
     }
