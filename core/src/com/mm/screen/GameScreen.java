@@ -213,7 +213,6 @@ public class GameScreen extends SizableScreen
 	    m_stage.addActor(sellBtn);
 	    sellBtn.setVisible(false);
 	}
-
 	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
 	slots[0].m_buyButton.setVisible(false);
 	slots[0].m_sellButton.setVisible(true);
