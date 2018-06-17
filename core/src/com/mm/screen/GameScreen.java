@@ -94,7 +94,8 @@ public class GameScreen extends SizableScreen
     {
 	// Get Initial Window Setup  
 	m_background = Assets.assetManager.get(Assets.GAME_SCREEN, Texture.class);
-
+	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
+	UIHelper.addTexture(Assets.SELL_BTN, Assets.assetManager.get(Assets.SELL_BTN, Texture.class));
 	preferredWidth = m_background.getWidth();
 	preferredHeight = m_background.getHeight();
 
@@ -143,17 +144,34 @@ public class GameScreen extends SizableScreen
 	for (int index = 0; index < slots.length; index++)
 	{
 	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
+	    slots[index].m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + index);
 	    ImageButton buyBtn = slots[index].m_buyButton;
-	    buyBtn = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + index);
 	    buyBtn.setSize(buyBtn.getWidth() * 0.35f, buyBtn.getHeight() * 0.35f);
 	    float y = preferredHeight - m_quitButton.getHeight() - buyBtn.getHeight();
 	    buyBtn.setPosition(slots[index].m_position.x + 5, y - 5);
 	    buyBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(buyBtn);
+	    
+	    slots[index].m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + index);
+	    ImageButton sellBtn = slots[index].m_sellButton;
+	    sellBtn.setSize(sellBtn.getWidth() * 0.35f,sellBtn.getHeight() * 0.35f);
+	    y = preferredHeight - m_quitButton.getHeight() - sellBtn.getHeight();
+	    sellBtn.setPosition(slots[index].m_position.x + 5, y - 5);
+	    sellBtn.addListener(GameScreenInputHandler.getInstance());
+	    m_stage.addActor(sellBtn);
+	    sellBtn.setVisible(false);
 	}
 	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
+	slots[0].m_buyButton.setVisible(false);
+	slots[0].m_sellButton.setVisible(true);
+	
 	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
+	slots[1].m_buyButton.setVisible(false);
+	slots[1].m_sellButton.setVisible(true);
+	
 	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
+	slots[2].m_buyButton.setVisible(false);
+	slots[2].m_sellButton.setVisible(true);
 
 	b2DebugRenderer = new Box2DDebugRenderer();
 	
@@ -164,7 +182,7 @@ public class GameScreen extends SizableScreen
     {
 	m_stage = new Stage();
 
-	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON);
+	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON, GameScreenInputHandler.QUIT_BUTTON);
 	int x = 100;
 	m_quitButton.setPosition(x, preferredHeight - m_quitButton.getHeight());
 	m_stage.addActor(m_quitButton);
