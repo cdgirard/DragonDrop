@@ -2,7 +2,7 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mm.helpers.Assets;
+import com.mm.helpers.Globals;
 
 /**
  * Used to manage the location and state of the different attackers in the game.
@@ -12,18 +12,12 @@ import com.mm.helpers.Assets;
  */
 public class Attacker extends AbstractGameObject
 {
-    private static AttackerData[] attackerTypes = {
-	new AttackerData(Assets.assetManager.get(Assets.FARMER, Texture.class),10, -0.08f),
-	new AttackerData(Assets.assetManager.get(Assets.SOILDER, Texture.class),20, -0.095f),
-	new AttackerData(Assets.assetManager.get(Assets.CROSSBOW, Texture.class),25, -0.09f),
-	new AttackerData(Assets.assetManager.get(Assets.SPEARMAN, Texture.class),15, -0.08f),
-	new AttackerData(Assets.assetManager.get(Assets.KNIGHT, Texture.class),50, -0.14f),
-    };
+
     public AttackerData myData;
 
     public Attacker(int type)
     {
-	myData = attackerTypes[type];
+	myData = Globals.attackerTypes[type];
 
 	if (type != 4)
             dimension.set(0.75f,0.75f);

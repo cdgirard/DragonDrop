@@ -49,30 +49,16 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	else if (actor == m_screen.btnBuyGothDragon)
 	{
-	    m_screen.slots[m_screen.activeSlot].setDragon(0);
-	    
-	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
-	    m_screen.m_paused = false;
-	    m_screen.winBuyDragon.setVisible(false);
-	    m_screen.activeSlot = -1;
+	    m_screen.boughtDragonForSlot(0);
+
 	}
 	else if (actor == m_screen.btnBuyHazyDragon)
 	{
-	    m_screen.slots[m_screen.activeSlot].setDragon(1);
-	    
-	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
-	    m_screen.m_paused = false;
-	    m_screen.winBuyDragon.setVisible(false);
-	    m_screen.activeSlot = -1;
+	    m_screen.boughtDragonForSlot(1);
 	}
 	else if (actor == m_screen.btnBuyBookDragon)
 	{
-	    m_screen.slots[m_screen.activeSlot].setDragon(2);
-	    
-	    m_screen.gold -= m_screen.slots[m_screen.activeSlot].getDragonData().m_goldBuyCost;
-	    m_screen.m_paused = false;
-	    m_screen.winBuyDragon.setVisible(false);
-	    m_screen.activeSlot = -1;
+	    m_screen.boughtDragonForSlot(2);
 	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{
@@ -83,9 +69,5 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	    m_screen.updateMessageLabel("Bought a Dragon.");
 	    m_screen.onBuyDragonClicked(actor.getName());
 	}
-
-	//System.out.println("Clicked! Is checked: " + actor.getName());
-
-
     }
 }

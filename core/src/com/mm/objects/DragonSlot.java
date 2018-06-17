@@ -6,17 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mm.helpers.Assets;
+import com.mm.helpers.Globals;
 import com.mm.helpers.UIHelper;
-import com.mm.screen.input.GameScreenInputHandler;
 
 public class DragonSlot extends SimpleAbstractGameObject
 {
-    private static DragonData[] dragonTypes = {
-	new DragonData(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class),10, 30),
-	new DragonData(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class),10, 50),
-	new DragonData(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class),10, 100)
-    };
-    
     private static int m_slotNum = 0;
     private DragonData m_data;
     private Texture m_slotImage;
@@ -75,7 +69,7 @@ public class DragonSlot extends SimpleAbstractGameObject
 	}
 	else
 	{
-	    m_data = dragonTypes[type];
+	    m_data = Globals.dragonTypes[type];
 	    m_slotButton = new Rectangle();
 	    m_slotButton.set(m_position.x, m_position.y, (float) m_slotImage.getWidth(), (float) m_slotImage.getHeight());
 	    m_sellButton.setVisible(true);

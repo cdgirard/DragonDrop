@@ -226,7 +226,7 @@ public class GameScreen extends SizableScreen
 	// winBuyDragon.debug();
 	winBuyDragon.pack();
 	// Not doing anything
-	winBuyDragon.setPosition(preferredWidth - winBuyDragon.getWidth() - 50, 50);
+	winBuyDragon.setPosition(preferredWidth - winBuyDragon.getWidth() - 100, 475);
 	winBuyDragon.setMovable(false);
 	return winBuyDragon;
     }
@@ -558,5 +558,16 @@ public class GameScreen extends SizableScreen
     {
 	label.setText(text);
 
+    }
+
+    public void boughtDragonForSlot(int type)
+    {
+	    slots[activeSlot].setDragon(type);
+	    
+	    gold -= slots[activeSlot].getDragonData().m_goldBuyCost;
+	    m_paused = false;
+	    winBuyDragon.setVisible(false);
+	    activeSlot = -1;
+	
     }
 }
