@@ -143,6 +143,13 @@ public class GameScreen extends SizableScreen
 	for (int index = 0; index < slots.length; index++)
 	{
 	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
+	    ImageButton buyBtn = slots[index].m_buyButton;
+	    buyBtn = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + index);
+	    buyBtn.setSize(buyBtn.getWidth() * 0.35f, buyBtn.getHeight() * 0.35f);
+	    float y = preferredHeight - m_quitButton.getHeight() - buyBtn.getHeight();
+	    buyBtn.setPosition(slots[index].m_position.x + 5, y - 5);
+	    buyBtn.addListener(GameScreenInputHandler.getInstance());
+	    m_stage.addActor(buyBtn);
 	}
 	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
 	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
