@@ -49,8 +49,6 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	else if (actor == m_screen.btnBuyGothDragon)
 	{
-	    m_screen.slots[m_screen.activeSlot].m_buyButton.setVisible(false);
-	    m_screen.slots[m_screen.activeSlot].m_sellButton.setVisible(true);
 	    m_screen.slots[m_screen.activeSlot].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
 	    m_screen.activeSlot = -1;
 	    m_screen.m_paused = false;

@@ -125,8 +125,9 @@ public class GameScreen extends SizableScreen
 	m_gameCam = new OrthographicCamera();
 	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
-	m_uiCam = new OrthographicCamera(preferredWidth, preferredHeight);
-	m_uiCam.setToOrtho(true);
+	m_uiCam = new OrthographicCamera();
+	m_uiCam.setToOrtho(true,preferredWidth, preferredHeight);
+	//m_uiCam.setToOrtho(false);
 	m_uiCam.update();
 	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
 	// Move Camera to 0,0
@@ -168,10 +169,10 @@ public class GameScreen extends SizableScreen
 	UIHelper.addRegions(Assets.buttonsAtlas);
 	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
 	m_stage = new Stage();
+	
 
 	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON, GameScreenInputHandler.QUIT_BUTTON);
-	int x = 100;
-	m_quitButton.setPosition(x, preferredHeight - m_quitButton.getHeight());
+	m_quitButton.setPosition(100, preferredHeight - m_quitButton.getHeight());
 	m_quitButton.addListener(GameScreenInputHandler.getInstance());
 	m_stage.addActor(m_quitButton);
 
@@ -196,35 +197,22 @@ public class GameScreen extends SizableScreen
 
 	for (int index = 0; index < slots.length; index++)
 	{
-	    slots[index] = new DragonSlot(new Vector2(index, m_quitButton.getHeight()));
-	    slots[index].m_buyButton = UIHelper.constructButton(Assets.BUY_BTN, Assets.BUY_BTN + "-"+index);
+	    float xLoc = index*Assets.assetManager.get(Assets.DRAGON_SLOT, Texture.class).getWidth();
+	    float yLoc = m_quitButton.getHeight();
+	    slots[index] = new DragonSlot(new Vector2(xLoc, yLoc),new Vector2(xLoc,preferredHeight-yLoc));
 	    ImageButton buyBtn = slots[index].m_buyButton;
-	    buyBtn.setSize(buyBtn.getWidth() * 0.35f, buyBtn.getHeight() * 0.35f);
-	    float y = preferredHeight - m_quitButton.getHeight() - buyBtn.getHeight();
-	    buyBtn.setPosition(slots[index].m_position.x + 5, y - 5);
 	    buyBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(buyBtn);
 	    
-	    slots[index].m_sellButton = UIHelper.constructButton(Assets.SELL_BTN, Assets.SELL_BTN + "-"+index);
 	    ImageButton sellBtn = slots[index].m_sellButton;
-	    sellBtn.setSize(sellBtn.getWidth() * 0.35f,sellBtn.getHeight() * 0.35f);
-	    y = preferredHeight - m_quitButton.getHeight() - sellBtn.getHeight();
-	    sellBtn.setPosition(slots[index].m_position.x + 5, y - 5);
 	    sellBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(sellBtn);
-	    sellBtn.setVisible(false);
 	}
 	slots[0].setDragon(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class));
-	slots[0].m_buyButton.setVisible(false);
-	slots[0].m_sellButton.setVisible(true);
 	
 	slots[1].setDragon(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
-	slots[1].m_buyButton.setVisible(false);
-	slots[1].m_sellButton.setVisible(true);
 	
 	slots[2].setDragon(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
-	slots[2].m_buyButton.setVisible(false);
-	slots[2].m_sellButton.setVisible(true);
     }
 
     private Table buildBuyDragonsWindowLayer()
@@ -501,7 +489,6 @@ public class GameScreen extends SizableScreen
 	batcher.setProjectionMatrix(m_uiCam.combined);
 	batcher.begin();
 
-	int x = 0;
 	for (DragonSlot slot : slots)
 	{
 	    slot.render(batcher);
