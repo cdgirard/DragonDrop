@@ -40,6 +40,7 @@ public class MainScreenInputHandler extends ChangeListener //implements InputPro
         if (actor.getName().equals(START_NEW_GAME_BUTTON))
         {
             AudioManager.instance.stopMusic();
+            DragonDrop.GAME_SCREEN.init();
             DragonDrop.m_dreamScape.setScreen(DragonDrop.GAME_SCREEN);
         }
         

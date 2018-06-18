@@ -62,7 +62,7 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{
-	    DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
+	    m_screen.endGame();
 	}
 	else if (actor.getName().contains(Assets.BUY_BTN))
 	{
