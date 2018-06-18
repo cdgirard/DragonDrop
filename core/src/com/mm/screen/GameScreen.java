@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.mm.DragonDrop;
 import com.mm.helpers.Assets;
 import com.mm.helpers.AudioManager;
 import com.mm.helpers.CollisionHandler;
@@ -60,6 +61,7 @@ public class GameScreen extends SizableScreen
     World world;
 
     public boolean m_paused = false;
+    public boolean m_endGame = false;
 
     public int score = 0;
     public int gold = 100;
@@ -70,7 +72,7 @@ public class GameScreen extends SizableScreen
     public float xScale = 0;
     public float yScale = 0;
 
-    public Array<AbstractGameObject> m_droppingDragons;
+    public Array<DroppingDragon> m_droppingDragons;
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
 
@@ -137,7 +139,7 @@ public class GameScreen extends SizableScreen
 
 	batcher = new SpriteBatch();
 
-	m_droppingDragons = new Array<AbstractGameObject>();
+	m_droppingDragons = new Array<DroppingDragon>();
 	m_attackers = new Array<Attacker>();
 	m_objectsToRemove = new Array<AbstractGameObject>();
 
@@ -161,6 +163,70 @@ public class GameScreen extends SizableScreen
 
 	b2DebugRenderer = new Box2DDebugRenderer();
 
+    }
+    
+    /**
+     * Initializes all the key data values for the start of a new game.
+     */
+    public void init()
+    {
+	if (m_objectsToRemove.size > 0)
+	{
+	    for (AbstractGameObject obj : m_objectsToRemove)
+	    {
+		if (obj instanceof DroppingDragon)
+		{
+		    int index = m_droppingDragons.indexOf((DroppingDragon)obj, true);
+		    if (index != -1)
+		    {
+			m_droppingDragons.removeIndex(index);
+			world.destroyBody(obj.body);
+		    }
+		}
+		if (obj instanceof Attacker)
+		{
+		    int index = m_attackers.indexOf((Attacker) obj, true);
+		    if (index != -1)
+		    {
+			m_attackers.removeIndex(index);
+			world.destroyBody(obj.body);
+		    }
+		}
+	    }
+	    m_objectsToRemove.removeRange(0,m_objectsToRemove.size-1);
+	}
+	
+	if (m_droppingDragons.size > 0)
+	{
+	    for (DroppingDragon obj : m_droppingDragons)
+	    {
+		world.destroyBody(obj.body);
+	    }
+	    m_droppingDragons.removeRange(0, m_droppingDragons.size-1);
+	}
+	
+	if (m_attackers.size > 0)
+	{
+	    for (Attacker obj : m_attackers)
+	    {
+		world.destroyBody(obj.body);
+	    }
+	    m_attackers.removeRange(0,m_attackers.size-1);
+	}
+	
+	slots[0].setDragon(0);
+
+	slots[1].setDragon(1);
+
+	slots[2].setDragon(2);
+	
+	slots[3].setDragon(-1);
+	
+	slots[4].setDragon(-1);
+	score = 0;
+	gold = 100;
+	m_runTime = 0f;
+	m_endGame = false;
     }
 
     /**
@@ -385,6 +451,11 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
+	if (m_endGame)
+	{
+	    endGame();
+
+	}
 	if (!m_paused)
 	    update(delta);
 
@@ -431,6 +502,12 @@ public class GameScreen extends SizableScreen
 	    b2DebugRenderer.render(world, m_gameCam.combined);
 	}
     }
+    
+    public void endGame()
+    {
+	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
+	DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
+    }
 
     /**
      * Update the present state of all objects in the game before 
@@ -447,7 +524,7 @@ public class GameScreen extends SizableScreen
 	    {
 		if (obj instanceof DroppingDragon)
 		{
-		    int index = m_droppingDragons.indexOf(obj, true);
+		    int index = m_droppingDragons.indexOf((DroppingDragon)obj, true);
 		    if (index != -1)
 		    {
 			m_droppingDragons.removeIndex(index);
@@ -467,6 +544,11 @@ public class GameScreen extends SizableScreen
 	    m_objectsToRemove.removeRange(0, m_objectsToRemove.size - 1);
 	}
 
+	if ((gold <= 0) && (m_droppingDragons.size == 0))
+	{
+	    m_endGame = true;
+	}
+	
 	world.step(delta, 8, 3);
 	for (AbstractGameObject obj : m_droppingDragons)
 	{
