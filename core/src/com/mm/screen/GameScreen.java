@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mm.helpers.Assets;
 import com.mm.helpers.AudioManager;
 import com.mm.helpers.CollisionHandler;
+import com.mm.helpers.Globals;
 import com.mm.helpers.UIHelper;
 import com.mm.objects.AbstractGameObject;
 import com.mm.objects.Attacker;
@@ -59,7 +60,7 @@ public class GameScreen extends SizableScreen
     World world;
 
     public boolean m_paused = false;
-    
+
     public int score = 0;
     public int gold = 100;
 
@@ -127,7 +128,7 @@ public class GameScreen extends SizableScreen
 	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
 	m_uiCam = new OrthographicCamera();
-	m_uiCam.setToOrtho(true,preferredWidth, preferredHeight);
+	m_uiCam.setToOrtho(true, preferredWidth, preferredHeight);
 	//m_uiCam.setToOrtho(false);
 	m_uiCam.update();
 	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
@@ -170,7 +171,6 @@ public class GameScreen extends SizableScreen
 	UIHelper.addRegions(Assets.buttonsAtlas);
 	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
 	m_stage = new Stage();
-	
 
 	m_quitButton = UIHelper.constructButton(GameScreenInputHandler.QUIT_BUTTON, GameScreenInputHandler.QUIT_BUTTON);
 	m_quitButton.setPosition(100, preferredHeight - m_quitButton.getHeight());
@@ -198,24 +198,24 @@ public class GameScreen extends SizableScreen
 
 	for (int index = 0; index < slots.length; index++)
 	{
-	    float xLoc = index*Assets.assetManager.get(Assets.DRAGON_SLOT, Texture.class).getWidth();
+	    float xLoc = index * Assets.assetManager.get(Assets.DRAGON_SLOT, Texture.class).getWidth();
 	    float yLoc = m_quitButton.getHeight();
-	    slots[index] = new DragonSlot(new Vector2(xLoc, yLoc),new Vector2(xLoc,preferredHeight-yLoc));
+	    slots[index] = new DragonSlot(new Vector2(xLoc, yLoc), new Vector2(xLoc, preferredHeight - yLoc));
 	    ImageButton buyBtn = slots[index].m_buyButton;
 	    buyBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(buyBtn);
-	    
+
 	    ImageButton sellBtn = slots[index].m_sellButton;
 	    sellBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(sellBtn);
 	}
 	slots[0].setDragon(0);
-	
+
 	slots[1].setDragon(1);
-	
+
 	slots[2].setDragon(2);
-	
-	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight()*1.5f;
+
+	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * 1.5f;
     }
 
     private Table buildBuyDragonsWindowLayer()
@@ -249,17 +249,17 @@ public class GameScreen extends SizableScreen
 	btnBuyGothDragon = UIHelper.constructButton(Assets.GOTH_DRAGON, Assets.GOTH_DRAGON);
 	btnBuyGothDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyGothDragon);
-	
+
 	UIHelper.addTexture(Assets.HAZY_DRAGON, Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class));
 	btnBuyHazyDragon = UIHelper.constructButton(Assets.HAZY_DRAGON, Assets.HAZY_DRAGON);
 	btnBuyHazyDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyHazyDragon);
-	
+
 	UIHelper.addTexture(Assets.BOOK_DRAGON, Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class));
 	btnBuyBookDragon = UIHelper.constructButton(Assets.BOOK_DRAGON, Assets.BOOK_DRAGON);
 	btnBuyBookDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyBookDragon);
-	
+
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
@@ -282,7 +282,7 @@ public class GameScreen extends SizableScreen
 
     public void onBuyDragonClicked(String button)
     {
-	activeSlot =  Integer.parseInt(button.split("-")[1]);
+	activeSlot = Integer.parseInt(button.split("-")[1]);
 	m_paused = true;
 	winBuyDragon.setVisible(true);
     }
@@ -563,14 +563,25 @@ public class GameScreen extends SizableScreen
 
     }
 
+    /**
+     * Buys a dragon and places it in the slot purchased for.
+     * @param type
+     */
     public void boughtDragonForSlot(int type)
     {
+	if (gold >= Globals.dragonTypes[type].m_goldBuyCost)
+	{
 	    slots[activeSlot].setDragon(type);
-	    
+
 	    gold -= slots[activeSlot].getDragonData().m_goldBuyCost;
 	    m_paused = false;
 	    winBuyDragon.setVisible(false);
 	    activeSlot = -1;
-	
+	}
+	else
+	{
+	    updateMessageLabel("Not enough gold!");
+	}
+
     }
 }
