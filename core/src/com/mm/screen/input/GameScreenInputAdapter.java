@@ -62,13 +62,21 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    if (screenY > m_screen.m_dropThreshold)
 	    {
-		m_screen.gold -= 5;
-		m_screen.updateMessageLabel("Dragon Dropped");
-		Texture image = Dragon.getInstance().m_image;
-		Dragon.getInstance().setActive(false);
-		float xLoc = screenX / m_screen.xScale;
-		float yLoc = screenY / m_screen.yScale;
-		m_screen.dropDragon(image, new Vector2(xLoc, yLoc));
+		if (m_screen.gold >= 5)
+		{
+		    m_screen.gold -= 5;
+		    m_screen.updateMessageLabel("Dragon Dropped");
+		    Texture image = Dragon.getInstance().m_image;
+		    Dragon.getInstance().setActive(false);
+		    float xLoc = screenX / m_screen.xScale;
+		    float yLoc = screenY / m_screen.yScale;
+		    m_screen.dropDragon(image, new Vector2(xLoc, yLoc));
+		}
+		else
+		{
+		    Dragon.getInstance().setActive(false);
+		    m_screen.updateMessageLabel("Not Enough Gold!!");
+		}
 	    }
 	    else
 	    {
