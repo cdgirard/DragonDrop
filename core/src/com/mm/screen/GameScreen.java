@@ -89,6 +89,7 @@ public class GameScreen extends SizableScreen
 
     public DragonSlot[] slots = new DragonSlot[5];
     public int activeSlot = -1; // slot buying or selling a dragon for
+    public float m_dropThreshold; // Point at where you can drop a dragon
 
     SpriteBatch batcher;
 
@@ -213,6 +214,8 @@ public class GameScreen extends SizableScreen
 	slots[1].setDragon(1);
 	
 	slots[2].setDragon(2);
+	
+	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight()*1.5f;
     }
 
     private Table buildBuyDragonsWindowLayer()
