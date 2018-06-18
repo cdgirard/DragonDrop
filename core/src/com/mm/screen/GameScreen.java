@@ -286,6 +286,13 @@ public class GameScreen extends SizableScreen
 	m_paused = true;
 	winBuyDragon.setVisible(true);
     }
+    
+    public void onSellDragonClicked(String button)
+    {
+	int slot = Integer.parseInt(button.split("-")[1]);
+	gold += slots[slot].getDragonData().m_goldBuyCost/2;
+	slots[slot].setDragon(-1);
+    }
 
     public DragonSlot getSlot(int x, int y)
     {

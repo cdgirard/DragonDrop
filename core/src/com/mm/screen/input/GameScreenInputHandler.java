@@ -69,5 +69,10 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	    m_screen.updateMessageLabel("Bought a Dragon.");
 	    m_screen.onBuyDragonClicked(actor.getName());
 	}
+	else if (actor.getName().contains(Assets.SELL_BTN))
+	{
+	    m_screen.updateMessageLabel("Sold a Dragon.");
+	    m_screen.onSellDragonClicked(actor.getName());
+	}
     }
 }
