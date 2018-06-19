@@ -7,10 +7,12 @@ import com.mm.helpers.Assets;
 public class DroppingDragon extends AbstractGameObject
 {
     private Texture m_image;
+    public float health;
 
-    public DroppingDragon(Texture image)
+    public DroppingDragon(DragonData data)
     {
-	m_image = image;
+	m_image = data.m_image;
+	health = data.m_baseHealth;
 	init();
     }
 
