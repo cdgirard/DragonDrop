@@ -29,6 +29,16 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	    float xLoc = screenX / m_screen.xScale;
 	    float yLoc = screenY / m_screen.yScale;
 	    Dragon.getInstance().m_position.set(xLoc, yLoc);
+	    if (screenY > m_screen.m_dropThreshold)
+	    {
+	        Dragon.getInstance().dimension.set(0.5f, 0.5f);
+	        m_screen.updateDropThreshold(0.5f);
+	    }
+	    else
+	    {
+		Dragon.getInstance().dimension.set(1.0f, 1.0f);
+		m_screen.updateDropThreshold(1.0f);
+	    }
 	}
 	return true;
     }

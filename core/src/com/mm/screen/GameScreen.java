@@ -284,6 +284,11 @@ public class GameScreen extends SizableScreen
 
 	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * 1.5f;
     }
+    
+    public void updateDropThreshold(float modifier)
+    {
+	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * (1 + 0.5f*modifier);
+    }
 
     private Table buildBuyDragonsWindowLayer()
     {
@@ -571,7 +576,10 @@ public class GameScreen extends SizableScreen
 		flagForRemoval(obj);
 	    }
 	}
-	Dragon.getInstance().update(delta);
+	if (Dragon.getInstance().getActive())
+	{
+	    Dragon.getInstance().update(delta);
+	}
 
 	if (Math.random() > 0.98)
 	    spawnAttacker();
