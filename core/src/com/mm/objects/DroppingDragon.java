@@ -18,6 +18,7 @@ public class DroppingDragon extends AbstractGameObject
 
     private void init()
     {
+	dimension.set(0.5f, 0.5f);
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
 
