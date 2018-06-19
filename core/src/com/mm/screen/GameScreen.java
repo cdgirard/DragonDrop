@@ -404,7 +404,7 @@ public class GameScreen extends SizableScreen
 
 	FixtureDef fixtureDef = new FixtureDef();
 	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 50;
+	fixtureDef.density = 5;
 	fixtureDef.restitution = 0.5f;
 	fixtureDef.friction = 0.5f;
 	body.createFixture(fixtureDef);
@@ -438,7 +438,7 @@ public class GameScreen extends SizableScreen
 	FixtureDef fixtureDef = new FixtureDef();
 	fixtureDef.shape = polygonShape;
 	fixtureDef.density = 50;
-	fixtureDef.restitution = 0.5f;
+	fixtureDef.restitution = 0f;
 	fixtureDef.friction = 0.5f;
 	body.createFixture(fixtureDef);
 	polygonShape.dispose();
