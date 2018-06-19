@@ -137,8 +137,12 @@ public class CollisionHandler implements ContactListener
     		AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
 //    		
     		Attacker attacker = (Attacker)attackerFixture.getBody().getUserData();
-    		world.gold = world.gold + attacker.myData.m_gold;
-    		world.flagForRemoval(attacker);
+    		attacker.health -= 1;
+    		if (attacker.health <= 0)
+    		{
+    		    world.gold = world.gold + attacker.myData.m_gold;
+    		    world.flagForRemoval(attacker);
+    		}
     		DroppingDragon dragon = (DroppingDragon)dragonFixture.getBody().getUserData();
     		world.flagForRemoval(dragon);
 //    	}

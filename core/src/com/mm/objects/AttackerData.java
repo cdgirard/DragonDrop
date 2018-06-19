@@ -4,14 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class AttackerData
 {
-    public Texture m_image;
-    public int m_gold = 10;
-    public float m_impulse = -6.0f;
+    public final Texture m_image;
+    public final int m_gold;
+    public final float m_impulse;
+    public final float m_baseHealth;
     
-    public AttackerData(Texture img, int gold, float impulse)
+    public AttackerData(Texture img, int gold, float impulse, float health)
     {
 	m_image = img;
 	m_gold = gold;
 	m_impulse = impulse;
+	m_baseHealth = health;
     }
 }

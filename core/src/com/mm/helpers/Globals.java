@@ -7,11 +7,11 @@ import com.mm.objects.DragonData;
 public class Globals
 {
     public static AttackerData[] attackerTypes = {
-	new AttackerData(Assets.assetManager.get(Assets.FARMER, Texture.class),10, -0.08f),
-	new AttackerData(Assets.assetManager.get(Assets.SOILDER, Texture.class),20, -0.095f),
-	new AttackerData(Assets.assetManager.get(Assets.CROSSBOW, Texture.class),25, -0.09f),
-	new AttackerData(Assets.assetManager.get(Assets.SPEARMAN, Texture.class),15, -0.08f),
-	new AttackerData(Assets.assetManager.get(Assets.KNIGHT, Texture.class),50, -0.14f),
+	new AttackerData(Assets.assetManager.get(Assets.FARMER, Texture.class),10, -0.08f, 1),
+	new AttackerData(Assets.assetManager.get(Assets.SOILDER, Texture.class),20, -0.095f, 2),
+	new AttackerData(Assets.assetManager.get(Assets.CROSSBOW, Texture.class),25, -0.09f, 1),
+	new AttackerData(Assets.assetManager.get(Assets.SPEARMAN, Texture.class),15, -0.08f, 2),
+	new AttackerData(Assets.assetManager.get(Assets.KNIGHT, Texture.class),50, -0.14f, 4),
     };
     
     public static DragonData[] dragonTypes = {
