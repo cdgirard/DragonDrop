@@ -38,7 +38,7 @@ public class CollisionHandler implements ContactListener
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         
-        Gdx.app.log("CollisionHandler-begin A", "begin");
+        //Gdx.app.log("CollisionHandler-begin A", "begin");
         
        // processContact(contact);
         
@@ -55,8 +55,8 @@ public class CollisionHandler implements ContactListener
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         
-       // Gdx.app.log("CollisionHandler-end A", "end");
-        processContact(contact);
+        //Gdx.app.log("CollisionHandler-end A", "end");
+        
         
         // Gdx.app.log("CollisionHandler-end A", fixtureA.getBody().getLinearVelocity().x+" : "+fixtureA.getBody().getLinearVelocity().y);
         // Gdx.app.log("CollisionHandler-end B", fixtureB.getBody().getLinearVelocity().x+" : "+fixtureB.getBody().getLinearVelocity().y);
@@ -70,6 +70,7 @@ public class CollisionHandler implements ContactListener
     @Override
     public void preSolve(Contact contact, Manifold oldManifold)
     {
+    	//Gdx.app.log("CollisionHandler-preSolve A", "preSolve");
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
@@ -82,8 +83,12 @@ public class CollisionHandler implements ContactListener
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse)
     {
+    	//Gdx.app.log("CollisionHandler-postSolve A", "postSolve");
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
+        
+        processContact(contact);
+        
         ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
         if (listener != null)
         {
@@ -114,6 +119,7 @@ public class CollisionHandler implements ContactListener
     
     private void processContact(Contact contact)
     {
+    	//Gdx.app.log("CollisionHandler-process A", "process");
     	Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         AbstractGameObject objA = (AbstractGameObject)fixtureA.getBody().getUserData();
@@ -131,11 +137,10 @@ public class CollisionHandler implements ContactListener
     
     private void processDragonContact(Fixture dragonFixture, Fixture attackerFixture)
     {
-   		// Remove the block update the player's score by 1.
     		world.score++;
     		
     		AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
-//    		
+  		
     		Attacker attacker = (Attacker)attackerFixture.getBody().getUserData();
     		attacker.health -= 1;
     		if (attacker.health <= 0)
@@ -149,7 +154,6 @@ public class CollisionHandler implements ContactListener
     		{
     		    world.flagForRemoval(dragon);
     		}
-//    	}
     }
 	
 }

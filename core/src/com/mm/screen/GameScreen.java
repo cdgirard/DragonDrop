@@ -405,7 +405,7 @@ public class GameScreen extends SizableScreen
 
 	FixtureDef fixtureDef = new FixtureDef();
 	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 25;
+	fixtureDef.density = 15;
 	fixtureDef.restitution = 0.25f;
 	fixtureDef.friction = 0.5f;
 	body.createFixture(fixtureDef);
@@ -415,13 +415,8 @@ public class GameScreen extends SizableScreen
 
     private void spawnAttacker()
     {
-	int y = 1; //(int) MathUtils.random(0, 4);
-	//Attacker attacker = new Attacker(y);
-    	Attacker attacker;
-    	if (m_attackers.size == 0)
-    		attacker = new Attacker(1);
-    	else
-    		return;
+	int y = (int) MathUtils.random(0, 4);
+	Attacker attacker = new Attacker(y);
 
 	float x = y + 0.5f;
 	Vector2 pos = new Vector2(x, 9.0f);
