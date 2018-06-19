@@ -2,17 +2,27 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * Used to store the base data on each type of dragon.  Instance
+ * variables set to final because this data should not be changed.
+ * If it needs to be for a specific dropping dragon that should be
+ * handled by the DroppingDragon or DragonSlot classes.
+ * @author cdgira
+ *
+ */
 public class DragonData
 {
-    public Texture m_image;
-    public int m_goldDropCost = 10;
-    public int m_goldBuyCost = 10;
+    public final Texture m_image;
+    public final int m_goldDropCost;
+    public final int m_goldBuyCost;
+    public float m_baseHealth;
     
-    public DragonData(Texture img, int goldDropCost, int goldBuyCost)
+    public DragonData(Texture img, int goldDropCost, int goldBuyCost, float health)
     {
 	m_image = img;
 	m_goldDropCost = goldDropCost;
 	m_goldBuyCost = goldBuyCost;
+	m_baseHealth = health;
     }
 
 }

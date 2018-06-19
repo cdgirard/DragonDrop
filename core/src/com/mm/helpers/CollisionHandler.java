@@ -144,7 +144,11 @@ public class CollisionHandler implements ContactListener
     		    world.flagForRemoval(attacker);
     		}
     		DroppingDragon dragon = (DroppingDragon)dragonFixture.getBody().getUserData();
-    		world.flagForRemoval(dragon);
+    		dragon.health -= 1;
+    		if (dragon.health <= 0)
+    		{
+    		    world.flagForRemoval(dragon);
+    		}
 //    	}
     }
 	

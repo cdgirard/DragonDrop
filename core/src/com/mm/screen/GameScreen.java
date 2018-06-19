@@ -46,6 +46,7 @@ import com.mm.objects.AbstractGameObject;
 import com.mm.objects.Attacker;
 import com.mm.objects.DroppingDragon;
 import com.mm.objects.Dragon;
+import com.mm.objects.DragonData;
 import com.mm.objects.DragonSlot;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
@@ -385,9 +386,9 @@ public class GameScreen extends SizableScreen
      * Causes a new dragon to start falling from the specified location.
      * @param pos
      */
-    public void dropDragon(Texture image, Vector2 pos)
+    public void dropDragon(DragonData data, Vector2 pos)
     {
-	DroppingDragon droppedDragon = new DroppingDragon(image);
+	DroppingDragon droppedDragon = new DroppingDragon(data);
 
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(pos);
