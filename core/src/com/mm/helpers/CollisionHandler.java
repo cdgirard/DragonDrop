@@ -38,7 +38,7 @@ public class CollisionHandler implements ContactListener
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         
-        //Gdx.app.log("CollisionHandler-begin A", "begin");
+        Gdx.app.log("CollisionHandler-begin A", "begin");
         
        // processContact(contact);
         
