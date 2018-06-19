@@ -14,10 +14,12 @@ public class Attacker extends AbstractGameObject
 {
 
     public AttackerData myData;
+    public float health;
 
     public Attacker(int type)
     {
 	myData = Globals.attackerTypes[type];
+	health = myData.m_baseHealth;
 
 	if (type != 4)
             dimension.set(0.75f,0.75f);
