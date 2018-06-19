@@ -551,9 +551,13 @@ public class GameScreen extends SizableScreen
 	}
 	
 	world.step(delta, 8, 3);
-	for (AbstractGameObject obj : m_droppingDragons)
+	for (DroppingDragon obj : m_droppingDragons)
 	{
 	    obj.update(delta);
+	    if (obj.m_position.y > 10.0f)
+	    {
+	    	flagForRemoval(obj);
+	    }
 	}
 	for (Attacker obj : m_attackers)
 	{
