@@ -572,7 +572,7 @@ public class GameScreen extends SizableScreen
 	    obj.update(delta);
 	    if (obj.m_position.y < 2.5f)
 	    {
-		gold -= 10;
+		gold -= obj.myData.m_goldSteals;
 		flagForRemoval(obj);
 	    }
 	}

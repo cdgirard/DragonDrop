@@ -145,7 +145,7 @@ public class CollisionHandler implements ContactListener
     		attacker.health -= 1;
     		if (attacker.health <= 0)
     		{
-    		    world.gold = world.gold + attacker.myData.m_gold;
+    		    world.gold = world.gold + attacker.myData.m_goldValue;
     		    world.flagForRemoval(attacker);
     		}
     		DroppingDragon dragon = (DroppingDragon)dragonFixture.getBody().getUserData();
