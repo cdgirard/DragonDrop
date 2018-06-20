@@ -28,6 +28,12 @@ public class Assets
     public static final String GOTH_DRAGON = "images/dragons/goth_dragon.png";
     public static final String HAZY_DRAGON = "images/dragons/hazy_dragon.png";
     public static final String BOOK_DRAGON = "images/dragons/book_dragon.png";
+    public static final String FAIRY_DRAGON = "images/dragons/fairy_dragon.png";
+    public static final String ORANGE_DRAGON = "images/dragons/orange_dragon.png";
+    public static final String BLUE_DRAGON = "images/dragons/blue_dragon.png";
+    public static final String MOOSE_DRAGON = "images/dragons/moose_dragon.png";
+    public static final String DRAQ_DRAGON = "images/dragons/draq_dragon.png";
+    public static final String BUTLER_DRAGON = "images/dragons/butler_dragon.png";
     
     // UI
     public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
@@ -79,6 +85,12 @@ public class Assets
 	assetManager.load(GOTH_DRAGON, Texture.class); 
 	assetManager.load(HAZY_DRAGON, Texture.class);
 	assetManager.load(BOOK_DRAGON, Texture.class);
+	assetManager.load(BUTLER_DRAGON, Texture.class);
+	assetManager.load(BLUE_DRAGON, Texture.class);
+	assetManager.load(DRAQ_DRAGON, Texture.class);
+	assetManager.load(ORANGE_DRAGON, Texture.class);
+	assetManager.load(FAIRY_DRAGON, Texture.class);
+	assetManager.load(MOOSE_DRAGON, Texture.class);
         assetManager.finishLoading();
     }
     
