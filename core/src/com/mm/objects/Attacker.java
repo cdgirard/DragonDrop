@@ -22,9 +22,9 @@ public class Attacker extends AbstractGameObject
 	health = myData.m_baseHealth;
 
 	if (type != 4)
-            dimension.set(0.75f,0.75f);
+            dimension.set(0.5f,0.5f);
 	else
-	    dimension.set(0.75f,1.25f);
+	    dimension.set(0.5f,0.85f);
 	
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
