@@ -106,6 +106,12 @@ public class GameScreen extends SizableScreen
     public ImageButton btnBuyGothDragon;
     public ImageButton btnBuyHazyDragon;
     public ImageButton btnBuyBookDragon;
+    public ImageButton btnBuyButlerDragon;
+    public ImageButton btnBuyBlueDragon;
+    public ImageButton btnBuyDraqDragon;
+    public ImageButton btnBuyFairyDragon;
+    public ImageButton btnBuyMooseDragon;
+    public ImageButton btnBuyOrangeDragon;
     public TextButton btnWinOptCancel;
 
     // For Box2D Debugging
@@ -293,7 +299,8 @@ public class GameScreen extends SizableScreen
     private Table buildBuyDragonsWindowLayer()
     {
 	winBuyDragon = new Window("Buy Dragon", uiSkin);
-	winBuyDragon.add(buildBuyDragonsRow()).row();
+	winBuyDragon.add(buildBuyDragonsRow1()).row();
+	winBuyDragon.add(buildBuyDragonsRow2()).row();
 	winBuyDragon.add(buildBuyDragonsWinButtons()).pad(10, 0, 10, 0);
 	// Making the whole window transparent.
 	winBuyDragon.setColor(1, 1, 1, 0.8f);
@@ -306,7 +313,7 @@ public class GameScreen extends SizableScreen
 	return winBuyDragon;
     }
 
-    private Table buildBuyDragonsRow()
+    private Table buildBuyDragonsRow1()
     {
 	Table tbl = new Table();
 	tbl.columnDefaults(0).padRight(10);
@@ -314,6 +321,7 @@ public class GameScreen extends SizableScreen
 	tbl.add(new Label("Goth Dragon", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("Hazy Dragon", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("Book Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Blue Dragon", uiSkin, "default-font", Color.ORANGE));
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
@@ -331,6 +339,11 @@ public class GameScreen extends SizableScreen
 	btnBuyBookDragon = UIHelper.constructButton(Assets.BOOK_DRAGON, Assets.BOOK_DRAGON);
 	btnBuyBookDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyBookDragon);
+	
+	UIHelper.addTexture(Assets.BLUE_DRAGON, Assets.assetManager.get(Assets.BLUE_DRAGON, Texture.class));
+	btnBuyBlueDragon = UIHelper.constructButton(Assets.BLUE_DRAGON, Assets.BLUE_DRAGON);
+	btnBuyBlueDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyBlueDragon);
 
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
@@ -339,6 +352,50 @@ public class GameScreen extends SizableScreen
 	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
 	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("75 gold", uiSkin, "default-font", Color.ORANGE));
+	return tbl;
+    }
+    
+    private Table buildBuyDragonsRow2()
+    {
+	Table tbl = new Table();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	tbl.add(new Label("Moose Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Fairy Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Draq Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Butler Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.row();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	UIHelper.addTexture(Assets.MOOSE_DRAGON, Assets.assetManager.get(Assets.MOOSE_DRAGON, Texture.class));
+	btnBuyMooseDragon = UIHelper.constructButton(Assets.MOOSE_DRAGON, Assets.MOOSE_DRAGON);
+	btnBuyMooseDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyMooseDragon);
+
+	UIHelper.addTexture(Assets.FAIRY_DRAGON, Assets.assetManager.get(Assets.FAIRY_DRAGON, Texture.class));
+	btnBuyFairyDragon = UIHelper.constructButton(Assets.FAIRY_DRAGON, Assets.FAIRY_DRAGON);
+	btnBuyFairyDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyFairyDragon);
+
+	UIHelper.addTexture(Assets.DRAQ_DRAGON, Assets.assetManager.get(Assets.DRAQ_DRAGON, Texture.class));
+	btnBuyDraqDragon = UIHelper.constructButton(Assets.DRAQ_DRAGON, Assets.DRAQ_DRAGON);
+	btnBuyDraqDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyDraqDragon);
+	
+	UIHelper.addTexture(Assets.BUTLER_DRAGON, Assets.assetManager.get(Assets.BUTLER_DRAGON, Texture.class));
+	btnBuyButlerDragon = UIHelper.constructButton(Assets.BUTLER_DRAGON, Assets.BUTLER_DRAGON);
+	btnBuyButlerDragon.addListener(GameScreenInputHandler.getInstance());
+	tbl.add(btnBuyButlerDragon);
+
+	tbl.row();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	// TODO: Change this to gather data from Dragon Data.
+	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("75 gold", uiSkin, "default-font", Color.ORANGE));
 	return tbl;
     }
 
