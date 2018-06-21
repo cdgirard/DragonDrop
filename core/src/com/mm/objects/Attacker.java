@@ -12,7 +12,6 @@ import com.mm.helpers.Globals;
  */
 public class Attacker extends AbstractGameObject
 {
-
     public AttackerData myData;
     public float health;
 

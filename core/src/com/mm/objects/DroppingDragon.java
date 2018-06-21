@@ -8,11 +8,13 @@ public class DroppingDragon extends AbstractGameObject
 {
     private Texture m_image;
     public float health;
+    public DragonData m_data;
 
     public DroppingDragon(DragonData data)
     {
 	m_image = data.m_image;
 	health = data.m_baseHealth;
+	m_data = data;
 	init();
     }
 

@@ -16,6 +16,9 @@ public class DragonData
     public final int m_goldDropCost;
     public final int m_goldBuyCost;
     public float m_baseHealth;
+    public float m_armorBonus;
+    public float m_weaponBonus;
+    public float m_speedBonus;
     
     public DragonData(Texture img, int goldDropCost, int goldBuyCost, float health)
     {
@@ -23,6 +26,11 @@ public class DragonData
 	m_goldDropCost = goldDropCost;
 	m_goldBuyCost = goldBuyCost;
 	m_baseHealth = health;
+    }
+    
+    public int computeDamage(AttackerData attacker)
+    {
+        return -1;	
     }
 
 }
