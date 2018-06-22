@@ -75,16 +75,14 @@ public class GameScreen extends SizableScreen
     public float xScale = 0;
     public float yScale = 0;
 
-    public Array<DroppingDragon> m_droppingDragons;
-    public Array<Attacker> m_attackers;
-    public Array<AbstractGameObject> m_objectsToRemove;
+    GameScreenController controller;
+    
     public Array<GoldCoin> m_goldCoins;
 
     private Skin uiBuyWinSkin = new Skin(Gdx.files.internal("ui/clean-crispy-ui.json"));
     private Skin uiMainWinSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
 
-    private OrthographicCamera m_gameCam;
     private OrthographicCamera m_uiCam;
 
     private Texture m_background;
@@ -141,20 +139,14 @@ public class GameScreen extends SizableScreen
 	// Setup the Cameras
 	m_gameCam = new OrthographicCamera();
 	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-	//m_gameCam.translate(-VIEWPORT_WIDTH/2, -VIEWPORT_HEIGHT/2, 0);
 	m_uiCam = new OrthographicCamera();
 	m_uiCam.setToOrtho(true, preferredWidth, preferredHeight);
-	//m_uiCam.setToOrtho(false);
 	m_uiCam.update();
-	//m_cam.setToOrtho(true, preferredWidth, preferredHeight);
-	// Move Camera to 0,0
-	//cam.translate(-cam.position.x, -cam.position.y, 0);
 
 	batcher = new SpriteBatch();
 
-	m_droppingDragons = new Array<DroppingDragon>();
-	m_attackers = new Array<Attacker>();
-	m_objectsToRemove = new Array<AbstractGameObject>();
+	controller = new GameScreenController();
+	
 	m_goldCoins = new Array<GoldCoin>();
 
 	GameScreenInputHandler.initializeInstance(this);
@@ -592,6 +584,7 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
+	Gdx.app.log("MainScreen", "resizing:");
 	if (m_endGame)
 	{
 	    endGame();
