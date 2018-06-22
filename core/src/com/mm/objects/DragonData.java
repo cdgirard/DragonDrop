@@ -20,11 +20,11 @@ public class DragonData
     public final float m_weaponBonus;
     public final float m_speedBonus;
     
-    public DragonData(Texture img, int goldDropCost, int goldBuyCost, float health, float armorBonus, float weaponBonus, float speedBonus)
+    public DragonData(Texture img, float health, float armorBonus, float weaponBonus, float speedBonus)
     {
 	m_image = img;
-	m_goldDropCost = goldDropCost;
-	m_goldBuyCost = goldBuyCost;
+	m_goldBuyCost = (int)((armorBonus+weaponBonus+speedBonus)*5*health);
+	m_goldDropCost = m_goldBuyCost/4;
 	m_baseHealth = health;
 	m_armorBonus = armorBonus;
 	m_weaponBonus = weaponBonus;
