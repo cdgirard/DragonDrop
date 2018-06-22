@@ -48,6 +48,7 @@ import com.mm.objects.DroppingDragon;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonData;
 import com.mm.objects.DragonSlot;
+import com.mm.objects.GoldCoin;
 import com.mm.objects.Mountain;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
@@ -66,7 +67,7 @@ public class GameScreen extends SizableScreen
     public boolean m_endGame = false;
 
     public int score = 0;
-    public int gold = 100;
+    private int gold = 100;
 
     private float VIEWPORT_WIDTH = 5.0f;
     private float VIEWPORT_HEIGHT = 9.0f;
@@ -77,6 +78,7 @@ public class GameScreen extends SizableScreen
     public Array<DroppingDragon> m_droppingDragons;
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
+    public Array<GoldCoin> m_goldCoins;
 
     private Skin uiBuyWinSkin = new Skin(Gdx.files.internal("ui/clean-crispy-ui.json"));
     private Skin uiMainWinSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
@@ -119,7 +121,7 @@ public class GameScreen extends SizableScreen
     public TextButton btnWinOptCancel;
 
     // For Box2D Debugging
-    private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+    private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
     private Box2DDebugRenderer b2DebugRenderer;
 
     public GameScreen()
@@ -153,6 +155,7 @@ public class GameScreen extends SizableScreen
 	m_droppingDragons = new Array<DroppingDragon>();
 	m_attackers = new Array<Attacker>();
 	m_objectsToRemove = new Array<AbstractGameObject>();
+	m_goldCoins = new Array<GoldCoin>();
 
 	GameScreenInputHandler.initializeInstance(this);
 
@@ -175,7 +178,7 @@ public class GameScreen extends SizableScreen
 	b2DebugRenderer = new Box2DDebugRenderer();
 
     }
-    
+
     /**
      * Initializes all the key data values for the start of a new game.
      */
@@ -187,7 +190,7 @@ public class GameScreen extends SizableScreen
 	    {
 		if (obj instanceof DroppingDragon)
 		{
-		    int index = m_droppingDragons.indexOf((DroppingDragon)obj, true);
+		    int index = m_droppingDragons.indexOf((DroppingDragon) obj, true);
 		    if (index != -1)
 		    {
 			m_droppingDragons.removeIndex(index);
@@ -204,43 +207,61 @@ public class GameScreen extends SizableScreen
 		    }
 		}
 	    }
-	    m_objectsToRemove.removeRange(0,m_objectsToRemove.size-1);
+	    m_objectsToRemove.removeRange(0, m_objectsToRemove.size - 1);
 	}
-	
+
 	if (m_droppingDragons.size > 0)
 	{
 	    for (DroppingDragon obj : m_droppingDragons)
 	    {
 		world.destroyBody(obj.body);
 	    }
-	    m_droppingDragons.removeRange(0, m_droppingDragons.size-1);
+	    m_droppingDragons.removeRange(0, m_droppingDragons.size - 1);
 	}
-	
+
 	if (m_attackers.size > 0)
 	{
 	    for (Attacker obj : m_attackers)
 	    {
 		world.destroyBody(obj.body);
 	    }
-	    m_attackers.removeRange(0,m_attackers.size-1);
+	    m_attackers.removeRange(0, m_attackers.size - 1);
 	}
-	
+
 	slots[0].setDragon(0);
 
 	slots[1].setDragon(1);
 
 	slots[2].setDragon(2);
-	
+
 	slots[3].setDragon(-1);
-	
+
 	slots[4].setDragon(-1);
-	
+
 	addMountains();
-	
+
 	score = 0;
 	gold = 100;
 	m_runTime = 0f;
 	m_endGame = false;
+	
+	for (int i = 0; i < gold; i = i + 10)
+	{
+	    GoldCoin coin = createGoldCoin();
+	    m_goldCoins.add(coin);
+	}
+    }
+
+    /**
+     * Creates a single gold coin in the horde area.
+     * @return
+     */
+    private GoldCoin createGoldCoin()
+    {
+	int x = (int) MathUtils.random(10, preferredWidth - 10);
+	int y = (int) MathUtils.random(200, 300);
+	Vector2 pos = new Vector2(x, y);
+	return new GoldCoin(pos);
     }
 
     /**
@@ -248,6 +269,13 @@ public class GameScreen extends SizableScreen
      */
     private void initUI()
     {
+	// Create Gold Coins
+	for (int i = 0; i < gold; i = i + 10)
+	{
+	    GoldCoin coin = createGoldCoin();
+	    m_goldCoins.add(coin);
+	}
+
 	UIHelper.addRegions(Assets.buttonsAtlas);
 	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
 	m_stage = new Stage();
@@ -297,10 +325,10 @@ public class GameScreen extends SizableScreen
 
 	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * 1.5f;
     }
-    
+
     public void updateDropThreshold(float modifier)
     {
-	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * (1 + 0.5f*modifier);
+	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * (1 + 0.5f * modifier);
     }
 
     private Table buildBuyDragonsWindowLayer()
@@ -325,7 +353,7 @@ public class GameScreen extends SizableScreen
 	Table tbl = new Table();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
-        String font = "font";
+	String font = "font";
 	tbl.add(new Label("Goth Dragon", uiBuyWinSkin, font, Color.ORANGE));
 	tbl.add(new Label("Hazy Dragon", uiBuyWinSkin, font, Color.ORANGE));
 	tbl.add(new Label("Book Dragon", uiBuyWinSkin, font, Color.ORANGE));
@@ -347,7 +375,7 @@ public class GameScreen extends SizableScreen
 	btnBuyBookDragon = UIHelper.constructButton(Assets.BOOK_DRAGON, Assets.BOOK_DRAGON);
 	btnBuyBookDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyBookDragon);
-	
+
 	UIHelper.addTexture(Assets.BLUE_DRAGON, Assets.assetManager.get(Assets.BLUE_DRAGON, Texture.class));
 	btnBuyBlueDragon = UIHelper.constructButton(Assets.BLUE_DRAGON, Assets.BLUE_DRAGON);
 	btnBuyBlueDragon.addListener(GameScreenInputHandler.getInstance());
@@ -357,13 +385,13 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label(Globals.dragonTypes[0].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[1].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[2].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[3].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[0].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[1].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[2].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[3].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
-    
+
     private Table buildBuyDragonsRow2()
     {
 	Table tbl = new Table();
@@ -391,7 +419,7 @@ public class GameScreen extends SizableScreen
 	btnBuyDraqDragon = UIHelper.constructButton(Assets.DRAQ_DRAGON, Assets.DRAQ_DRAGON);
 	btnBuyDraqDragon.addListener(GameScreenInputHandler.getInstance());
 	tbl.add(btnBuyDraqDragon);
-	
+
 	UIHelper.addTexture(Assets.BUTLER_DRAGON, Assets.assetManager.get(Assets.BUTLER_DRAGON, Texture.class));
 	btnBuyButlerDragon = UIHelper.constructButton(Assets.BUTLER_DRAGON, Assets.BUTLER_DRAGON);
 	btnBuyButlerDragon.addListener(GameScreenInputHandler.getInstance());
@@ -401,10 +429,10 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label(Globals.dragonTypes[4].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[5].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[6].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label(Globals.dragonTypes[7].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[4].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[5].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[6].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[7].m_goldBuyCost + " gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
 
@@ -424,11 +452,11 @@ public class GameScreen extends SizableScreen
 	m_paused = true;
 	winBuyDragon.setVisible(true);
     }
-    
+
     public void onSellDragonClicked(String button)
     {
 	int slot = Integer.parseInt(button.split("-")[1]);
-	gold += slots[slot].getDragonData().m_goldBuyCost/2;
+	updateGold(slots[slot].getDragonData().m_goldBuyCost / 2);
 	slots[slot].setDragon(-1);
     }
 
@@ -438,7 +466,7 @@ public class GameScreen extends SizableScreen
 	{
 	    if (s.getSlotButton() != null)
 	    {
-		updateMessageLabel("X: " + x + " Y: " + y);
+		//updateMessageLabel("X: " + x + " Y: " + y);
 		s.getSlotButton().contains(x, y);
 	    }
 
@@ -461,16 +489,16 @@ public class GameScreen extends SizableScreen
     public void addMountains()
     {
 	rightMountain = new Mountain();
-	createMountain(rightMountain,new Vector2(5,6.5f));
-	
+	createMountain(rightMountain, new Vector2(5, 6.5f));
+
 	leftMountain = new Mountain();
-	createMountain(leftMountain,new Vector2(0,6.5f));
+	createMountain(leftMountain, new Vector2(0, 6.5f));
     }
-    
+
     public void createMountain(Mountain mt, Vector2 pos)
     {
-        mt.m_position = pos;
-	
+	mt.m_position = pos;
+
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(mt.m_position);
 	bodyDef.angle = 0; // rotation;
@@ -492,7 +520,7 @@ public class GameScreen extends SizableScreen
 	body.createFixture(fixtureDef);
 	polygonShape.dispose();
     }
-    
+
     /**
      * Causes a new dragon to start falling from the specified location.
      * @param pos
@@ -530,7 +558,7 @@ public class GameScreen extends SizableScreen
 
 	Attacker attacker = new Attacker(y);
 
-	float x = y + 0.5f;
+	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
 	Vector2 pos = new Vector2(x, 9.0f);
 	attacker.m_position.set(pos);
 
@@ -595,12 +623,12 @@ public class GameScreen extends SizableScreen
 	for (DroppingDragon obj : m_droppingDragons)
 	{
 	    obj.render(batcher);
-	    
+
 	}
 	for (Attacker obj : m_attackers)
 	{
 	    obj.render(batcher);
-	    updateMessageLabel("Attacker:" + obj.health);
+	    //updateMessageLabel("Attacker:" + obj.health);
 	}
 
 	batcher.end();
@@ -618,10 +646,12 @@ public class GameScreen extends SizableScreen
 	    b2DebugRenderer.render(world, m_gameCam.combined);
 	}
     }
-    
+
     public void endGame()
     {
-	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
+	if (m_goldCoins.size > 0)
+	    m_goldCoins.removeRange(0, m_goldCoins.size - 1);
+	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC, Music.class));
 	DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
     }
 
@@ -640,7 +670,7 @@ public class GameScreen extends SizableScreen
 	    {
 		if (obj instanceof DroppingDragon)
 		{
-		    int index = m_droppingDragons.indexOf((DroppingDragon)obj, true);
+		    int index = m_droppingDragons.indexOf((DroppingDragon) obj, true);
 		    if (index != -1)
 		    {
 			m_droppingDragons.removeIndex(index);
@@ -664,14 +694,14 @@ public class GameScreen extends SizableScreen
 	{
 	    m_endGame = true;
 	}
-	
+
 	world.step(delta, 8, 3);
 	for (DroppingDragon obj : m_droppingDragons)
 	{
 	    obj.update(delta);
 	    if (obj.m_position.y > 10.0f)
 	    {
-	    	flagForRemoval(obj);
+		flagForRemoval(obj);
 	    }
 	}
 	for (Attacker obj : m_attackers)
@@ -682,7 +712,7 @@ public class GameScreen extends SizableScreen
 	    obj.update(delta);
 	    if (obj.m_position.y < 2.5f)
 	    {
-		gold -= obj.myData.m_goldSteals;
+		updateGold(-obj.myData.m_goldSteals);
 		flagForRemoval(obj);
 	    }
 	}
@@ -704,6 +734,14 @@ public class GameScreen extends SizableScreen
     {
 	batcher.setProjectionMatrix(m_uiCam.combined);
 	batcher.begin();
+	
+	int i = 0;
+	for (GoldCoin coin : m_goldCoins)
+	{
+	    coin.render(batcher);
+	    //this.updateMessageLabel("Draw Coin: "+i);
+	    i++;
+	}
 
 	for (DragonSlot slot : slots)
 	{
@@ -785,15 +823,47 @@ public class GameScreen extends SizableScreen
 	{
 	    slots[activeSlot].setDragon(type);
 
-	    gold -= slots[activeSlot].getDragonData().m_goldBuyCost;
+	    updateGold(-slots[activeSlot].getDragonData().m_goldBuyCost);
 	    m_paused = false;
 	    winBuyDragon.setVisible(false);
 	    activeSlot = -1;
 	}
 	else
 	{
-	    updateMessageLabel("Not enough gold!");
+	    //updateMessageLabel("Not enough gold!");
 	}
 
+    }
+
+    /**
+     * Update the amount of gold to show in the horde.
+     * @param value
+     */
+    public void updateGold(int value)
+    {
+	gold += value;
+	int horde = m_goldCoins.size * 10;
+	//this.updateMessageLabel("Update Gold: "+gold+" : "+horde);
+	if (horde < gold)
+	{
+	    for (int i = horde; i < gold; i = i + 10)
+	    {
+                GoldCoin coin = createGoldCoin();
+                m_goldCoins.add(coin);
+	    }
+	}
+	else if (horde > gold)
+	{
+	    for (int i = horde; i > gold; i = i - 10)
+	    {
+		if (m_goldCoins.size > 0)
+                    m_goldCoins.removeIndex(0);
+	    }
+	}
+    }
+
+    public int getGold()
+    {
+	return gold;
     }
 }
