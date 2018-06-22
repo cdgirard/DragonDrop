@@ -64,6 +64,7 @@ public class DragonSlot extends SimpleAbstractGameObject
 	if (type == -1)
 	{
 	    m_data = null;
+	    m_slotButton = null;
 	    m_sellButton.setVisible(false);
 	    m_buyButton.setVisible(true);
 	}

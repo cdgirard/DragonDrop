@@ -651,8 +651,10 @@ public class GameScreen extends SizableScreen
     {
 	if (m_goldCoins.size > 0)
 	    m_goldCoins.removeRange(0, m_goldCoins.size - 1);
+	Dragon.getInstance().setActive(false);
 	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC, Music.class));
 	DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
+	
     }
 
     /**

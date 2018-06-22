@@ -23,7 +23,6 @@ public class Dragon extends SimpleAbstractGameObject
 	    m_dragon = new Dragon();
 	return m_dragon;
     }
-    
 
     /**
      * If the Dragon is active then draw it.
@@ -35,8 +34,8 @@ public class Dragon extends SimpleAbstractGameObject
     {
 	if (m_active)
 	{
-		Texture image = m_data.m_image;
-	    batcher.draw(image, m_position.x-dimension.x/2, m_position.y-dimension.y/2, dimension.x, dimension.y, 0, 0, image.getWidth(), image.getHeight(), false, true);
+	    Texture image = m_data.m_image;
+	    batcher.draw(image, m_position.x - dimension.x / 2, m_position.y - dimension.y / 2, dimension.x, dimension.y, 0, 0, image.getWidth(), image.getHeight(), false, true);
 	}
     }
 
