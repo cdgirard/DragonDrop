@@ -555,7 +555,7 @@ public class GameScreen extends SizableScreen
     private void spawnAttacker()
     {
 	int y = (int) MathUtils.random(0, 4);
-
+	
 	Attacker attacker = new Attacker(y);
 
 	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
@@ -595,7 +595,6 @@ public class GameScreen extends SizableScreen
 	if (m_endGame)
 	{
 	    endGame();
-
 	}
 	if (!m_paused)
 	    update(delta);
@@ -708,9 +707,7 @@ public class GameScreen extends SizableScreen
 	}
 	for (Attacker obj : m_attackers)
 	{
-	    float scaledImpulse = obj.myData.m_impulse / delta;
-	    //obj.body.linVelLoc
-	    obj.body.applyLinearImpulse(new Vector2(0, scaledImpulse), obj.m_position, true);
+	    this.updateMessageLabel("Speed: "+obj.body.getLinearVelocity().y);
 	    obj.update(delta);
 	    if (obj.m_position.y < 2.5f)
 	    {
