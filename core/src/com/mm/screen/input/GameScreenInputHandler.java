@@ -60,6 +60,26 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	{
 	    m_screen.boughtDragonForSlot(2);
 	}
+	else if (actor == m_screen.btnBuyBlueDragon)
+	{
+	    m_screen.boughtDragonForSlot(3);
+	}
+	else if (actor == m_screen.btnBuyMooseDragon)
+	{
+	    m_screen.boughtDragonForSlot(4);
+	}
+	else if (actor == m_screen.btnBuyFairyDragon)
+	{
+	    m_screen.boughtDragonForSlot(5);
+	}
+	else if (actor == m_screen.btnBuyDraqDragon)
+	{
+	    m_screen.boughtDragonForSlot(6);
+	}
+	else if (actor == m_screen.btnBuyButlerDragon)
+	{
+	    m_screen.boughtDragonForSlot(7);
+	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{
 	    m_screen.endGame();
