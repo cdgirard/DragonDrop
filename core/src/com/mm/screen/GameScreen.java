@@ -252,8 +252,8 @@ public class GameScreen extends SizableScreen
 	m_stage.addActor(m_quitButton);
 
 	label = new Label("Messages appear here.", uiMainWinSkin);
-	label.setAlignment(Align.center);
-	label.setPosition(200, 300);
+	label.setAlignment(Align.left);
+	label.setPosition(300, preferredHeight - 50);
 	m_stage.addActor(label);
 
 	scoreLabel = new Label("Score: " + score, uiMainWinSkin);
