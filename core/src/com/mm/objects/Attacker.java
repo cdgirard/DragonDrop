@@ -2,6 +2,7 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.mm.helpers.Globals;
 
 /**
@@ -27,6 +28,17 @@ public class Attacker extends AbstractGameObject
 	
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
+    }
+    
+    @Override
+    public void update(float deltaTime)
+    {
+	if (body.getLinearVelocity().y > -4.5)
+	{
+	    float scaledImpulse = myData.m_impulse / deltaTime;
+	    body.applyLinearImpulse(new Vector2(0, scaledImpulse), m_position, true);
+	}
+	super.update(deltaTime);
     }
 
     @Override
