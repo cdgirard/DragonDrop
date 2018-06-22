@@ -1,9 +1,5 @@
 package com.mm.screen;
 
-import box2dLight.ConeLight;
-import box2dLight.Light;
-import box2dLight.RayHandler;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -15,22 +11,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -42,14 +26,9 @@ import com.mm.helpers.AudioManager;
 import com.mm.helpers.CollisionHandler;
 import com.mm.helpers.Globals;
 import com.mm.helpers.UIHelper;
-import com.mm.objects.AbstractGameObject;
-import com.mm.objects.Attacker;
-import com.mm.objects.DroppingDragon;
 import com.mm.objects.Dragon;
-import com.mm.objects.DragonData;
 import com.mm.objects.DragonSlot;
 import com.mm.objects.GoldCoin;
-import com.mm.objects.Mountain;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
@@ -59,23 +38,17 @@ import com.mm.screen.input.GameScreenInputHandler;
  */
 public class GameScreen extends SizableScreen
 {
-    RayHandler rayHandler;
-    Light light;
-    World world;
-
     public boolean m_paused = false;
     public boolean m_endGame = false;
 
     public int score = 0;
-    private int gold = 100;
 
-    private float VIEWPORT_WIDTH = 5.0f;
-    private float VIEWPORT_HEIGHT = 9.0f;
+    private Texture m_background;
 
     public float xScale = 0;
     public float yScale = 0;
 
-    GameScreenController controller;
+    public GameScreenController controller;
     
     public Array<GoldCoin> m_goldCoins;
 
@@ -84,10 +57,6 @@ public class GameScreen extends SizableScreen
     private Stage m_stage;
 
     private OrthographicCamera m_uiCam;
-
-    private Texture m_background;
-    private Mountain rightMountain;
-    private Mountain leftMountain;
 
     private Label label;
     private Label scoreLabel;
@@ -118,10 +87,6 @@ public class GameScreen extends SizableScreen
     public ImageButton btnBuyOrangeDragon;
     public TextButton btnWinOptCancel;
 
-    // For Box2D Debugging
-    private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
-    private Box2DDebugRenderer b2DebugRenderer;
-
     public GameScreen()
     {
 	// Get Initial Window Setup  
@@ -131,14 +96,12 @@ public class GameScreen extends SizableScreen
 	preferredWidth = m_background.getWidth();
 	preferredHeight = m_background.getHeight();
 
-	xScale = preferredWidth / VIEWPORT_WIDTH;
-	yScale = preferredHeight / VIEWPORT_HEIGHT;
+	xScale = preferredWidth / GameScreenController.VIEWPORT_WIDTH;
+	yScale = preferredHeight / GameScreenController.VIEWPORT_HEIGHT;
 
 	Gdx.graphics.setWindowedMode(preferredWidth, preferredHeight);
 
 	// Setup the Cameras
-	m_gameCam = new OrthographicCamera();
-	m_gameCam.setToOrtho(true, VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 	m_uiCam = new OrthographicCamera();
 	m_uiCam.setToOrtho(true, preferredWidth, preferredHeight);
 	m_uiCam.update();
@@ -146,29 +109,13 @@ public class GameScreen extends SizableScreen
 	batcher = new SpriteBatch();
 
 	controller = new GameScreenController();
+	controller.world.setContactListener(new CollisionHandler(this));
 	
 	m_goldCoins = new Array<GoldCoin>();
 
 	GameScreenInputHandler.initializeInstance(this);
-
+	
 	initUI();
-
-	if (world != null)
-	    world.dispose();
-	world = new World(new Vector2(0, 9.81f), true);
-	world.setContactListener(new CollisionHandler(this));
-
-	RayHandler.setGammaCorrection(true);
-	RayHandler.useDiffuseLight(true);
-
-	rayHandler = new RayHandler(world);
-	rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
-	rayHandler.setBlurNum(3);
-
-	light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f, 90f, 20f);
-
-	b2DebugRenderer = new Box2DDebugRenderer();
-
     }
 
     /**
@@ -176,68 +123,20 @@ public class GameScreen extends SizableScreen
      */
     public void init()
     {
-	if (m_objectsToRemove.size > 0)
-	{
-	    for (AbstractGameObject obj : m_objectsToRemove)
-	    {
-		if (obj instanceof DroppingDragon)
-		{
-		    int index = m_droppingDragons.indexOf((DroppingDragon) obj, true);
-		    if (index != -1)
-		    {
-			m_droppingDragons.removeIndex(index);
-			world.destroyBody(obj.body);
-		    }
-		}
-		if (obj instanceof Attacker)
-		{
-		    int index = m_attackers.indexOf((Attacker) obj, true);
-		    if (index != -1)
-		    {
-			m_attackers.removeIndex(index);
-			world.destroyBody(obj.body);
-		    }
-		}
-	    }
-	    m_objectsToRemove.removeRange(0, m_objectsToRemove.size - 1);
-	}
-
-	if (m_droppingDragons.size > 0)
-	{
-	    for (DroppingDragon obj : m_droppingDragons)
-	    {
-		world.destroyBody(obj.body);
-	    }
-	    m_droppingDragons.removeRange(0, m_droppingDragons.size - 1);
-	}
-
-	if (m_attackers.size > 0)
-	{
-	    for (Attacker obj : m_attackers)
-	    {
-		world.destroyBody(obj.body);
-	    }
-	    m_attackers.removeRange(0, m_attackers.size - 1);
-	}
-
+	controller.init();
+	
 	slots[0].setDragon(0);
-
 	slots[1].setDragon(1);
-
 	slots[2].setDragon(2);
-
 	slots[3].setDragon(-1);
-
 	slots[4].setDragon(-1);
 
-	addMountains();
-
 	score = 0;
-	gold = 100;
+	controller.gold = 100;
 	m_runTime = 0f;
 	m_endGame = false;
 	
-	for (int i = 0; i < gold; i = i + 10)
+	for (int i = 0; i < controller.gold; i = i + 10)
 	{
 	    GoldCoin coin = createGoldCoin();
 	    m_goldCoins.add(coin);
@@ -262,7 +161,7 @@ public class GameScreen extends SizableScreen
     private void initUI()
     {
 	// Create Gold Coins
-	for (int i = 0; i < gold; i = i + 10)
+	for (int i = 0; i < controller.gold; i = i + 10)
 	{
 	    GoldCoin coin = createGoldCoin();
 	    m_goldCoins.add(coin);
@@ -287,7 +186,7 @@ public class GameScreen extends SizableScreen
 	scoreLabel.setPosition(25, preferredHeight - 25);
 	m_stage.addActor(scoreLabel);
 
-	goldLabel = new Label("Gold: " + gold, uiMainWinSkin);
+	goldLabel = new Label("Gold: " + controller.gold, uiMainWinSkin);
 	goldLabel.setAlignment(Align.left);
 	goldLabel.setPosition(25, preferredHeight - 50);
 	m_stage.addActor(goldLabel);
@@ -468,175 +367,38 @@ public class GameScreen extends SizableScreen
 	return null;
     }
 
-    public void flagForRemoval(AbstractGameObject obj)
-    {
-	m_objectsToRemove.add(obj);
-    }
-
-    /**
-     * Places a mountain on either side of the map to keep things from going
-     * off the sides.
-     * @param pos
-     */
-    public void addMountains()
-    {
-	rightMountain = new Mountain();
-	createMountain(rightMountain, new Vector2(5, 6.5f));
-
-	leftMountain = new Mountain();
-	createMountain(leftMountain, new Vector2(0, 6.5f));
-    }
-
-    public void createMountain(Mountain mt, Vector2 pos)
-    {
-	mt.m_position = pos;
-
-	BodyDef bodyDef = new BodyDef();
-	bodyDef.position.set(mt.m_position);
-	bodyDef.angle = 0; // rotation;
-	Body body = world.createBody(bodyDef);
-	body.setType(BodyType.StaticBody);
-	body.setUserData(mt);
-	mt.body = body;
-
-	PolygonShape polygonShape = new PolygonShape();
-	float halfWidth = mt.bounds.width / 2.0f;
-	float halfHeight = mt.bounds.height / 2.0f;
-	polygonShape.setAsBox(halfWidth, halfHeight);
-
-	FixtureDef fixtureDef = new FixtureDef();
-	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 15;
-	fixtureDef.restitution = 0.25f;
-	fixtureDef.friction = 0.5f;
-	body.createFixture(fixtureDef);
-	polygonShape.dispose();
-    }
-
-    /**
-     * Causes a new dragon to start falling from the specified location.
-     * @param pos
-     */
-    public void dropDragon(DragonData data, Vector2 pos)
-    {
-	DroppingDragon droppedDragon = new DroppingDragon(data);
-
-	BodyDef bodyDef = new BodyDef();
-	bodyDef.position.set(pos);
-	bodyDef.angle = 0; // rotation;
-	Body body = world.createBody(bodyDef);
-	body.setType(BodyType.DynamicBody);
-	body.setUserData(droppedDragon);
-	droppedDragon.body = body;
-
-	PolygonShape polygonShape = new PolygonShape();
-	float halfWidth = droppedDragon.bounds.width / 2.0f;
-	float halfHeight = droppedDragon.bounds.height / 2.0f;
-	polygonShape.setAsBox(halfWidth, halfHeight);
-
-	FixtureDef fixtureDef = new FixtureDef();
-	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 15;
-	fixtureDef.restitution = 0.25f;
-	fixtureDef.friction = 0.5f;
-	body.createFixture(fixtureDef);
-	polygonShape.dispose();
-	m_droppingDragons.add(droppedDragon);
-    }
-
-    private void spawnAttacker()
-    {
-	int y = (int) MathUtils.random(0, 4);
-	
-	Attacker attacker = new Attacker(y);
-
-	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
-	Vector2 pos = new Vector2(x, 9.0f);
-	attacker.m_position.set(pos);
-
-	BodyDef bodyDef = new BodyDef();
-	bodyDef.position.set(pos);
-	bodyDef.angle = 0; // rotation;
-	Body body = world.createBody(bodyDef);
-	body.setType(BodyType.DynamicBody);
-	body.setFixedRotation(true);
-	body.setUserData(attacker);
-	attacker.body = body;
-
-	PolygonShape polygonShape = new PolygonShape();
-	float halfWidth = attacker.bounds.width / 2.0f;
-	float halfHeight = attacker.bounds.height / 2.0f;
-	polygonShape.setAsBox(halfWidth, halfHeight);
-
-	FixtureDef fixtureDef = new FixtureDef();
-	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 50;
-	fixtureDef.restitution = 0f;
-	fixtureDef.friction = 0.5f;
-	body.createFixture(fixtureDef);
-	polygonShape.dispose();
-	m_attackers.add(attacker);
-    }
-
     /**
      * TODO: Potential refactor as near duplicate with MainScreen
      */
     @Override
     public void render(float delta)
     {
-	Gdx.app.log("MainScreen", "resizing:");
 	if (m_endGame)
 	{
 	    endGame();
 	}
 	if (!m_paused)
-	    update(delta);
+	{
+	    controller.update(delta);
+	    updateGui(delta);
+	    m_runTime += delta;
+	}
 
 	Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 	Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	m_gameCam.update();
-
-	// Attach batcher to camera
-	batcher.setProjectionMatrix(m_gameCam.combined);
-	batcher.begin();
-	batcher.draw(m_background, 0, 0, 5.0f, 9.0f, 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
-	batcher.end();
+	
+	renderBackground();
+	
+	controller.render(delta);
 
 	renderGui();
-
-	batcher.setProjectionMatrix(m_gameCam.combined);
-	batcher.begin();
-	Dragon.getInstance().render(batcher);
-	rightMountain.render(batcher);
-	leftMountain.render(batcher);
-	// Create 3 slots for dragons to be dragged and dropped
-
-	for (DroppingDragon obj : m_droppingDragons)
-	{
-	    obj.render(batcher);
-
-	}
-	for (Attacker obj : m_attackers)
-	{
-	    obj.render(batcher);
-	    //updateMessageLabel("Attacker:" + obj.health);
-	}
-
-	batcher.end();
-
-	rayHandler.setCombinedMatrix(m_gameCam);
-	rayHandler.update();
-	rayHandler.render();
 
 	m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 	m_stage.draw();
 	//   Gdx.app.log("MainScreen", "Stage: "+m_stage.getViewport().getScreenHeight()+" , "+m_stage.getViewport().getScreenWidth());
 
-	if (DEBUG_DRAW_BOX2D_WORLD)
-	{
-	    b2DebugRenderer.render(world, m_gameCam.combined);
-	}
+
     }
 
     public void endGame()
@@ -649,76 +411,49 @@ public class GameScreen extends SizableScreen
 	
     }
 
-    /**
-     * Update the present state of all objects in the game before 
-     * rendering everything.
-     * @param delta
-     */
-    private void update(float delta)
+    private void updateGui(float delta)
     {
 	scoreLabel.setText("Score: " + score);
-	goldLabel.setText("Gold: " + gold);
-	if (m_objectsToRemove.size > 0)
-	{
-	    for (AbstractGameObject obj : m_objectsToRemove)
-	    {
-		if (obj instanceof DroppingDragon)
-		{
-		    int index = m_droppingDragons.indexOf((DroppingDragon) obj, true);
-		    if (index != -1)
-		    {
-			m_droppingDragons.removeIndex(index);
-			world.destroyBody(obj.body);
-		    }
-		}
-		if (obj instanceof Attacker)
-		{
-		    int index = m_attackers.indexOf((Attacker) obj, true);
-		    if (index != -1)
-		    {
-			m_attackers.removeIndex(index);
-			world.destroyBody(obj.body);
-		    }
-		}
-	    }
-	    m_objectsToRemove.removeRange(0, m_objectsToRemove.size - 1);
-	}
-
-	if ((gold <= 0) && (m_droppingDragons.size == 0))
+	goldLabel.setText("Gold: " + controller.gold);
+	
+	if ((controller.gold <= 0) && (controller.m_droppingDragons.size == 0))
 	{
 	    m_endGame = true;
 	}
-
-	world.step(delta, 8, 3);
-	for (DroppingDragon obj : m_droppingDragons)
+	// There are 20 gold coins when should only be 10...somehow
+	// gold coins got added in twice.
+	int horde = m_goldCoins.size * 10;
+	this.updateMessageLabel("Adding Gold: "+controller.gold+" "+horde);
+	if (horde < controller.gold)
 	{
-	    obj.update(delta);
-	    if (obj.m_position.y > 10.0f)
+	    this.updateMessageLabel("Adding Gold: "+controller.gold+" "+horde);
+	    for (int i = horde; i < controller.gold; i = i + 10)
 	    {
-		flagForRemoval(obj);
+		
+                GoldCoin coin = createGoldCoin();
+                m_goldCoins.add(coin);
 	    }
 	}
-	for (Attacker obj : m_attackers)
+	else if (horde > controller.gold)
 	{
-	    this.updateMessageLabel("Speed: "+obj.body.getLinearVelocity().y);
-	    obj.update(delta);
-	    if (obj.m_position.y < 2.5f)
+	    for (int i = horde; i > controller.gold; i = i - 10)
 	    {
-		updateGold(-obj.myData.m_goldSteals);
-		flagForRemoval(obj);
+		//this.updateMessageLabel("Removing Gold: "+i);
+		//if (m_goldCoins.size > 0)
+                  //  m_goldCoins.removeIndex(0);
 	    }
 	}
-	if (Dragon.getInstance().getActive())
-	{
-	    Dragon.getInstance().update(delta);
-	}
-
-	if (Math.random() > 0.98)
-	    spawnAttacker();
-
-	m_runTime += delta;
     }
 
+    private void renderBackground()
+    {
+	batcher.setProjectionMatrix(m_uiCam.combined);
+	batcher.begin();
+	
+	batcher.draw(m_background, 0, 0, m_background.getWidth(), m_background.getHeight(), 0, 0, m_background.getWidth(), m_background.getHeight(), false, true);
+	batcher.end();
+    }
+    
     /**
      * Draw the GUI layer.
      */
@@ -748,8 +483,8 @@ public class GameScreen extends SizableScreen
     {
 	Gdx.graphics.setWindowedMode(width, height);
 
-	xScale = preferredWidth / VIEWPORT_WIDTH;
-	yScale = preferredHeight / VIEWPORT_HEIGHT;
+	xScale = preferredWidth / GameScreenController.VIEWPORT_WIDTH;
+	yScale = preferredHeight / GameScreenController.VIEWPORT_HEIGHT;
 
 	m_uiCam.setToOrtho(true, width, height);
 	m_stage.getViewport().update(width, height, true);
@@ -811,7 +546,7 @@ public class GameScreen extends SizableScreen
      */
     public void boughtDragonForSlot(int type)
     {
-	if (gold >= Globals.dragonTypes[type].m_goldBuyCost)
+	if (controller.gold >= Globals.dragonTypes[type].m_goldBuyCost)
 	{
 	    slots[activeSlot].setDragon(type);
 
@@ -833,29 +568,13 @@ public class GameScreen extends SizableScreen
      */
     public void updateGold(int value)
     {
-	gold += value;
-	int horde = m_goldCoins.size * 10;
-	//this.updateMessageLabel("Update Gold: "+gold+" : "+horde);
-	if (horde < gold)
-	{
-	    for (int i = horde; i < gold; i = i + 10)
-	    {
-                GoldCoin coin = createGoldCoin();
-                m_goldCoins.add(coin);
-	    }
-	}
-	else if (horde > gold)
-	{
-	    for (int i = horde; i > gold; i = i - 10)
-	    {
-		if (m_goldCoins.size > 0)
-                    m_goldCoins.removeIndex(0);
-	    }
-	}
+	controller.updateGold(value);
+
     }
+    
 
     public int getGold()
     {
-	return gold;
+	return controller.gold;
     }
 }
