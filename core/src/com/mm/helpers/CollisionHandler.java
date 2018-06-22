@@ -148,7 +148,7 @@ public class CollisionHandler implements ContactListener
     		dragon.health -= 1/damageReduction;
     		if (attacker.health <= 0)
     		{
-    		    world.gold = world.gold + attacker.myData.m_goldValue;
+    		    world.updateGold(attacker.myData.m_goldValue);
     		    world.flagForRemoval(attacker);
     		}
     		

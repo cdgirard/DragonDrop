@@ -42,6 +42,7 @@ public class Assets
     public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
     public static final String BUY_BTN = "images/ui/buy_btn.png";
     public static final String SELL_BTN = "images/ui/sell_btn.png";
+    public static final String GOLD_COIN = "images/ui/gold_coin.png";
     public static TextureAtlas buttonsAtlas;
     
     // Sounds                                         
@@ -71,6 +72,7 @@ public class Assets
         assetManager.load(DRAGON_SLOT, Texture.class);  
         assetManager.load(BUY_BTN, Texture.class);
         assetManager.load(SELL_BTN, Texture.class);
+        assetManager.load(GOLD_COIN, Texture.class);
         assetManager.finishLoading();
     }
     

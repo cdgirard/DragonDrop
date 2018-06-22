@@ -24,7 +24,7 @@ public class DragonData
     {
 	m_image = img;
 	m_goldBuyCost = (int)((armorBonus+weaponBonus+speedBonus)*5*health);
-	m_goldDropCost = m_goldBuyCost/4;
+	m_goldDropCost = m_goldBuyCost/6;
 	m_baseHealth = health;
 	m_armorBonus = armorBonus;
 	m_weaponBonus = weaponBonus;

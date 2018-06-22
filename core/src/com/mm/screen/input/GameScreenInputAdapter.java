@@ -25,7 +25,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     {
 	if (Dragon.getInstance().getActive())
 	{
-	    m_screen.updateMessageLabel("Dragging: " + screenX + " : " + screenY);
+	    //m_screen.updateMessageLabel("Dragging: " + screenX + " : " + screenY);
 	    float xLoc = screenX / m_screen.xScale;
 	    float yLoc = screenY / m_screen.yScale;
 	    Dragon.getInstance().m_position.set(xLoc, yLoc);
@@ -52,7 +52,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	DragonSlot slot = m_screen.getSlot(screenX, screenY);
 	if (slot != null)
 	{
-	    m_screen.updateMessageLabel("Grabbed Dragon: " + screenX + " : " + screenY);
+	    //m_screen.updateMessageLabel("Grabbed Dragon: " + screenX + " : " + screenY);
 	    Dragon.getInstance().m_data = slot.getDragonData();
 	    Dragon.getInstance().setActive(true);
 	    float xLoc = screenX / m_screen.xScale;
@@ -72,10 +72,11 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    if (screenY > m_screen.m_dropThreshold)
 	    {
-		if (m_screen.gold >= 5)
+		
+		if (m_screen.getGold() >= 5)
 		{
-		    m_screen.gold -= 5;
-		    m_screen.updateMessageLabel("Dragon Dropped");
+		    m_screen.updateGold(-Dragon.getInstance().m_data.m_goldDropCost);
+		    //m_screen.updateMessageLabel("Dragon Dropped");
 		    Dragon.getInstance().setActive(false);
 		    float xLoc = screenX / m_screen.xScale;
 		    float yLoc = screenY / m_screen.yScale;
@@ -84,7 +85,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 		else
 		{
 		    Dragon.getInstance().setActive(false);
-		    m_screen.updateMessageLabel("Not Enough Gold!!");
+		    //m_screen.updateMessageLabel("Not Enough Gold!!");
 		}
 	    }
 	    else
