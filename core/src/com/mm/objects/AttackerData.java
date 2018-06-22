@@ -13,13 +13,13 @@ public class AttackerData
     public final float m_weapon;
     public final float m_speed;
     
-    public AttackerData(Texture img, int gold, float impulse, float health, int goldSteals, float armor, float weapon, float speed)
+    public AttackerData(Texture img, float impulse, float health, float armor, float weapon, float speed)
     {
 	m_image = img;
-	m_goldValue = gold;
+	m_goldValue = (int)((Math.pow(2, armor-1) + Math.pow(2,weapon-1) + Math.pow(2,speed-1))*health*0.75);
 	m_impulse = impulse;
 	m_baseHealth = health;
-	m_goldSteals = goldSteals;
+	m_goldSteals = (m_goldValue*3) / 4;
 	m_armor = armor;
 	m_weapon = weapon;
 	m_speed = speed;

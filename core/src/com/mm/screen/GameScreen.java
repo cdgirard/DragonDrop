@@ -357,10 +357,10 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label("30 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("50 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("100 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("75 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[0].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[1].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[2].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[3].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
     
@@ -401,10 +401,10 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label("30 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("50 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("100 gold", uiBuyWinSkin, font, Color.ORANGE));
-	tbl.add(new Label("75 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[4].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[5].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[6].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label(Globals.dragonTypes[7].m_goldBuyCost+" gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
 
@@ -526,9 +526,8 @@ public class GameScreen extends SizableScreen
 
     private void spawnAttacker()
     {
-	int y = 4; //(int) MathUtils.random(0, 4);
-	if (m_attackers.size > 0)
-	    return;
+	int y = (int) MathUtils.random(0, 4);
+
 	Attacker attacker = new Attacker(y);
 
 	float x = y + 0.5f;
