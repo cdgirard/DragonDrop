@@ -420,7 +420,9 @@ public class GameScreen extends SizableScreen
 
     private void spawnAttacker()
     {
-	int y = (int) MathUtils.random(0, 4);
+	int y = 4; //(int) MathUtils.random(0, 4);
+	if (m_attackers.size > 0)
+	    return;
 	Attacker attacker = new Attacker(y);
 
 	float x = y + 0.5f;
@@ -483,14 +485,15 @@ public class GameScreen extends SizableScreen
 	Dragon.getInstance().render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
-	for (AbstractGameObject obj : m_droppingDragons)
+	for (DroppingDragon obj : m_droppingDragons)
 	{
 	    obj.render(batcher);
-	    updateMessageLabel("Dragon Dropping:" + obj.m_position.x + " : " + obj.m_position.y);
+	    
 	}
-	for (AbstractGameObject obj : m_attackers)
+	for (Attacker obj : m_attackers)
 	{
 	    obj.render(batcher);
+	    updateMessageLabel("Attacker:" + obj.health);
 	}
 
 	batcher.end();

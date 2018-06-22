@@ -15,14 +15,33 @@ public class DragonData
     public final Texture m_image;
     public final int m_goldDropCost;
     public final int m_goldBuyCost;
-    public float m_baseHealth;
+    public final float m_baseHealth;
+    public final float m_armorBonus;
+    public final float m_weaponBonus;
+    public final float m_speedBonus;
     
-    public DragonData(Texture img, int goldDropCost, int goldBuyCost, float health)
+    public DragonData(Texture img, int goldDropCost, int goldBuyCost, float health, float armorBonus, float weaponBonus, float speedBonus)
     {
 	m_image = img;
 	m_goldDropCost = goldDropCost;
 	m_goldBuyCost = goldBuyCost;
 	m_baseHealth = health;
+	m_armorBonus = armorBonus;
+	m_weaponBonus = weaponBonus;
+	m_speedBonus = speedBonus;
+    }
+    
+    public float computeDamageReduction(AttackerData attacker)
+    {
+	float dmgMod = 1;
+	if (m_armorBonus > attacker.m_armor)
+	    dmgMod++;
+	if (m_weaponBonus > attacker.m_weapon)
+	    dmgMod++;
+	if (m_speedBonus > attacker.m_speed)
+	    dmgMod++;
+
+        return dmgMod;	
     }
 
 }
