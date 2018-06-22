@@ -48,6 +48,7 @@ import com.mm.objects.DroppingDragon;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonData;
 import com.mm.objects.DragonSlot;
+import com.mm.objects.Mountain;
 import com.mm.screen.input.GameScreenInputAdapter;
 import com.mm.screen.input.GameScreenInputHandler;
 
@@ -85,6 +86,8 @@ public class GameScreen extends SizableScreen
     private OrthographicCamera m_uiCam;
 
     private Texture m_background;
+    private Mountain rightMountain;
+    private Mountain leftMountain;
 
     private Label label;
     private Label scoreLabel;
@@ -231,6 +234,9 @@ public class GameScreen extends SizableScreen
 	slots[3].setDragon(-1);
 	
 	slots[4].setDragon(-1);
+	
+	addMountains();
+	
 	score = 0;
 	gold = 100;
 	m_runTime = 0f;
@@ -448,6 +454,46 @@ public class GameScreen extends SizableScreen
     }
 
     /**
+     * Places a mountain on either side of the map to keep things from going
+     * off the sides.
+     * @param pos
+     */
+    public void addMountains()
+    {
+	rightMountain = new Mountain();
+	createMountain(rightMountain,new Vector2(5,6.5f));
+	
+	leftMountain = new Mountain();
+	createMountain(leftMountain,new Vector2(0,6.5f));
+    }
+    
+    public void createMountain(Mountain mt, Vector2 pos)
+    {
+        mt.m_position = pos;
+	
+	BodyDef bodyDef = new BodyDef();
+	bodyDef.position.set(mt.m_position);
+	bodyDef.angle = 0; // rotation;
+	Body body = world.createBody(bodyDef);
+	body.setType(BodyType.StaticBody);
+	body.setUserData(mt);
+	mt.body = body;
+
+	PolygonShape polygonShape = new PolygonShape();
+	float halfWidth = mt.bounds.width / 2.0f;
+	float halfHeight = mt.bounds.height / 2.0f;
+	polygonShape.setAsBox(halfWidth, halfHeight);
+
+	FixtureDef fixtureDef = new FixtureDef();
+	fixtureDef.shape = polygonShape;
+	fixtureDef.density = 15;
+	fixtureDef.restitution = 0.25f;
+	fixtureDef.friction = 0.5f;
+	body.createFixture(fixtureDef);
+	polygonShape.dispose();
+    }
+    
+    /**
      * Causes a new dragon to start falling from the specified location.
      * @param pos
      */
@@ -543,6 +589,8 @@ public class GameScreen extends SizableScreen
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	Dragon.getInstance().render(batcher);
+	rightMountain.render(batcher);
+	leftMountain.render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
 	for (DroppingDragon obj : m_droppingDragons)
