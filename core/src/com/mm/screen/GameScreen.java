@@ -77,7 +77,8 @@ public class GameScreen extends SizableScreen
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
 
-    private Skin uiSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
+    private Skin uiBuyWinSkin = new Skin(Gdx.files.internal("ui/clean-crispy-ui.json"));
+    private Skin uiMainWinSkin = new Skin(Gdx.files.internal("uiskin_copy.json"));
     private Stage m_stage;
 
     private OrthographicCamera m_gameCam;
@@ -250,17 +251,17 @@ public class GameScreen extends SizableScreen
 	m_quitButton.addListener(GameScreenInputHandler.getInstance());
 	m_stage.addActor(m_quitButton);
 
-	label = new Label("Messages appear here.", uiSkin);
+	label = new Label("Messages appear here.", uiMainWinSkin);
 	label.setAlignment(Align.center);
 	label.setPosition(200, 300);
 	m_stage.addActor(label);
 
-	scoreLabel = new Label("Score: " + score, uiSkin);
+	scoreLabel = new Label("Score: " + score, uiMainWinSkin);
 	scoreLabel.setAlignment(Align.left);
 	scoreLabel.setPosition(25, preferredHeight - 25);
 	m_stage.addActor(scoreLabel);
 
-	goldLabel = new Label("Gold: " + gold, uiSkin);
+	goldLabel = new Label("Gold: " + gold, uiMainWinSkin);
 	goldLabel.setAlignment(Align.left);
 	goldLabel.setPosition(25, preferredHeight - 50);
 	m_stage.addActor(goldLabel);
@@ -298,17 +299,17 @@ public class GameScreen extends SizableScreen
 
     private Table buildBuyDragonsWindowLayer()
     {
-	winBuyDragon = new Window("Buy Dragon", uiSkin);
+	winBuyDragon = new Window("Buy Dragon", uiBuyWinSkin);
 	winBuyDragon.add(buildBuyDragonsRow1()).row();
 	winBuyDragon.add(buildBuyDragonsRow2()).row();
 	winBuyDragon.add(buildBuyDragonsWinButtons()).pad(10, 0, 10, 0);
 	// Making the whole window transparent.
-	winBuyDragon.setColor(1, 1, 1, 0.8f);
+	winBuyDragon.setColor(1f, 1f, 1f, 1f);
 	winBuyDragon.setVisible(false);
 	// winBuyDragon.debug();
 	winBuyDragon.pack();
 	// Not doing anything
-	winBuyDragon.setPosition(preferredWidth - winBuyDragon.getWidth() - 100, 475);
+	winBuyDragon.setPosition(preferredWidth - winBuyDragon.getWidth() - 20, 325);
 	winBuyDragon.setMovable(false);
 	return winBuyDragon;
     }
@@ -318,10 +319,11 @@ public class GameScreen extends SizableScreen
 	Table tbl = new Table();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
-	tbl.add(new Label("Goth Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Hazy Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Book Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Blue Dragon", uiSkin, "default-font", Color.ORANGE));
+        String font = "font";
+	tbl.add(new Label("Goth Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Hazy Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Book Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Blue Dragon", uiBuyWinSkin, font, Color.ORANGE));
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
@@ -349,22 +351,23 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("75 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("30 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("50 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("100 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("75 gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
     
     private Table buildBuyDragonsRow2()
     {
 	Table tbl = new Table();
+	String font = "font";
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
-	tbl.add(new Label("Moose Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Fairy Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Draq Dragon", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("Butler Dragon", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("Moose Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Fairy Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Draq Dragon", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("Butler Dragon", uiBuyWinSkin, font, Color.ORANGE));
 	tbl.row();
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
@@ -392,10 +395,10 @@ public class GameScreen extends SizableScreen
 	tbl.columnDefaults(0).padRight(10);
 	tbl.columnDefaults(1).padRight(10);
 	// TODO: Change this to gather data from Dragon Data.
-	tbl.add(new Label("30 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("50 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("100 gold", uiSkin, "default-font", Color.ORANGE));
-	tbl.add(new Label("75 gold", uiSkin, "default-font", Color.ORANGE));
+	tbl.add(new Label("30 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("50 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("100 gold", uiBuyWinSkin, font, Color.ORANGE));
+	tbl.add(new Label("75 gold", uiBuyWinSkin, font, Color.ORANGE));
 	return tbl;
     }
 
@@ -403,7 +406,7 @@ public class GameScreen extends SizableScreen
     {
 	Table tbl = new Table();
 	tbl.pad(10, 10, 0, 10);
-	btnWinOptCancel = new TextButton("Cancel", uiSkin);
+	btnWinOptCancel = new TextButton("Cancel", uiBuyWinSkin);
 	tbl.add(btnWinOptCancel);
 	btnWinOptCancel.addListener(GameScreenInputHandler.getInstance());
 	return tbl;
