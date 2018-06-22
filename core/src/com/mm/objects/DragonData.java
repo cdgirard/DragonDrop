@@ -31,13 +31,17 @@ public class DragonData
 	m_speedBonus = speedBonus;
     }
     
-    public int computeDamage(AttackerData attacker)
+    public float computeDamageReduction(AttackerData attacker)
     {
-	float dmgMod = m_armorBonus/attacker.m_armor + m_weaponBonus/attacker.m_weapon + m_speedBonus/attacker.m_speed;
-	int dmg = (int)dmgMod;
-	if (dmg == 0)
-	    dmg = 1;
-        return dmg;	
+	float dmgMod = 1;
+	if (m_armorBonus > attacker.m_armor)
+	    dmgMod++;
+	if (m_weaponBonus > attacker.m_weapon)
+	    dmgMod++;
+	if (m_speedBonus > attacker.m_speed)
+	    dmgMod++;
+
+        return dmgMod;	
     }
 
 }
