@@ -4,23 +4,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mm.helpers.Assets;
 
-public class DroppingDragon extends AbstractGameObject
+public class Mountain extends AbstractGameObject
 {
     private Texture m_image;
-    public float health;
-    public DragonData m_data;
-
-    public DroppingDragon(DragonData data)
+    
+    public Mountain()
     {
-	m_image = data.m_image;
-	health = data.m_baseHealth;
-	m_data = data;
+	m_image = Assets.assetManager.get(Assets.MOUNTAIN,Texture.class);
 	init();
     }
-
+    
     private void init()
     {
-	dimension.set(0.5f, 0.5f);
+	dimension.set(0.5f, 9.0f);
 	bounds.set(0, 0, dimension.x, dimension.y);
 	origin.set(dimension.x / 2, dimension.y / 2);
     }

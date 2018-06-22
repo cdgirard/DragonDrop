@@ -35,6 +35,9 @@ public class Assets
     public static final String DRAQ_DRAGON = "images/dragons/draq_dragon.png";
     public static final String BUTLER_DRAGON = "images/dragons/butler_dragon.png";
     
+    // Landscape
+    public static final String MOUNTAIN = "images/landscape/mountain.png";
+    
     // UI
     public static final String DRAGON_SLOT = "images/ui/dragon_slot.png";
     public static final String BUY_BTN = "images/ui/buy_btn.png";
@@ -56,6 +59,7 @@ public class Assets
         loadGUIImages();
         loadDragons();
         loadAttackers();
+        loadLandscape();
         loadSounds();
         loadMusic();
     }
@@ -68,6 +72,12 @@ public class Assets
         assetManager.load(BUY_BTN, Texture.class);
         assetManager.load(SELL_BTN, Texture.class);
         assetManager.finishLoading();
+    }
+    
+    private static void loadLandscape()
+    {
+	assetManager.load(MOUNTAIN, Texture.class);
+	assetManager.finishLoading();
     }
     
     private static void loadAttackers()
