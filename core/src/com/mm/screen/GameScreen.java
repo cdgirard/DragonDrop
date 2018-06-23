@@ -217,7 +217,7 @@ public class GameScreen extends SizableScreen
 
     public void updateDropThreshold(float modifier)
     {
-	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * (1 + 0.5f * modifier);
+	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * (0.5f + 0.25f * modifier);
     }
 
     private Table buildBuyDragonsWindowLayer()
