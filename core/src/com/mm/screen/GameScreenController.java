@@ -4,6 +4,7 @@ import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.RayHandler;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,8 +21,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.mm.helpers.Assets;
 import com.mm.helpers.CollisionHandler;
+import com.mm.helpers.Globals;
 import com.mm.objects.AbstractGameObject;
 import com.mm.objects.Attacker;
+import com.mm.objects.AttackerData;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonData;
 import com.mm.objects.DroppingDragon;
@@ -135,6 +138,11 @@ public class GameScreenController
 	    }
 	    m_attackers.removeRange(0, m_attackers.size - 1);
 	}
+	
+	for (AttackerData data : Globals.attackerTypes)
+	{
+	    data.resetStats();
+	}
     }
     
     public void flagForRemoval(AbstractGameObject obj)
@@ -164,6 +172,8 @@ public class GameScreenController
 	int y = (int) MathUtils.random(0, 4);
 	
 	Attacker attacker = new Attacker(y);
+	//AttackerData d = attacker.myData;
+	//Gdx.app.log("MainScreen", "Attacker Data: "+d.m_armor+" "+d.m_weapon+" "+d.m_speed+" "+d.m_goldSteals+" "+d.m_goldValue);
 
 	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
 	Vector2 pos = new Vector2(x, 9.0f);
@@ -346,10 +356,17 @@ public class GameScreenController
 	{
 	    Dragon.getInstance().update(delta);
 	}
+	
+	for (AttackerData data : Globals.attackerTypes)
+	{
+	    if (data.m_experience >= 10)
+	    {
+		data.levelUp();
+	    }
+	}
 
 	if (Math.random() > 0.98)
 	    spawnAttacker();
-
     }
     
     public void updateGold(int value)
