@@ -277,7 +277,6 @@ public class GameScreenController
 	for (Attacker obj : m_attackers)
 	{
 	    obj.render(batcher);
-	    //updateMessageLabel("Attacker:" + obj.health);
 	}
 
 	batcher.end();

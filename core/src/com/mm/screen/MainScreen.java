@@ -38,6 +38,8 @@ public class MainScreen extends SizableScreen
     private ImageButton m_startNewGameButton, m_loadGameButton;
     
     private Texture m_background;
+    
+    SpriteBatch batcher;
       
     public MainScreen()
     {
@@ -63,6 +65,8 @@ public class MainScreen extends SizableScreen
         m_cam.update();
         
         m_controller = new MainScreenController();
+        
+        batcher = new SpriteBatch();
         
         AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
     }
@@ -94,8 +98,7 @@ public class MainScreen extends SizableScreen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         m_cam.update();
         
-        SpriteBatch batcher;
-        batcher = new SpriteBatch();
+        
         // Attach batcher to camera
         batcher.setProjectionMatrix(m_cam.combined);
         batcher.disableBlending();

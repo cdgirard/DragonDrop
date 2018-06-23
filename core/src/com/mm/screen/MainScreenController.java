@@ -4,6 +4,7 @@ import box2dLight.ConeLight;
 import box2dLight.Light;
 import box2dLight.RayHandler;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,6 +52,8 @@ public class MainScreenController
     private OrthographicCamera m_gameCam;
     
     private SpriteBatch batcher;
+    
+    private float gameTime = 0;
     
     // For Box2D Debugging
     private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
@@ -215,6 +218,12 @@ public class MainScreenController
     
     public void render(float delta)
     {
+	if (gameTime > 1)
+	{
+	    //Gdx.app.log("MainScreen", "Arrays:"+m_attackers.size+" , "+m_droppingDragons.size+" : "+m_objectsToRemove.size);
+	    gameTime = 0;
+	}
+	gameTime += delta;
 	m_gameCam.update();
 	
 	batcher.setProjectionMatrix(m_gameCam.combined);
@@ -290,7 +299,7 @@ public class MainScreenController
 	for (Attacker obj : m_attackers)
 	{
 	    obj.update(delta);
-	    if (obj.m_position.y < -2f)
+	    if ((obj.m_position.y < -2f) || (obj.m_position.y > 11.0f))
 	    {
 		flagForRemoval(obj);
 	    }
