@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.mm.helpers.Assets;
 import com.mm.helpers.CollisionHandler;
+import com.mm.helpers.Globals;
 import com.mm.objects.AbstractGameObject;
 import com.mm.objects.Attacker;
 import com.mm.objects.Dragon;
@@ -33,25 +34,20 @@ import com.mm.objects.Mountain;
  * @author cdgira
  *
  */
-public class GameScreenController
+public class MainScreenController
 {
-    public static final float VIEWPORT_WIDTH = 5.0f;
-    public static final float VIEWPORT_HEIGHT = 9.0f;
+    public static final float VIEWPORT_WIDTH = 9.7f;
+    public static final float VIEWPORT_HEIGHT = 7.6f;
+    
+    private RayHandler rayHandler;
+    private Light rightLight, leftLight;
     
     public World world;
-    
-    RayHandler rayHandler;
-    Light light;
     
     public Array<DroppingDragon> m_droppingDragons;
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
-
-    public int gold = 100;
-    
-    private Mountain rightMountain;
-    private Mountain leftMountain;
-    
+ 
     private OrthographicCamera m_gameCam;
     
     private SpriteBatch batcher;
@@ -60,7 +56,7 @@ public class GameScreenController
     private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
     private Box2DDebugRenderer b2DebugRenderer;
     
-    public GameScreenController()
+    public MainScreenController()
     {
 	// Setup the Cameras
 	m_gameCam = new OrthographicCamera();
@@ -75,18 +71,18 @@ public class GameScreenController
 	if (world != null)
 	    world.dispose();
 	world = new World(new Vector2(0, 9.81f), true);
-	
-	RayHandler.setGammaCorrection(true);
-	RayHandler.useDiffuseLight(true);
-
-	rayHandler = new RayHandler(world);
-	rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
-	rayHandler.setBlurNum(3);
-
-	light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f, 90f, 20f);
-	
-	addMountains();
-	
+        
+        //RayHandler.setGammaCorrection(true);
+        //RayHandler.useDiffuseLight(true);
+        
+        //rayHandler = new RayHandler(world);
+        //rayHandler.setAmbientLight(0.3f, 0.3f, 0.3f, 0.5f);
+        //rayHandler.setBlurNum(3);
+        
+        // May need to move this due to new camera.
+        //rightLight = new ConeLight(rayHandler, 1000, Color.WHITE, 500f, -1f, 3.5f,0f,30f);
+        //leftLight = new ConeLight(rayHandler, 1000, Color.WHITE, 500f, 10.7f, 3.5f,180f,30f);
+        
 	b2DebugRenderer = new Box2DDebugRenderer();
     }
     
@@ -141,20 +137,6 @@ public class GameScreenController
     {
 	m_objectsToRemove.add(obj);
     }
-    
-    /**
-     * Places a mountain on either side of the map to keep things from going
-     * off the sides.
-     * @param pos
-     */
-    public void addMountains()
-    {
-	rightMountain = new Mountain();
-	createMountain(rightMountain, new Vector2(5, 6.5f));
-
-	leftMountain = new Mountain();
-	createMountain(leftMountain, new Vector2(0, 6.5f));
-    }
 
     /**
      * TODO: Not sure if should become createAttacker?
@@ -165,8 +147,8 @@ public class GameScreenController
 	
 	Attacker attacker = new Attacker(y);
 
-	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
-	Vector2 pos = new Vector2(x, 9.0f);
+	float x = (float)(Math.random()*8.5+0.5);//y + 0.5f;
+	Vector2 pos = new Vector2(x, 6.0f);
 	attacker.m_position.set(pos);
 
 	BodyDef bodyDef = new BodyDef();
@@ -198,9 +180,15 @@ public class GameScreenController
      * TODO: Rename this to createDroppingDragon
      * @param pos
      */
-    public void dropDragon(DragonData data, Vector2 pos)
+    public void spawnDragon()
     {
-	DroppingDragon droppedDragon = new DroppingDragon(data);
+        int index = (int) MathUtils.random(0, 7);
+
+	DroppingDragon droppedDragon = new DroppingDragon(Globals.dragonTypes[index]);
+	
+	// Should be a random place just above the MainScreen
+	float x = (float)(Math.random()*8.5+0.5);
+	Vector2 pos = new Vector2(x, 1f);
 
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.position.set(pos);
@@ -225,39 +213,6 @@ public class GameScreenController
 	m_droppingDragons.add(droppedDragon);
     }
     
-    /**
-     * Creates a mountain that should be on one of the sides of the game board.
-     * Keeps the attackers and dragons in the playing area.
-     * 
-     * @param mt
-     * @param pos
-     */
-    public void createMountain(Mountain mt, Vector2 pos)
-    {
-	mt.m_position = pos;
-
-	BodyDef bodyDef = new BodyDef();
-	bodyDef.position.set(mt.m_position);
-	bodyDef.angle = 0; // rotation;
-	Body body = world.createBody(bodyDef);
-	body.setType(BodyType.StaticBody);
-	body.setUserData(mt);
-	mt.body = body;
-
-	PolygonShape polygonShape = new PolygonShape();
-	float halfWidth = mt.bounds.width / 2.0f;
-	float halfHeight = mt.bounds.height / 2.0f;
-	polygonShape.setAsBox(halfWidth, halfHeight);
-
-	FixtureDef fixtureDef = new FixtureDef();
-	fixtureDef.shape = polygonShape;
-	fixtureDef.density = 15;
-	fixtureDef.restitution = 0.25f;
-	fixtureDef.friction = 0.5f;
-	body.createFixture(fixtureDef);
-	polygonShape.dispose();
-    }
-    
     public void render(float delta)
     {
 	m_gameCam.update();
@@ -265,8 +220,6 @@ public class GameScreenController
 	batcher.setProjectionMatrix(m_gameCam.combined);
 	batcher.begin();
 	Dragon.getInstance().render(batcher);
-	rightMountain.render(batcher);
-	leftMountain.render(batcher);
 	// Create 3 slots for dragons to be dragged and dropped
 
 	for (DroppingDragon obj : m_droppingDragons)
@@ -281,10 +234,10 @@ public class GameScreenController
 	}
 
 	batcher.end();
-
-	rayHandler.setCombinedMatrix(m_gameCam);
-	rayHandler.update();
-	rayHandler.render();
+	
+        //rayHandler.setCombinedMatrix(m_gameCam);
+        //rayHandler.update();
+        //rayHandler.render();
 	
 	if (DEBUG_DRAW_BOX2D_WORLD)
 	{
@@ -337,9 +290,8 @@ public class GameScreenController
 	for (Attacker obj : m_attackers)
 	{
 	    obj.update(delta);
-	    if (obj.m_position.y < 2.5f)
+	    if (obj.m_position.y < -2f)
 	    {
-		updateGold(-obj.myData.m_goldSteals);
 		flagForRemoval(obj);
 	    }
 	}
@@ -350,13 +302,9 @@ public class GameScreenController
 
 	if (Math.random() > 0.98)
 	    spawnAttacker();
+	if (Math.random() > 0.90)
+	    spawnDragon();
 
     }
-    
-    public void updateGold(int value)
-    {
-	gold += value;
-    }
-
 
 }

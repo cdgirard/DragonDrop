@@ -27,15 +27,13 @@ import com.mm.screen.input.MainScreenInputHandler;
 
 public class MainScreen extends SizableScreen
 {
-    RayHandler rayHandler;
-    Light light;
-    World world;
-    
     private Skin buttonSkin = new Skin();
     
     private OrthographicCamera m_cam;
     
-    private Stage m_stage;// = new Stage();
+    private Stage m_stage;
+    
+    private MainScreenController m_controller;
     
     private ImageButton m_startNewGameButton, m_loadGameButton;
     
@@ -43,10 +41,7 @@ public class MainScreen extends SizableScreen
       
     public MainScreen()
     {
-        
-        // TODO: Turn into Hashtable so don't get screwed if index changes.
         m_background = Assets.assetManager.get(Assets.MAIN_SCREEN,Texture.class);
-        //m_background.flip(false, true);
         preferredWidth = m_background.getWidth();
         preferredHeight = m_background.getHeight();
               
@@ -55,7 +50,6 @@ public class MainScreen extends SizableScreen
         
         MainScreenInputHandler.initializeInstance();
         m_stage = new Stage();
-      //  m_stage.getViewport().update(preferredWidth, preferredHeight);
 
         m_startNewGameButton = constructButton(MainScreenInputHandler.START_NEW_GAME_BUTTON);
         m_startNewGameButton.setPosition(700, 200);
@@ -65,33 +59,12 @@ public class MainScreen extends SizableScreen
         m_loadGameButton.setPosition(700, 75);
         m_stage.addActor(m_loadGameButton);
         
-        
-
-        
         m_cam = new OrthographicCamera(preferredWidth,preferredHeight);
         m_cam.update();
-       // m_cam.setToOrtho(true, preferredWidth, preferredHeight);
-        world = new World(new Vector2(0,0),true);
         
-        RayHandler.setGammaCorrection(true);
-        RayHandler.useDiffuseLight(true);
+        m_controller = new MainScreenController();
         
-        rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.5f);
-        rayHandler.setBlurNum(3);
-        
-        //light = new PointLight(rayHandler, 1000, null,50f, 625f, 400f);
-       // light.setColor( Color.WHITE);
-        //light.setColor(Color.PURPLE);
-        
-         light = new ConeLight(rayHandler, 1000, Color.WHITE, 1000f, 640f, 75f,90f,30f);
-       // conelight.setStaticLight(true);
-        
-        // Move Camera to 0,0
-        //cam.translate(-cam.position.x, -cam.position.y, 0);
-        
-         AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
-
+        AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
     }
     
     private ImageButton constructButton(String name)
@@ -114,6 +87,8 @@ public class MainScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
+	m_controller.update(delta);
+	
         Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -129,10 +104,8 @@ public class MainScreen extends SizableScreen
         batcher.enableBlending();
         batcher.end();
         
-        rayHandler.setCombinedMatrix(m_cam);
-        rayHandler.update();
-        rayHandler.render();
-        
+        m_controller.render(delta);
+
         m_stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         m_stage.draw();
     }
