@@ -49,6 +49,20 @@ public class GameScreenController
 
     public int gold = 100;
     
+    public int wave = 0;
+    public int attackerCount = 0;
+    public int[][] waves = {{0},
+		            {1},
+		            {0,1},
+		            {2},
+		            {0,1,2},
+		            {3},
+		            {0,1,2,3},
+		            {4},
+		            {0,1,2,3,4},
+		            {1,4},
+		            {1,2,3}};
+    
     private Mountain rightMountain;
     private Mountain leftMountain;
     
@@ -83,6 +97,8 @@ public class GameScreenController
     
     public void init()
     {
+	wave = 0;
+	attackerCount = 0;
 	if (m_objectsToRemove.size > 0)
 	{
 	    for (AbstractGameObject obj : m_objectsToRemove)
@@ -157,12 +173,21 @@ public class GameScreenController
      */
     private void spawnAttacker()
     {
-	int y = (int) MathUtils.random(0, 4);
+	int y = (int) MathUtils.random(0, waves[wave].length-1);
+	y = waves[wave][y];
 	
 	Attacker attacker = new Attacker(y);
+	attackerCount++;
+	if (attackerCount > 10*waves[wave].length)
+	{
+	    wave++;
+	    attackerCount = 0;
+	}
+	if (wave == waves.length)
+	    wave = 8;
 	//AttackerData d = attacker.myData;
 	//Gdx.app.log("MainScreen", "Attacker Data: "+d.m_armor+" "+d.m_weapon+" "+d.m_speed+" "+d.m_goldSteals+" "+d.m_goldValue);
-
+	//Gdx.app.log("MainScreen", "Wave: "+wave);
 	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
 	Vector2 pos = new Vector2(x, 9.0f);
 	attacker.m_position.set(pos);
