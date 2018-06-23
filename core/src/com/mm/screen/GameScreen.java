@@ -136,6 +136,9 @@ public class GameScreen extends SizableScreen
 	m_runTime = 0f;
 	m_endGame = false;
 	
+	// Create Gold Coins
+	// Is here instead of initUI, because it needs to be
+	// done every time the window is made active again.
 	for (int i = 0; i < controller.gold; i = i + 10)
 	{
 	    GoldCoin coin = createGoldCoin();
@@ -160,12 +163,7 @@ public class GameScreen extends SizableScreen
      */
     private void initUI()
     {
-	// Create Gold Coins
-	for (int i = 0; i < controller.gold; i = i + 10)
-	{
-	    GoldCoin coin = createGoldCoin();
-	    m_goldCoins.add(coin);
-	}
+
 
 	UIHelper.addRegions(Assets.buttonsAtlas);
 	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
@@ -420,27 +418,23 @@ public class GameScreen extends SizableScreen
 	{
 	    m_endGame = true;
 	}
-	// There are 20 gold coins when should only be 10...somehow
-	// gold coins got added in twice.
+
 	int horde = m_goldCoins.size * 10;
-	this.updateMessageLabel("Adding Gold: "+controller.gold+" "+horde);
-	if (horde < controller.gold)
+
+	if (horde/10 < controller.gold/10)
 	{
-	    this.updateMessageLabel("Adding Gold: "+controller.gold+" "+horde);
 	    for (int i = horde; i < controller.gold; i = i + 10)
 	    {
-		
                 GoldCoin coin = createGoldCoin();
                 m_goldCoins.add(coin);
 	    }
 	}
-	else if (horde > controller.gold)
+	else if (horde/10 > controller.gold/10)
 	{
 	    for (int i = horde; i > controller.gold; i = i - 10)
 	    {
-		//this.updateMessageLabel("Removing Gold: "+i);
-		//if (m_goldCoins.size > 0)
-                  //  m_goldCoins.removeIndex(0);
+		if (m_goldCoins.size > 0)
+                    m_goldCoins.removeIndex(m_goldCoins.size-1);
 	    }
 	}
     }
