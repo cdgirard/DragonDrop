@@ -19,7 +19,7 @@ public class AttackerData
 	m_goldValue = (int)((Math.pow(2, armor-1) + Math.pow(2,weapon-1) + Math.pow(2,speed-1))*health*0.75);
 	m_impulse = impulse;
 	m_baseHealth = health;
-	m_goldSteals = 0;//(m_goldValue*3) / 4;
+	m_goldSteals = (m_goldValue*3) / 4;
 	m_armor = armor;
 	m_weapon = weapon;
 	m_speed = speed;

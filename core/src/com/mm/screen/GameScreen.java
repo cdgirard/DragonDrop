@@ -66,7 +66,11 @@ public class GameScreen extends SizableScreen
 
     public DragonSlot[] slots = new DragonSlot[5];
     public int activeSlot = -1; // slot buying or selling a dragon for
-    public float m_dropThreshold; // Point at where you can drop a dragon
+    
+ // Point at where you can drop a dragon
+    public float m_dropThreshold; 
+    public float m_rightDropThreshold;
+    public float m_leftDropThreshold;
 
     SpriteBatch batcher;
 
@@ -213,6 +217,8 @@ public class GameScreen extends SizableScreen
 	slots[2].setDragon(2);
 
 	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * 1.5f;
+	m_leftDropThreshold = 25;
+	m_rightDropThreshold = preferredWidth - 25;
     }
 
     public void updateDropThreshold(float modifier)
