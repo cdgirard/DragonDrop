@@ -33,10 +33,15 @@ public class Attacker extends AbstractGameObject
     @Override
     public void update(float deltaTime)
     {
-	if (body.getLinearVelocity().y > -4.5)
+	float velocityThreshold = -0.5f*myData.m_speed;
+	if (body.getLinearVelocity().y > velocityThreshold)
 	{
 	    float scaledImpulse = myData.m_impulse / deltaTime;
 	    body.applyLinearImpulse(new Vector2(0, scaledImpulse), m_position, true);
+	}
+	else if (body.getLinearVelocity().y < velocityThreshold - .5f)
+	{
+	    body.setLinearVelocity(body.getLinearVelocity().x, velocityThreshold);
 	}
 	super.update(deltaTime);
     }
