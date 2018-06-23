@@ -152,7 +152,7 @@ public class GameScreen extends SizableScreen
      */
     private GoldCoin createGoldCoin()
     {
-	int x = (int) MathUtils.random(10, preferredWidth - 10);
+	int x = (int) MathUtils.random(25, preferredWidth - 45);
 	int y = (int) MathUtils.random(200, 300);
 	Vector2 pos = new Vector2(x, y);
 	return new GoldCoin(pos);
