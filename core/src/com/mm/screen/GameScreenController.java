@@ -43,9 +43,6 @@ public class GameScreenController
     
     public World world;
     
-    RayHandler rayHandler;
-    Light light;
-    
     public Array<DroppingDragon> m_droppingDragons;
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
@@ -78,16 +75,7 @@ public class GameScreenController
 	if (world != null)
 	    world.dispose();
 	world = new World(new Vector2(0, 9.81f), true);
-	
-	RayHandler.setGammaCorrection(true);
-	RayHandler.useDiffuseLight(true);
 
-	rayHandler = new RayHandler(world);
-	rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f);
-	rayHandler.setBlurNum(3);
-
-	light = new ConeLight(rayHandler, 1000, Color.WHITE, 250f, 520f, 250f, 90f, 20f);
-	
 	addMountains();
 	
 	b2DebugRenderer = new Box2DDebugRenderer();
@@ -290,10 +278,6 @@ public class GameScreenController
 	}
 
 	batcher.end();
-
-	rayHandler.setCombinedMatrix(m_gameCam);
-	rayHandler.update();
-	rayHandler.render();
 	
 	if (DEBUG_DRAW_BOX2D_WORLD)
 	{
