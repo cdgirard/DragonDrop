@@ -28,7 +28,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	    float xLoc = screenX / m_screen.xScale;
 	    float yLoc = screenY / m_screen.yScale;
 	    Dragon.getInstance().m_position.set(xLoc, yLoc);
-	    if (screenY > m_screen.m_dropThreshold)
+	    if ((screenY > m_screen.m_dropThreshold) && (screenX > m_screen.m_leftDropThreshold) && (screenX < m_screen.m_rightDropThreshold))
 	    {
 	        Dragon.getInstance().dimension.set(0.5f, 0.5f);
 	        m_screen.updateDropThreshold(0.5f);
@@ -69,9 +69,8 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     {
 	if (Dragon.getInstance().getActive())
 	{
-	    if (screenY > m_screen.m_dropThreshold)
+	    if ((screenY > m_screen.m_dropThreshold) && (screenX > m_screen.m_leftDropThreshold) && (screenX < m_screen.m_rightDropThreshold))
 	    {
-		
 		if (m_screen.getGold() >= 5)
 		{
 		    m_screen.updateGold(-Dragon.getInstance().m_data.m_goldDropCost);

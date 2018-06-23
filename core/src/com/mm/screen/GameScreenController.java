@@ -150,10 +150,10 @@ public class GameScreenController
     public void addMountains()
     {
 	rightMountain = new Mountain();
-	createMountain(rightMountain, new Vector2(5, 6.5f));
+	createMountain(rightMountain, new Vector2(5, 6.25f));
 
 	leftMountain = new Mountain();
-	createMountain(leftMountain, new Vector2(0, 6.5f));
+	createMountain(leftMountain, new Vector2(0, 6.25f));
     }
 
     /**
