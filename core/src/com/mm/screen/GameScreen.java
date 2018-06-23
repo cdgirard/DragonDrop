@@ -129,9 +129,9 @@ public class GameScreen extends SizableScreen
     {
 	controller.init();
 	
-	slots[0].setDragon(0);
-	slots[1].setDragon(1);
-	slots[2].setDragon(2);
+	slots[0].setDragon(-1);
+	slots[1].setDragon(-1);
+	slots[2].setDragon(0);
 	slots[3].setDragon(-1);
 	slots[4].setDragon(-1);
 
@@ -167,8 +167,6 @@ public class GameScreen extends SizableScreen
      */
     private void initUI()
     {
-
-
 	UIHelper.addRegions(Assets.buttonsAtlas);
 	UIHelper.addTexture(Assets.BUY_BTN, Assets.assetManager.get(Assets.BUY_BTN, Texture.class));
 	m_stage = new Stage();
@@ -210,11 +208,6 @@ public class GameScreen extends SizableScreen
 	    sellBtn.addListener(GameScreenInputHandler.getInstance());
 	    m_stage.addActor(sellBtn);
 	}
-	slots[0].setDragon(0);
-
-	slots[1].setDragon(1);
-
-	slots[2].setDragon(2);
 
 	m_dropThreshold = m_quitButton.getHeight() + slots[0].getSlotImage().getHeight() * 1.5f;
 	m_leftDropThreshold = 25;
