@@ -19,7 +19,8 @@ public class Attacker extends AbstractGameObject
     public Attacker(int type)
     {
 	myData = Globals.attackerTypes[type];
-	health = myData.m_baseHealth;
+	myData.m_experience++;
+	health = myData.m_health;
 
 	if (type != 4)
             dimension.set(0.5f,0.5f);
