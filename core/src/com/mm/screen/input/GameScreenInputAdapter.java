@@ -1,7 +1,6 @@
 package com.mm.screen.input;
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.mm.objects.Dragon;
@@ -80,7 +79,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 		    Dragon.getInstance().setActive(false);
 		    float xLoc = screenX / m_screen.xScale;
 		    float yLoc = screenY / m_screen.yScale;
-		    m_screen.dropDragon(Dragon.getInstance().m_data, new Vector2(xLoc, yLoc));
+		    m_screen.controller.dropDragon(Dragon.getInstance().m_data, new Vector2(xLoc, yLoc));
 		}
 		else
 		{
