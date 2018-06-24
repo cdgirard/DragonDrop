@@ -1,28 +1,8 @@
 {
 highScores: [
 	{
-		player: Vanix
-		score: 50
-	}
-	{
-		player: Some Guy
-		score: 50
-	}
-	{
-		player: Foxtrot
-		score: 40
-	}
-	{
-		player: fox
-		score: 30
-	}
-	{
-		player: Demo
-		score: 30
-	}
-	{
-		player: BobWon
-		score: 5
+		player: Too Many Games
+		score: 2018
 	}
 ]
 }

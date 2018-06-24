@@ -149,6 +149,7 @@ public class GameScreen extends SizableScreen
 	Globals.gold = 100;
 	m_runTime = 0f;
 	m_endGame = false;
+	m_paused = false;
 	
 	// Create Gold Coins
 	// Is here instead of initUI, because it needs to be
@@ -485,13 +486,16 @@ public class GameScreen extends SizableScreen
 
     }
 
+    /**
+     * Switches back to the Main Menu Screen.
+     */
     public void endGame()
     {
 	if (m_goldCoins.size > 0)
 	    m_goldCoins.removeRange(0, m_goldCoins.size - 1);
 	Dragon.getInstance().setActive(false);
 	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC, Music.class));
-	DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
+	DragonDrop.m_dragonDrop.setScreen(DragonDrop.MAIN_SCREEN);
 	
     }
 

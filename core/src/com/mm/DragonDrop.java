@@ -18,7 +18,7 @@ public class DragonDrop extends ApplicationAdapter
     public static MainScreen MAIN_SCREEN;
     public static GameScreen GAME_SCREEN;
 
-    public static DragonDrop m_dreamScape;
+    public static DragonDrop m_dragonDrop;
 
     private SizableScreen screen;
 
@@ -30,7 +30,7 @@ public class DragonDrop extends ApplicationAdapter
     @Override
     public void create()
     {
-	m_dreamScape = this;
+	m_dragonDrop = this;
 	Assets.load();
 	Globals.highScores = HighScoreListFileManager.loadHighScores();
 	MAIN_SCREEN = new MainScreen();
