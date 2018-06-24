@@ -41,7 +41,7 @@ public class MainScreenInputHandler extends ChangeListener //implements InputPro
         {
             AudioManager.instance.stopMusic();
             DragonDrop.GAME_SCREEN.init();
-            DragonDrop.m_dreamScape.setScreen(DragonDrop.GAME_SCREEN);
+            DragonDrop.m_dragonDrop.setScreen(DragonDrop.GAME_SCREEN);
         }
         
         System.out.println("Clicked! Is checked: " + actor.getName());

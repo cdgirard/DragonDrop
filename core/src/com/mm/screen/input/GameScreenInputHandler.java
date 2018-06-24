@@ -5,6 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mm.DragonDrop;
 import com.mm.helpers.Assets;
+import com.mm.helpers.Globals;
+import com.mm.helpers.HighScoreEntry;
+import com.mm.helpers.HighScoreListFileManager;
 import com.mm.objects.Dragon;
 import com.mm.screen.GameScreen;
 
@@ -79,6 +82,15 @@ public class GameScreenInputHandler extends ChangeListener //implements InputPro
 	else if (actor == m_screen.btnBuyButlerDragon)
 	{
 	    m_screen.boughtDragonForSlot(7);
+	}
+	else if (actor == m_screen.btnWinOptSave)
+	{
+	    HighScoreEntry entry = new HighScoreEntry(m_screen.tfPlayer.getText(), Globals.score);
+	    Globals.highScores.add(entry);
+	    Globals.sortHighScoreList();
+	    HighScoreListFileManager.saveHighScores(Globals.highScores);
+	    m_screen.winOptions.setVisible(false);
+	    m_screen.endGame();
 	}
 	else if (actor.getName().equals(QUIT_BUTTON))
 	{

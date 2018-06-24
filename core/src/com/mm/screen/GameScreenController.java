@@ -47,7 +47,7 @@ public class GameScreenController
     public Array<Attacker> m_attackers;
     public Array<AbstractGameObject> m_objectsToRemove;
 
-    public int gold = 100;
+
     
     public int wave = 0;
     public int attackerCount = 0;
@@ -357,7 +357,7 @@ public class GameScreenController
 	    obj.update(delta);
 	    if (obj.m_position.y < 2.5f)
 	    {
-		updateGold(-obj.myData.m_goldSteals);
+		Globals.updateGold(-obj.myData.m_goldSteals);
 		flagForRemoval(obj);
 	    }
 	}
@@ -378,10 +378,7 @@ public class GameScreenController
 	    spawnAttacker();
     }
     
-    public void updateGold(int value)
-    {
-	gold += value;
-    }
+
 
 
 }

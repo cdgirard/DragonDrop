@@ -2,7 +2,6 @@ package com.mm.helpers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -13,17 +12,16 @@ import com.mm.objects.AbstractGameObject;
 import com.mm.objects.Attacker;
 import com.mm.objects.DroppingDragon;
 import com.mm.screen.GameScreen;
-import com.mm.screen.GameScreenController;
 
 public class CollisionHandler implements ContactListener
 {
     private ObjectMap<Short, ObjectMap<Short, ContactListener>> listeners;
 
-    private GameScreen world;
+    private GameScreen m_screen;
 
     public CollisionHandler(GameScreen w)
     {
-	world = w;
+	m_screen = w;
 	listeners = new ObjectMap<Short, ObjectMap<Short, ContactListener>>();
     }
 
@@ -135,7 +133,7 @@ public class CollisionHandler implements ContactListener
 
     private void processDragonContact(Fixture dragonFixture, Fixture attackerFixture)
     {
-	world.score++;
+	Globals.score++;
 
 	AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
 
@@ -146,13 +144,13 @@ public class CollisionHandler implements ContactListener
 	dragon.health -= 1 / damageReduction;
 	if (attacker.health <= 0)
 	{
-	    world.updateGold(attacker.myData.m_goldValue);
-	    world.controller.flagForRemoval(attacker);
+	    Globals.updateGold(attacker.myData.m_goldValue);
+	    m_screen.controller.flagForRemoval(attacker);
 	}
 
 	if (dragon.health <= 0)
 	{
-	    world.controller.flagForRemoval(dragon);
+	    m_screen.controller.flagForRemoval(dragon);
 	}
     }
 

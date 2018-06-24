@@ -14,9 +14,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -40,8 +42,6 @@ public class GameScreen extends SizableScreen
 {
     public boolean m_paused = false;
     public boolean m_endGame = false;
-
-    public int score = 0;
 
     private Texture m_background;
 
@@ -90,6 +90,16 @@ public class GameScreen extends SizableScreen
     public ImageButton btnBuyMooseDragon;
     public ImageButton btnBuyOrangeDragon;
     public TextButton btnWinOptCancel;
+    
+    // For Enter Highscore Name
+    private Stage stage;
+    //Label scoreLbl;
+    boolean highScoreWindowActive = false;
+    // TODO: Horrible name for this window.
+    public Window winOptions;
+    public TextButton btnWinOptSave;
+    public TextField tfPlayer;
+
 
     public GameScreen()
     {
@@ -135,15 +145,16 @@ public class GameScreen extends SizableScreen
 	slots[3].setDragon(-1);
 	slots[4].setDragon(-1);
 
-	score = 0;
-	controller.gold = 100;
+	Globals.score = 0;
+	Globals.gold = 100;
 	m_runTime = 0f;
 	m_endGame = false;
+	m_paused = false;
 	
 	// Create Gold Coins
 	// Is here instead of initUI, because it needs to be
 	// done every time the window is made active again.
-	for (int i = 0; i < controller.gold; i = i + 10)
+	for (int i = 0; i < Globals.gold; i = i + 10)
 	{
 	    GoldCoin coin = createGoldCoin();
 	    m_goldCoins.add(coin);
@@ -181,12 +192,12 @@ public class GameScreen extends SizableScreen
 	label.setPosition(300, preferredHeight - 50);
 	m_stage.addActor(label);
 
-	scoreLabel = new Label("Score: " + score, uiMainWinSkin);
+	scoreLabel = new Label("Score: " + Globals.score, uiMainWinSkin);
 	scoreLabel.setAlignment(Align.left);
 	scoreLabel.setPosition(25, preferredHeight - 25);
 	m_stage.addActor(scoreLabel);
 
-	goldLabel = new Label("Gold: " + controller.gold, uiMainWinSkin);
+	goldLabel = new Label("Gold: " + Globals.gold, uiMainWinSkin);
 	goldLabel.setAlignment(Align.left);
 	goldLabel.setPosition(25, preferredHeight - 50);
 	m_stage.addActor(goldLabel);
@@ -194,6 +205,9 @@ public class GameScreen extends SizableScreen
 	// Buy window for dragons.
 	Table layerOptionsWindow = buildBuyDragonsWindowLayer();
 	m_stage.addActor(layerOptionsWindow);
+	
+	Table layerHighScoreWindow = buildHighScoreWindowLayer();
+	m_stage.addActor(layerHighScoreWindow);
 
 	for (int index = 0; index < slots.length; index++)
 	{
@@ -333,6 +347,63 @@ public class GameScreen extends SizableScreen
 	btnWinOptCancel.addListener(GameScreenInputHandler.getInstance());
 	return tbl;
     }
+    
+    /**
+     * Creates the pop-up end of game window to enter the name of the player
+     * that got a new highscore.
+     */
+    private Table buildHighScoreWindowLayer()
+    {
+	winOptions = new Window("Options", uiBuyWinSkin);
+	winOptions.add(buildEnterNameTbl()).row();
+	winOptions.add(buildWinButtons()).pad(10, 0, 10, 0);
+	// Making the whole window transparent.
+	winOptions.setColor(1, 1, 1, 0.8f);
+	winOptions.setVisible(false);
+	// if (debugEnabled)
+	// winOptions.debug();
+	winOptions.pack();
+	// Not doing anything
+	winOptions.setPosition(200, 400);
+	winOptions.setMovable(false);
+	return winOptions;
+    }
+
+    private Table buildEnterNameTbl()
+    {
+	Table tbl = new Table();
+	tbl.pad(10, 10, 0, 10);
+	tbl.add(new Label("Name:", uiBuyWinSkin, "font", Color.ORANGE)).colspan(3);
+	tbl.row();
+	tbl.columnDefaults(0).padRight(10);
+	tbl.columnDefaults(1).padRight(10);
+	tfPlayer = new TextField("", uiBuyWinSkin);
+	tbl.add(tfPlayer);
+	return tbl;
+    }
+
+    private Table buildWinButtons()
+    {
+	Table tbl = new Table();
+	Label lbl = null;
+	lbl = new Label("", uiBuyWinSkin);
+	lbl.setColor(0.75f, 0.75f, 0.75f, 1);
+	lbl.setStyle(new LabelStyle(lbl.getStyle()));
+	lbl.getStyle().background = uiBuyWinSkin.newDrawable("white");
+	tbl.add(lbl).colspan(2).height(1).width(220).pad(0, 0, 0, 1);
+	tbl.row();
+	lbl = new Label("", uiBuyWinSkin);
+	lbl.setColor(0.5f, 0.5f, 0.5f, 1);
+	lbl.setStyle(new LabelStyle(lbl.getStyle()));
+	lbl.getStyle().background = uiBuyWinSkin.newDrawable("white");
+	tbl.add(lbl).colspan(2).height(1).width(220).pad(0, 1, 5, 0);
+	tbl.row();
+	btnWinOptSave = new TextButton("Save", uiBuyWinSkin);
+	tbl.add(btnWinOptSave).padRight(30);
+	btnWinOptSave.addListener(GameScreenInputHandler.getInstance());
+	return tbl;
+    }
+
 
     public void onBuyDragonClicked(String button)
     {
@@ -344,7 +415,7 @@ public class GameScreen extends SizableScreen
     public void onSellDragonClicked(String button)
     {
 	int slot = Integer.parseInt(button.split("-")[1]);
-	updateGold(slots[slot].getDragonData().m_goldBuyCost / 2);
+	Globals.updateGold(slots[slot].getDragonData().m_goldBuyCost / 2);
 	slots[slot].setDragon(-1);
     }
 
@@ -370,9 +441,26 @@ public class GameScreen extends SizableScreen
     @Override
     public void render(float delta)
     {
-	if (m_endGame)
+	if ((!highScoreWindowActive) && (m_endGame))
 	{
-	    endGame();
+	    m_paused = true;
+	    if (Globals.highScores.size == Globals.MAX_SCORES)
+	    {
+		if (Globals.score > Globals.highScores.get(Globals.MAX_SCORES - 1).score)
+		{
+		    winOptions.setVisible(true);
+		    //Gdx.input.setInputProcessor(stage);
+		}
+		else
+		{
+		    endGame();
+		}
+	    }
+	    else
+	    {
+		winOptions.setVisible(true);
+		//Gdx.input.setInputProcessor(stage);
+	    }
 	}
 	if (!m_paused)
 	{
@@ -398,39 +486,42 @@ public class GameScreen extends SizableScreen
 
     }
 
+    /**
+     * Switches back to the Main Menu Screen.
+     */
     public void endGame()
     {
 	if (m_goldCoins.size > 0)
 	    m_goldCoins.removeRange(0, m_goldCoins.size - 1);
 	Dragon.getInstance().setActive(false);
 	AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC, Music.class));
-	DragonDrop.m_dreamScape.setScreen(DragonDrop.MAIN_SCREEN);
+	DragonDrop.m_dragonDrop.setScreen(DragonDrop.MAIN_SCREEN);
 	
     }
 
     private void updateGui(float delta)
     {
-	scoreLabel.setText("Score: " + score);
-	goldLabel.setText("Gold: " + controller.gold);
+	scoreLabel.setText("Score: " + Globals.score);
+	goldLabel.setText("Gold: " + Globals.gold);
 	
-	if ((controller.gold <= 0) && (controller.m_droppingDragons.size == 0))
+	if ((Globals.gold <= 0) && (controller.m_droppingDragons.size == 0))
 	{
 	    m_endGame = true;
 	}
 
 	int horde = m_goldCoins.size * 10;
 
-	if (horde/10 < controller.gold/10)
+	if (horde/10 < Globals.gold/10)
 	{
-	    for (int i = horde; i < controller.gold; i = i + 10)
+	    for (int i = horde; i < Globals.gold; i = i + 10)
 	    {
                 GoldCoin coin = createGoldCoin();
                 m_goldCoins.add(coin);
 	    }
 	}
-	else if (horde/10 > controller.gold/10)
+	else if (horde/10 > Globals.gold/10)
 	{
-	    for (int i = horde; i > controller.gold; i = i - 10)
+	    for (int i = horde; i > Globals.gold; i = i - 10)
 	    {
 		if (m_goldCoins.size > 0)
                     m_goldCoins.removeIndex(m_goldCoins.size-1);
@@ -539,11 +630,11 @@ public class GameScreen extends SizableScreen
      */
     public void boughtDragonForSlot(int type)
     {
-	if (controller.gold >= Globals.dragonTypes[type].m_goldBuyCost)
+	if (Globals.gold >= Globals.dragonTypes[type].m_goldBuyCost)
 	{
 	    slots[activeSlot].setDragon(type);
 
-	    updateGold(-slots[activeSlot].getDragonData().m_goldBuyCost);
+	    Globals.updateGold(-slots[activeSlot].getDragonData().m_goldBuyCost);
 	    m_paused = false;
 	    winBuyDragon.setVisible(false);
 	    activeSlot = -1;
@@ -553,21 +644,5 @@ public class GameScreen extends SizableScreen
 	    //updateMessageLabel("Not enough gold!");
 	}
 
-    }
-
-    /**
-     * Update the amount of gold to show in the horde.
-     * @param value
-     */
-    public void updateGold(int value)
-    {
-	controller.updateGold(value);
-
-    }
-    
-
-    public int getGold()
-    {
-	return controller.gold;
     }
 }

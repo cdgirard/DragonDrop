@@ -19,10 +19,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.mm.helpers.Assets;
 import com.mm.helpers.AudioManager;
+import com.mm.helpers.Globals;
+import com.mm.helpers.HighScoreEntry;
 import com.mm.screen.input.MainScreenInputHandler;
 
 public class MainScreen extends SizableScreen
@@ -31,13 +36,18 @@ public class MainScreen extends SizableScreen
     
     private OrthographicCamera m_cam;
     
-    private Stage m_stage;
+    private Stage m_stage = null;
     
     private MainScreenController m_controller;
     
     private ImageButton m_startNewGameButton, m_loadGameButton;
+    private Label[] playerLabels = new Label[Globals.MAX_SCORES];
+    private Label[] scoreLabels = new Label[Globals.MAX_SCORES];
     
     private Texture m_background;
+    
+    // TODO: Needs a better name.
+    private Skin skinLibgdx = new Skin(Gdx.files.internal("ui/clean-crispy-ui.json"));
     
     SpriteBatch batcher;
       
@@ -51,15 +61,8 @@ public class MainScreen extends SizableScreen
         buttonSkin.addRegions(Assets.buttonsAtlas);
         
         MainScreenInputHandler.initializeInstance();
-        m_stage = new Stage();
-
-        m_startNewGameButton = constructButton(MainScreenInputHandler.START_NEW_GAME_BUTTON);
-        m_startNewGameButton.setPosition(700, 200);
-        m_stage.addActor(m_startNewGameButton);
         
-        m_loadGameButton = constructButton(MainScreenInputHandler.LOAD_GAME_BUTTON);
-        m_loadGameButton.setPosition(700, 75);
-        m_stage.addActor(m_loadGameButton);
+        rebuildUI();
         
         m_cam = new OrthographicCamera(preferredWidth,preferredHeight);
         m_cam.update();
@@ -71,6 +74,36 @@ public class MainScreen extends SizableScreen
         AudioManager.instance.play(Assets.assetManager.get(Assets.INTRO_MUSIC,Music.class));
     }
     
+    /**
+     * Need this between games to make sure the HighScore Table is
+     * updated.
+     */
+    public void rebuildUI()
+    {
+	Gdx.app.log("MainScreen", "Rebuild UI: "+preferredWidth+" "+preferredHeight);
+	if (m_stage != null)
+	    m_stage.clear();
+	
+	m_stage = new Stage();
+	m_stage.getViewport().update(preferredWidth, preferredHeight,true);
+        Table highScores = buildHighScoreLayer();
+
+        m_stage.addActor(highScores);
+
+        m_startNewGameButton = constructButton(MainScreenInputHandler.START_NEW_GAME_BUTTON);
+        m_startNewGameButton.setPosition(700, 200);
+        m_stage.addActor(m_startNewGameButton);
+        
+        m_loadGameButton = constructButton(MainScreenInputHandler.LOAD_GAME_BUTTON);
+        m_loadGameButton.setPosition(700, 75);
+        m_stage.addActor(m_loadGameButton);
+    }
+    
+    /**
+     * TODO: Can this be replaced with the method in UIHelper. Do I want the buttonSkin mixed with buttons from MainScreen and GameScreen.
+     * @param name
+     * @return
+     */
     private ImageButton constructButton(String name)
     {
         ImageButtonStyle imgButtonStyle = new ImageButtonStyle();
@@ -87,6 +120,56 @@ public class MainScreen extends SizableScreen
         button.setName(name);
         return button;
     }
+    
+    /**
+     * Need to build a highscore list.
+     * 
+     * @return
+     */
+    private Table buildHighScoreLayer()
+    {
+	Table tbl = new Table();
+	tbl.add(new Label("HIGH SCORE LIST", skinLibgdx));
+	tbl.row();
+	tbl.pad(10, 10, 0, 10);
+	int counter = 1;
+	for (HighScoreEntry e : Globals.highScores)
+	{
+	    playerLabels[counter-1] = new Label(""+counter+". "+e.getPlayer(), skinLibgdx);
+	    playerLabels[counter-1].setAlignment(Align.left);
+	    scoreLabels[counter-1] = new Label(" "+e.getScore(), skinLibgdx);
+	    scoreLabels[counter-1].setAlignment(Align.left);
+	    tbl.add(playerLabels[counter-1]);
+	    tbl.add(scoreLabels[counter-1]);
+	    tbl.row();
+	    counter++;
+	}
+	for (int i=counter-1; i< Globals.MAX_SCORES; i++)
+	{
+	    playerLabels[i] = new Label("", skinLibgdx);
+	    playerLabels[i].setAlignment(Align.left);
+	    scoreLabels[i] = new Label("", skinLibgdx);
+	    scoreLabels[i].setAlignment(Align.left);
+	    tbl.add(playerLabels[i]);
+	    tbl.add(scoreLabels[i]);
+	    tbl.row();
+	}
+	tbl.setPosition(100, 250);
+	return tbl;
+    }
+    
+    private void updateHighScores()
+    {
+	int counter = 1;
+	for (HighScoreEntry e : Globals.highScores)
+	{
+	    Gdx.app.log("MainScreen", "Player: "+e.getPlayer());
+	    playerLabels[counter-1].setText(""+counter+". "+e.getPlayer());
+	    scoreLabels[counter-1].setText(" "+e.getScore());
+	    counter++;
+	}
+    }
+
 
     @Override
     public void render(float delta)
@@ -128,6 +211,7 @@ public class MainScreen extends SizableScreen
     @Override
     public void show()
     {
+	updateHighScores();
         // InputProcessor inputProcessorOne = MainScreenInputHandler.getInstance();
         InputProcessor inputProcessorTwo = m_stage;
         InputMultiplexer inputMultiplexer = new InputMultiplexer();

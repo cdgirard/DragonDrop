@@ -3,6 +3,7 @@ package com.mm.screen.input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
+import com.mm.helpers.Globals;
 import com.mm.objects.Dragon;
 import com.mm.objects.DragonSlot;
 import com.mm.screen.GameScreen;
@@ -74,9 +75,9 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	{
 	    if ((screenY > m_screen.m_dropThreshold) && (screenX > m_screen.m_leftDropThreshold) && (screenX < m_screen.m_rightDropThreshold))
 	    {
-		if (m_screen.getGold() >= 5)
+		if (Globals.gold >= 5)
 		{
-		    m_screen.updateGold(-Dragon.getInstance().m_data.m_goldDropCost);
+		    Globals.updateGold(-Dragon.getInstance().m_data.m_goldDropCost);
 		    //m_screen.updateMessageLabel("Dragon Dropped");
 		    Dragon.getInstance().setActive(false);
 		    float xLoc = screenX / m_screen.xScale;

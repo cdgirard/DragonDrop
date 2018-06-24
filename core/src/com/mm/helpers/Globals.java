@@ -1,6 +1,7 @@
 package com.mm.helpers;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.mm.objects.AttackerData;
 import com.mm.objects.DragonData;
 
@@ -25,5 +26,35 @@ public class Globals
 	new DragonData(Assets.assetManager.get(Assets.DRAQ_DRAGON, Texture.class), 1, 4, 2, 1),
 	new DragonData(Assets.assetManager.get(Assets.BUTLER_DRAGON, Texture.class), 2, 2, 3, 2)
     };
+    
+    public static int gold = 100;
+    public static int score = 0;
+    
+    public static Array<HighScoreEntry> highScores = new Array<HighScoreEntry>();
+    public static final int MAX_SCORES = 10;
+
+    public static void sortHighScoreList()
+    {
+	for (int x=0;x<highScores.size-1;x++)
+	{
+	    int y = x+1;
+	    int z = x;
+	    while ((y > 0) && (highScores.get(y).score > highScores.get(z).score))
+	    {
+		HighScoreEntry entry = highScores.removeIndex(y);
+		highScores.insert(z, entry);
+		y--;
+		z--;
+	    }
+	}
+	
+	while (highScores.size > MAX_SCORES)
+	    highScores.removeIndex(MAX_SCORES);
+    }
+
+    public static void updateGold(int value)
+    {
+	gold += value;
+    }
 
 }
