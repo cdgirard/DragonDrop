@@ -10,6 +10,7 @@ import com.mm.screen.GameScreen;
 public class GameScreenInputAdapter extends InputAdapter implements Disposable
 {
     GameScreen m_screen;
+    private boolean dragged = false;
 
     public GameScreenInputAdapter(GameScreen gs)
     {
@@ -24,6 +25,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     {
 	if (Dragon.getInstance().getActive())
 	{
+	    dragged = true;
 	    //m_screen.updateMessageLabel("Dragging: " + screenX + " : " + screenY);
 	    float xLoc = screenX / m_screen.xScale;
 	    float yLoc = screenY / m_screen.yScale;
@@ -51,6 +53,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	DragonSlot slot = m_screen.getSlot(screenX, screenY);
 	if (slot != null)
 	{
+	    dragged = false;
 	    //m_screen.updateMessageLabel("Grabbed Dragon: " + screenX + " : " + screenY);
 	    Dragon.getInstance().m_data = slot.getDragonData();
 	    Dragon.getInstance().setActive(true);
@@ -67,7 +70,7 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
-	if (Dragon.getInstance().getActive())
+	if ((Dragon.getInstance().getActive()) && (dragged))
 	{
 	    if ((screenY > m_screen.m_dropThreshold) && (screenX > m_screen.m_leftDropThreshold) && (screenX < m_screen.m_rightDropThreshold))
 	    {
@@ -90,6 +93,10 @@ public class GameScreenInputAdapter extends InputAdapter implements Disposable
 	    {
 		Dragon.getInstance().setActive(false);
 	    }
+	}
+	else if (Dragon.getInstance().getActive())
+	{
+	    Dragon.getInstance().setActive(false);
 	}
 	return false;
     }
