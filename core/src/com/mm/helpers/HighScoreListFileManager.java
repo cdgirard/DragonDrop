@@ -45,6 +45,10 @@ public class HighScoreListFileManager
                 }   
             }
         }
+        else
+        {
+            Gdx.app.log("HighScoreListFile", "Failed to Load");
+        }
         return highScores;
     }
     

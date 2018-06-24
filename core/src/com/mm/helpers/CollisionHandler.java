@@ -133,7 +133,7 @@ public class CollisionHandler implements ContactListener
 
     private void processDragonContact(Fixture dragonFixture, Fixture attackerFixture)
     {
-	Globals.score++;
+	
 
 	AudioManager.instance.play(Assets.assetManager.get(Assets.DRAGON_COLLISION, Sound.class));
 
@@ -144,6 +144,7 @@ public class CollisionHandler implements ContactListener
 	dragon.health -= 1 * damageReduction;
 	if (attacker.health <= 0)
 	{
+	    Globals.score += attacker.myData.m_goldValue;
 	    Globals.updateGold(attacker.myData.m_goldValue);
 	    m_screen.controller.flagForRemoval(attacker);
 	}
