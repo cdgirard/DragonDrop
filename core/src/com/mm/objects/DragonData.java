@@ -36,11 +36,22 @@ public class DragonData
 	float dmgMod = 1;
 	if (m_armorBonus > attacker.m_armor)
 	    dmgMod++;
+	else if (m_armorBonus < (attacker.m_armor - m_armorBonus/2))
+	    dmgMod--;
 	if (m_weaponBonus > attacker.m_weapon)
 	    dmgMod++;
+	else if (m_weaponBonus < (attacker.m_weapon - m_armorBonus/2))
+	    dmgMod--;
 	if (m_speedBonus > attacker.m_speed)
 	    dmgMod++;
+	else if (m_speedBonus < (attacker.m_speed - m_speedBonus/2))
+	    dmgMod--;
 
+	if (dmgMod > 0)
+	    dmgMod = 1/dmgMod;
+	else
+	    dmgMod = -dmgMod + 2;
+	
         return dmgMod;	
     }
 

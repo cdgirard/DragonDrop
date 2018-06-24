@@ -176,7 +176,7 @@ public class GameScreenController
 	int y = (int) MathUtils.random(0, waves[wave].length-1);
 	y = waves[wave][y];
 	
-	Attacker attacker = new Attacker(y);
+	Attacker attacker = new Attacker(y); //new Attacker(y);
 	attackerCount++;
 	if (attackerCount > 10*waves[wave].length)
 	{
@@ -186,9 +186,9 @@ public class GameScreenController
 	if (wave == waves.length)
 	    wave = 8;
 	//AttackerData d = attacker.myData;
-	//Gdx.app.log("MainScreen", "Attacker Data: "+d.m_armor+" "+d.m_weapon+" "+d.m_speed+" "+d.m_goldSteals+" "+d.m_goldValue);
+        //Gdx.app.log("MainScreen", "Attacker Data: "+d.m_armor+" "+d.m_weapon+" "+d.m_speed+" "+d.m_goldSteals+" "+d.m_goldValue);
 	//Gdx.app.log("MainScreen", "Wave: "+wave);
-	float x = (float)(Math.random()*4+0.5);//y + 0.5f;
+	float x = (float)(Math.random()*4+0.5);
 	Vector2 pos = new Vector2(x, 9.0f);
 	attacker.m_position.set(pos);
 

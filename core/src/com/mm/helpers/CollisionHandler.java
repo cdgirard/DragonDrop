@@ -141,7 +141,7 @@ public class CollisionHandler implements ContactListener
 	DroppingDragon dragon = (DroppingDragon) dragonFixture.getBody().getUserData();
 	float damageReduction = dragon.m_data.computeDamageReduction(attacker.myData);
 	attacker.health -= 1;
-	dragon.health -= 1 / damageReduction;
+	dragon.health -= 1 * damageReduction;
 	if (attacker.health <= 0)
 	{
 	    Globals.updateGold(attacker.myData.m_goldValue);
