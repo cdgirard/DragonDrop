@@ -3,6 +3,8 @@ package com.mm;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.mm.helpers.Assets;
+import com.mm.helpers.Globals;
+import com.mm.helpers.HighScoreListFileManager;
 import com.mm.screen.GameScreen;
 import com.mm.screen.MainScreen;
 import com.mm.screen.SizableScreen;
@@ -30,9 +32,12 @@ public class DragonDrop extends ApplicationAdapter
     {
 	m_dreamScape = this;
 	Assets.load();
+	Globals.highScores = HighScoreListFileManager.loadHighScores();
 	MAIN_SCREEN = new MainScreen();
 	GAME_SCREEN = new GameScreen();
 	Gdx.app.log("DragonDrop", "created");
+
+	
 
 	setScreen(MAIN_SCREEN);
     }

@@ -19,10 +19,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mm.helpers.Assets;
 import com.mm.helpers.AudioManager;
+import com.mm.helpers.Globals;
+import com.mm.helpers.HighScoreEntry;
 import com.mm.screen.input.MainScreenInputHandler;
 
 public class MainScreen extends SizableScreen
@@ -39,6 +43,9 @@ public class MainScreen extends SizableScreen
     
     private Texture m_background;
     
+    // TODO: Needs a better name.
+    private Skin skinLibgdx = new Skin(Gdx.files.internal("ui/clean-crispy-ui.json"));
+    
     SpriteBatch batcher;
       
     public MainScreen()
@@ -52,6 +59,9 @@ public class MainScreen extends SizableScreen
         
         MainScreenInputHandler.initializeInstance();
         m_stage = new Stage();
+        Table highScores = buildHighScoreLayer();
+
+        m_stage.addActor(highScores);
 
         m_startNewGameButton = constructButton(MainScreenInputHandler.START_NEW_GAME_BUTTON);
         m_startNewGameButton.setPosition(700, 200);
@@ -87,6 +97,32 @@ public class MainScreen extends SizableScreen
         button.setName(name);
         return button;
     }
+    
+    /**
+     * Need to build a highscore list.
+     * 
+     * @return
+     */
+    private Table buildHighScoreLayer()
+    {
+	Table tbl = new Table();
+	tbl.add(new Label("HIGH SCORE LIST", skinLibgdx));
+	tbl.row();
+	tbl.pad(10, 10, 0, 10);
+	int counter = 1;
+	for (HighScoreEntry e : Globals.highScores)
+	{
+	    Label playerLbl = new Label(""+counter+". "+e.getPlayer(), skinLibgdx);
+	    Label scoreLbl = new Label(" "+e.getScore(), skinLibgdx);
+	    tbl.add(playerLbl);
+	    tbl.add(scoreLbl);
+	    tbl.row();
+	    counter++;
+	}
+	tbl.setPosition(200, 300);
+	return tbl;
+    }
+
 
     @Override
     public void render(float delta)
