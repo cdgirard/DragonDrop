@@ -23,6 +23,9 @@ public class Assets
     public static final String SPEARMAN = "images/attackers/spearman.png";
     public static final String KNIGHT = "images/attackers/knight.png";
     public static final String FARMER = "images/attackers/farmer.png";
+    public static final String SPEED_DOT = "images/attackers/speed_dot.png";
+    public static final String WEAPON_DOT = "images/attackers/weapon_dot.png";
+    public static final String ARMOR_DOT = "images/attackers/armor_dot.png";
     
     // Dragons
     public static final String GOTH_DRAGON = "images/dragons/goth_dragon.png";
@@ -89,6 +92,9 @@ public class Assets
 	assetManager.load(SPEARMAN, Texture.class); 
 	assetManager.load(KNIGHT, Texture.class);
 	assetManager.load(FARMER, Texture.class);
+	assetManager.load(SPEED_DOT, Texture.class);
+	assetManager.load(WEAPON_DOT, Texture.class);
+	assetManager.load(ARMOR_DOT, Texture.class);
         assetManager.finishLoading();
     }
     

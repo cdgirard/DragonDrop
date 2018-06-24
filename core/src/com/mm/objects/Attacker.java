@@ -51,7 +51,16 @@ public class Attacker extends AbstractGameObject
     public void render(SpriteBatch batcher)
     {
 	Texture image = myData.m_image;
+	Vector2 dotLoc = new Vector2(m_position.x - origin.x,m_position.y - origin.y);
 	batcher.draw(image, m_position.x - origin.x, m_position.y - origin.y, origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y, rotation, 0, 0, image.getWidth(), image.getHeight(), false, true);
+	// Draw Weapon Level
+	for (int i=0;i<myData.m_weapon;i++)
+	    batcher.draw(AttackerData.m_weaponDot, dotLoc.x+0.05f*i, dotLoc.y, 0, 0, 0.04f, 0.04f, 1, 1, rotation, 0, 0, AttackerData.m_weaponDot.getWidth(), AttackerData.m_weaponDot.getHeight(), false, true);
+	   // batcher.draw(AttackerData.m_weaponDot, weaponLoc.x+0.1f, weaponLoc.y, 0, 0, 0.04f, 0.04f, 1, 1, rotation, 0, 0, AttackerData.m_weaponDot.getWidth(), AttackerData.m_weaponDot.getHeight(), false, true);
+	for (int i=0;i<myData.m_speed;i++)
+	    batcher.draw(AttackerData.m_speedDot, dotLoc.x+0.05f*i, dotLoc.y+dimension.y-0.04f, 0, 0, 0.04f, 0.04f, 1, 1, rotation, 0, 0, AttackerData.m_speedDot.getWidth(), AttackerData.m_speedDot.getHeight(), false, true);
+	for (int i=0;i<myData.m_armor;i++)
+	    batcher.draw(AttackerData.m_armorDot, dotLoc.x+dimension.x-0.04f, dotLoc.y+0.05f*i, 0, 0, 0.04f, 0.04f, 1, 1, rotation, 0, 0, AttackerData.m_armorDot.getWidth(), AttackerData.m_armorDot.getHeight(), false, true);
     }
 
 }

@@ -2,9 +2,13 @@ package com.mm.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.mm.helpers.Assets;
 
 public class AttackerData
 {
+    public static final Texture m_weaponDot = Assets.assetManager.get(Assets.WEAPON_DOT, Texture.class);
+    public static final Texture m_speedDot = Assets.assetManager.get(Assets.SPEED_DOT, Texture.class);
+    public static final Texture m_armorDot = Assets.assetManager.get(Assets.ARMOR_DOT, Texture.class);
     public final Texture m_image;
     public final float m_impulse;
     private final float m_baseHealth;
