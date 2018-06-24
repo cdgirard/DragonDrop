@@ -17,7 +17,7 @@ public class Globals
     };
     
     public static DragonData[] dragonTypes = {
-	new DragonData(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class), 1, 2, 3, 1),
+	new DragonData(Assets.assetManager.get(Assets.GOTH_DRAGON, Texture.class), 1, 2, 3, 2),
 	new DragonData(Assets.assetManager.get(Assets.HAZY_DRAGON, Texture.class), 2, 1, 1, 5),
 	new DragonData(Assets.assetManager.get(Assets.BOOK_DRAGON, Texture.class), 3, 5, 1, 1),
 	new DragonData(Assets.assetManager.get(Assets.BLUE_DRAGON, Texture.class), 1, 1, 5, 1),

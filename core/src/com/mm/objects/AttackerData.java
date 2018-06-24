@@ -52,13 +52,13 @@ public class AttackerData
 	switch (stat)
 	{
 	    case 1:
-		m_armor += 0.1;
+		m_armor += 0.2;
 		break;
 	    case 2:
-		m_weapon += 0.1;
+		m_weapon += 0.2;
 		break;
 	    case 3:
-		m_speed += 0.1;
+		m_speed += 0.2;
 		break;
 	}
 	m_goldValue = (int)((Math.pow(2, m_armor-1) + Math.pow(2,m_weapon-1) + Math.pow(2,m_speed-1))*m_health*0.75);
